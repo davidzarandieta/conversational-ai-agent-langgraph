@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conversational AI Agent — Live Architecture Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --border-card: rgba(55, 65, 81, 0.6);
+      --accent-blue: #3b82f6;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --accent-rose: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --phone-bg: #030712;
+      --lead-bubble: #1e3a8a;
+      --agent-bubble: #1f2937;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    header {
+      padding: 18px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+      background: rgba(11, 16, 29, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+    }
+
+    .brand-text h1 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .brand-text p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    /* TOGGLE SWITCH */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      border: 1px solid rgba(51, 65, 85, 0.8);
+    }
+
+    .toggle-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toggle-label.active {
+      color: #38bdf8;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #334155;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent-blue);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* MAIN CONTAINER */
+    main {
+      flex: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 30px 24px 60px;
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      main {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+    }
+
+    /* PHONE CONTAINER */
+    .phone-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .phone-mockup {
+      width: 375px;
+      height: 720px;
+      background: var(--phone-bg);
+      border-radius: 48px;
+      border: 10px solid #1f2937;
+      box-shadow: 
+        0 0 0 2px #374151,
+        0 25px 50px -12px rgba(0, 0, 0, 0.8),
+        0 0 35px rgba(59, 130, 246, 0.15);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* DYNAMIC ISLAND */
+    .phone-header {
+      background: #111827;
+      padding: 12px 18px;
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid #1f2937;
+    }
+
+    .dynamic-island {
+      width: 110px;
+      height: 24px;
+      background: #000;
+      border-radius: 20px;
+      margin: 0 auto 10px;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 600;
+      padding: 0 6px 4px;
+    }
+
+    .chat-top-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 4px;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 15px;
+      color: white;
+    }
+
+    .online-indicator {
+      width: 10px;
+      height: 10px;
+      background: var(--accent-emerald);
+      border-radius: 50%;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      border: 2px solid #111827;
+    }
+
+    .chat-info h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-verified {
+      color: #38bdf8;
+      font-size: 13px;
+    }
+
+    .chat-info p {
+      font-size: 11px;
+      color: #10b981;
+      font-weight: 500;
+    }
+
+    /* MESSAGE FEED */
+    .chat-body {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: radial-gradient(circle at 50% 50%, #0d1322 0%, #050811 100%);
+    }
+
+    .message {
+      max-width: 82%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 13px;
+      line-height: 1.45;
+      position: relative;
+      animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: translateY(12px) scale(0.95); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: #2563eb;
+      color: #ffffff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.agent {
+      align-self: flex-start;
+      background: #1f2937;
+      color: #f3f4f6;
+      border-bottom-left-radius: 4px;
+      border: 1px solid #374151;
+    }
+
+    .message .msg-time {
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .message a {
+      color: #38bdf8;
+      text-decoration: underline;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    /* TYPING INDICATOR */
+    .typing-indicator {
+      display: none;
+      align-self: flex-start;
+      background: #1f2937;
+      padding: 10px 16px;
+      border-radius: 16px;
+      border-bottom-left-radius: 4px;
+      gap: 4px;
+      align-items: center;
+      border: 1px solid #374151;
+    }
+
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      background: #94a3b8;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    /* CONTROLS */
+    .demo-controls {
+      display: flex;
+      gap: 12px;
+      width: 375px;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+      flex: 1;
+      justify-content: center;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #1e293b;
+      color: #cbd5e1;
+      border: 1px solid #334155;
+    }
+
+    .btn-secondary:hover {
+      background: #334155;
+      color: white;
+    }
+
+    /* ENGINEERING PANEL */
+    .engineering-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      backdrop-filter: blur(12px);
+      width: 100%;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+      padding-bottom: 16px;
+    }
+
+    .panel-header h2 {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #38bdf8;
+    }
+
+    .metric-pill {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* NODE PROGRESSION TRACKER */
+    .pipeline-tracker {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tracker-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .node-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    @media (max-width: 640px) {
+      .node-steps {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .step-card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      transition: all 0.3s;
+    }
+
+    .step-card.active {
+      border-color: var(--accent-blue);
+      background: rgba(37, 99, 235, 0.12);
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.25);
+    }
+
+    .step-card.passed {
+      border-color: rgba(16, 185, 129, 0.5);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .step-card .step-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+
+    .step-card .step-status {
+      font-size: 9px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* TELEMETRY GRIDS */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .telemetry-box {
+      background: #0b1120;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .telemetry-box .label {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .telemetry-box .value {
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* LOGS AND JSON */
+    .log-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .log-box {
+      background: #030712;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #cbd5e1;
+      max-height: 180px;
+      overflow-y: auto;
+      line-height: 1.5;
+    }
+
+    .log-entry {
+      margin-bottom: 6px;
+    }
+
+    .log-time {
+      color: #64748b;
+      margin-right: 6px;
+    }
+
+    .log-tag-guardrail { color: #f59e0b; font-weight: 600; }
+    .log-tag-lock { color: #38bdf8; font-weight: 600; }
+    .log-tag-cache { color: #10b981; font-weight: 600; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(30, 41, 59, 0.6);
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: rgba(11, 16, 29, 0.5);
+    }
+
+    footer a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="#" class="brand-title">
+      <div class="brand-logo">NS</div>
+      <div class="brand-text">
+        <h1>Alpha Coaching • Conversational AI Agent</h1>
+        <p>LangGraph Reference Architecture Live Simulator</p>
+      </div>
+    </a>
+
+    <div class="header-actions">
+      <div class="toggle-container">
+        <label class="toggle-label" for="engToggle" id="engLabel">
+          ⚙️ Modo Ingeniería
+        </label>
+        <label class="switch">
+          <input type="checkbox" id="engToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN VIEW -->
+  <main>
+    <!-- LEFT: MOBILE SIMULATOR -->
+    <div class="phone-wrapper">
+      <div class="phone-mockup">
+        <div class="phone-header">
+          <div class="status-bar">
+            <span>09:41</span>
+            <span>LTE • 98%</span>
+          </div>
+          <div class="dynamic-island"></div>
+          <div class="chat-top-bar">
+            <div class="avatar-wrapper">
+              <div class="avatar">A</div>
+              <div class="online-indicator"></div>
+            </div>
+            <div class="chat-info">
+              <h3>Alpha Coaching <span class="badge-verified">✓</span></h3>
+              <p>En línea • Asistente IA Activo</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHAT BODY -->
+        <div class="chat-body" id="chatBody">
+          <!-- Injected via JS -->
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      </div>
+
+      <!-- CONTROLS -->
+      <div class="demo-controls">
+        <button class="btn btn-primary" id="btnNext">
+          <span>Siguiente mensaje</span> ➔
+        </button>
+        <button class="btn btn-secondary" id="btnReset">
+          <span>Reiniciar</span> ↺
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT: ENGINEERING TELEMETRY PANEL -->
+    <div class="engineering-panel" id="engineeringPanel">
+      <div class="panel-header">
+        <h2>🔬 Telemetría y Máquina de Estados</h2>
+        <span class="metric-pill" id="cacheStatus">Prompt Cache: Activo (91% Ahorro)</span>
+      </div>
+
+      <!-- PIPELINE STEP TRACKER -->
+      <div class="pipeline-tracker">
+        <span class="tracker-title">Flujo de Nodos LangGraph</span>
+        <div class="node-steps">
+          <div class="step-card" id="node-preconditions">
+            <div class="step-name">1. preconditions</div>
+            <div class="step-status">Saldo & Horario</div>
+          </div>
+          <div class="step-card" id="node-media">
+            <div class="step-name">2. media_proc</div>
+            <div class="step-status">Whisper / Vision</div>
+          </div>
+          <div class="step-card" id="node-brain">
+            <div class="step-name">3. run_ai_brain</div>
+            <div class="step-status">Claude 3.5 Sonnet</div>
+          </div>
+          <div class="step-card" id="node-guardrails">
+            <div class="step-name">4. guardrails</div>
+            <div class="step-status">Filtro de estilo</div>
+          </div>
+          <div class="step-card" id="node-booking">
+            <div class="step-name">5. booking_rules</div>
+            <div class="step-status">Inyección Calendly</div>
+          </div>
+          <div class="step-card" id="node-deliver">
+            <div class="step-name">6. deliver_msg</div>
+            <div class="step-status">Anti-Race Check</div>
+          </div>
+          <div class="step-card" id="node-persist">
+            <div class="step-name">7. persist_state</div>
+            <div class="step-status">Mongo Lock Free</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TELEMETRY NUMERICS -->
+      <div class="telemetry-grid">
+        <div class="telemetry-box">
+          <div class="label">Estado Actual</div>
+          <div class="value" id="currentStageVal" style="color: #38bdf8;">Etapa 1</div>
+        </div>
+        <div class="telemetry-box">
+          <div class="label">Latencia Inferencia</div>
+          <div class="value" id="latencyVal" style="color: #34d399;">~820 ms</div>
+        </div>
+        <div class="telemetry-box">
+          <div class="label">Lock Concurrencia</div>
+          <div class="value" id="lockStatusVal" style="color: #a78bfa;">is_processing=F</div>
+        </div>
+      </div>
+
+      <!-- GUARDRAILS EVENT AUDIT -->
+      <div class="log-section">
+        <span class="tracker-title">Eventos de Guardrails y Reglas Deterministas</span>
+        <div class="log-box" id="guardrailLogs">
+          <div class="log-entry">
+            <span class="log-time">[09:41:02]</span>
+            <span class="log-tag-lock">[LOCK]</span> find_one_and_update adquirido para lead_instagram_123.
+          </div>
+          <div class="log-entry">
+            <span class="log-time">[09:41:03]</span>
+            <span class="log-tag-cache">[CACHE]</span> Claude prompt cache hit (1,420 tokens leídos de caché).
+          </div>
+        </div>
+      </div>
+
+      <!-- RAW MODEL JSON OUTPUT -->
+      <div class="log-section">
+        <span class="tracker-title">Payload JSON Validado (parse_json_from_model_output)</span>
+        <div class="log-box" id="jsonOutput" style="color: #38bdf8;">
+{
+  "content_array": ["¡Hola! Qué tal."],
+  "estado_conversacion": "1",
+  "send_booking_link": false
+}
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Conversational AI Agent Reference Architecture • Production LangGraph Engine • <a href="https://github.com/davidzarandieta/conversational-ai-agent-langgraph" target="_blank">GitHub Repository</a></p>
+  </footer>
+
+  <script>
+    // SCENARIO SCRIPT
+    const conversationScript = [
+      {
+        sender: 'user',
+        text: 'Hola Alex, me gustaría saber cómo funciona vuestro plan de entrenamiento online.',
+        time: '09:41',
+        nodeActive: 'preconditions',
+        stage: 'Etapa 1 (Exploración)',
+        latency: '740 ms',
+        cachedTokens: '1,420 tokens',
+        guardrailEvent: '[GUARDRAIL] Precondiciones superadas: Facturación activa, lead no excluido.',
+        json: {
+          content_array: ["¡Hola! Qué tal.", "Nuestro método es 100% personalizado según tus horarios y nivel actual. ¿Entrenas en casa o en gimnasio?"],
+          estado_conversacion: "2",
+          send_booking_link: false,
+          nuevos_aprendizajes: "Interesado en entrenamiento online general"
+        },
+        agentReplies: [
+          "¡Hola! Qué tal.",
+          "Nuestro método es 100% personalizado según tus horarios y nivel actual. ¿Entrenas en casa o en gimnasio?"
+        ]
+      },
+      {
+        sender: 'user',
+        text: 'Entreno en gimnasio 3 días por semana, pero me estanco con la planificación.',
+        time: '09:42',
+        nodeActive: 'brain',
+        stage: 'Etapa 2 (Cualificación)',
+        latency: '810 ms',
+        cachedTokens: '1,510 tokens',
+        guardrailEvent: '[STYLE] Signos de interrogación de apertura (¿) eliminados según perfil de marca.',
+        json: {
+          content_array: ["Entiendo perfectamente. El estancamiento suele deberse a sobrecarga progresiva mal estructurada.", "¿Te vendría bien que agendemos una videollamada de 15 minutos para ver tu rutina?"],
+          estado_conversacion: "3",
+          send_booking_link: false,
+          nuevos_aprendizajes: "Entrena en gimnasio, problema de progresión"
+        },
+        agentReplies: [
+          "Entiendo perfectamente. El estancamiento suele deberse a sobrecarga progresiva mal estructurada.",
+          "Te vendría bien que agendemos una videollamada de 15 minutos para ver tu rutina"
+        ]
+      },
+      {
+        sender: 'user',
+        text: 'Sí, perfecto. ¿Cuándo podemos agendar?',
+        time: '09:43',
+        nodeActive: 'booking',
+        stage: 'Etapa 3 (Cierre de Cita)',
+        latency: '690 ms',
+        cachedTokens: '1,640 tokens',
+        guardrailEvent: '[GUARDRAIL TRIGGER] Capa 1 (explícita) y Capa 2 (contextual) activadas. Inyección determinista de Calendly URL garantizada.',
+        json: {
+          content_array: ["¡Genial! Elige el hueco que mejor te venga en mi agenda."],
+          estado_conversacion: "4",
+          send_booking_link: true,
+          nuevos_aprendizajes: "Aceptó agendar videollamada"
+        },
+        agentReplies: [
+          "Genial! Elige el hueco que mejor te venga en mi agenda.",
+          "Aquí tienes el enlace para agendar: https://calendly.com/alpha-coaching/30min"
+        ]
+      },
+      {
+        sender: 'user',
+        text: '¡Cita confirmada para el jueves a las 18:00! Muchas gracias.',
+        time: '09:44',
+        nodeActive: 'persist',
+        stage: 'Etapa 4 (Cita Agendada)',
+        latency: '620 ms',
+        cachedTokens: '1,780 tokens',
+        guardrailEvent: '[NOTIFY] Notificación de reserva disparada al entrenador vía Telegram. Lock liberado.',
+        json: {
+          content_array: ["Perfecto, ya me aparece agendada. Nos vemos el jueves a las 18:00."],
+          estado_conversacion: "4",
+          send_booking_link: false,
+          nuevos_aprendizajes: "Reserva confirmada jueves 18:00"
+        },
+        agentReplies: [
+          "Perfecto, ya me aparece agendada. Nos vemos el jueves a las 18:00."
+        ]
+      }
+    ];
+
+    let currentStep = 0;
+    const chatBody = document.getElementById('chatBody');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const btnNext = document.getElementById('btnNext');
+    const btnReset = document.getElementById('btnReset');
+    const engToggle = document.getElementById('engToggle');
+    const engineeringPanel = document.getElementById('engineeringPanel');
+    const engLabel = document.getElementById('engLabel');
+
+    const currentStageVal = document.getElementById('currentStageVal');
+    const latencyVal = document.getElementById('latencyVal');
+    const lockStatusVal = document.getElementById('lockStatusVal');
+    const guardrailLogs = document.getElementById('guardrailLogs');
+    const jsonOutput = document.getElementById('jsonOutput');
+
+    const allNodeCards = [
+      'node-preconditions', 'node-media', 'node-brain', 
+      'node-guardrails', 'node-booking', 'node-deliver', 'node-persist'
+    ];
+
+    // Engineering mode toggle
+    engToggle.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        engineeringPanel.style.display = 'flex';
+        engLabel.classList.add('active');
+      } else {
+        engineeringPanel.style.display = 'none';
+        engLabel.classList.remove('active');
+      }
+    });
+
+    function highlightNode(nodeName) {
+      allNodeCards.forEach(id => {
+        const card = document.getElementById(id);
+        card.classList.remove('active', 'passed');
+      });
+
+      if (nodeName === 'preconditions') {
+        document.getElementById('node-preconditions').classList.add('active');
+      } else if (nodeName === 'brain') {
+        document.getElementById('node-preconditions').classList.add('passed');
+        document.getElementById('node-media').classList.add('passed');
+        document.getElementById('node-brain').classList.add('active');
+      } else if (nodeName === 'booking') {
+        document.getElementById('node-preconditions').classList.add('passed');
+        document.getElementById('node-media').classList.add('passed');
+        document.getElementById('node-brain').classList.add('passed');
+        document.getElementById('node-guardrails').classList.add('passed');
+        document.getElementById('node-booking').classList.add('active');
+      } else if (nodeName === 'persist') {
+        allNodeCards.forEach(id => document.getElementById(id).classList.add('passed'));
+        document.getElementById('node-persist').classList.add('active');
+      }
+    }
+
+    function appendMessage(sender, text, time) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${sender}`;
+      
+      // Convert links to clickable
+      const formatted = text.replace(
+        /(https?:\/\/[^\s]+)/g, 
+        '<a href="$1" target="_blank">$1</a>'
+      );
+
+      msgDiv.innerHTML = `${formatted}<div class="msg-time">${time}</div>`;
+      chatBody.appendChild(msgDiv);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function addLog(tagClass, tagText, message) {
+      const now = new Date();
+      const timeStr = now.toTimeString().split(' ')[0];
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `<span class="log-time">[${timeStr}]</span> <span class="${tagClass}">[${tagText}]</span> ${message}`;
+      guardrailLogs.appendChild(entry);
+      guardrailLogs.scrollTop = guardrailLogs.scrollHeight;
+    }
+
+    async function stepNext() {
+      if (currentStep >= conversationScript.length) {
+        btnNext.disabled = true;
+        btnNext.innerHTML = 'Fin de la conversación';
+        return;
+      }
+
+      const turn = conversationScript[currentStep];
+      btnNext.disabled = true;
+
+      // 1. User message arrives
+      appendMessage('user', turn.text, turn.time);
+      lockStatusVal.innerText = 'is_processing=T (Lock ON)';
+      lockStatusVal.style.color = '#f59e0b';
+      addLog('log-tag-lock', 'LOCK', `find_one_and_update activado para lead_instagram_123.`);
+
+      // 2. Typing indicator
+      typingIndicator.style.display = 'flex';
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+      // Simulate network & LLM latency
+      await new Promise(r => setTimeout(r, 650));
+
+      // 3. Highlight active node
+      highlightNode(turn.nodeActive);
+      currentStageVal.innerText = turn.stage;
+      latencyVal.innerText = turn.latency;
+      addLog('log-tag-guardrail', 'GUARDRAIL', turn.guardrailEvent);
+      jsonOutput.innerText = JSON.stringify(turn.json, null, 2);
+
+      await new Promise(r => setTimeout(r, 600));
+
+      // 4. Assistant replies
+      typingIndicator.style.display = 'none';
+      for (const reply of turn.agentReplies) {
+        appendMessage('agent', reply, turn.time);
+        await new Promise(r => setTimeout(r, 350));
+      }
+
+      // Lock released
+      lockStatusVal.innerText = 'is_processing=F (Lock Free)';
+      lockStatusVal.style.color = '#34d399';
+      addLog('log-tag-lock', 'LOCK', `Estado persistido y lock liberado.`);
+
+      currentStep++;
+      btnNext.disabled = false;
+
+      if (currentStep >= conversationScript.length) {
+        btnNext.innerHTML = 'Conversación Completada ✓';
+      }
+    }
+
+    function resetDemo() {
+      currentStep = 0;
+      chatBody.innerHTML = '';
+      btnNext.disabled = false;
+      btnNext.innerHTML = '<span>Siguiente mensaje</span> ➔';
+      guardrailLogs.innerHTML = `
+        <div class="log-entry">
+          <span class="log-time">[09:41:00]</span>
+          <span class="log-tag-lock">[INIT]</span> Pipeline de LangGraph inicializado.
+        </div>
+      `;
+      allNodeCards.forEach(id => {
+        document.getElementById(id).classList.remove('active', 'passed');
+      });
+      document.getElementById('node-preconditions').classList.add('active');
+      currentStageVal.innerText = 'Etapa 1 (Inicio)';
+      latencyVal.innerText = '--';
+      lockStatusVal.innerText = 'is_processing=F';
+      jsonOutput.innerText = '{\n  "status": "ready"\n}';
+
+      // Load first turn automatically
+      stepNext();
+    }
+
+    btnNext.addEventListener('click', stepNext);
+    btnReset.addEventListener('click', resetDemo);
+
+    // Initial run
+    resetDemo();
+  </script>
+</body>
+</html>
