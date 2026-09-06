@@ -209,9 +209,7 @@
     }
 
     #viewDashboard.active {
-      display: flex !important;
-      flex-direction: column;
-      gap: 22px;
+      display: block !important;
       width: 100%;
     }
 
@@ -1064,213 +1062,682 @@
     }
 
     /* ========================================================================= */
-    /* VISTA 3: DASHBOARD COMPLETO CON DATOS DE EJEMPLO                         */
+    /* VISTA 3: EXACT NEURALSETTER PRODUCTION DASHBOARD                          */
     /* ========================================================================= */
 
+    :root {
+      --ns-bg-light: #0a0a0a;
+      --ns-bg-card: #141414;
+      --ns-border: #262626;
+      --ns-brand: #00ffff;
+      --ns-brand-dark: #00b3b3;
+      --ns-brand-deep: #003333;
+      --ns-text-title: #fafafa;
+      --ns-text-body: #a3a3a3;
+      --ns-text-muted: #737373;
+    }
 
-    .dashboard-top-bar {
+    .ns-app-shell {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--bg-card);
-      border: 1px solid var(--border-card);
-      border-radius: 16px;
-      padding: 16px 22px;
-      flex-wrap: wrap;
-      gap: 14px;
+      height: calc(100vh - 120px);
+      min-height: 750px;
+      background-color: var(--ns-bg-light);
+      color: var(--ns-text-body);
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--ns-border);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.95);
+      position: relative;
     }
 
-    .dash-titles h2 {
-      font-size: 18px;
-      font-weight: 800;
-      color: #f8fafc;
-    }
-    .dash-titles p {
-      font-size: 12.5px;
-      color: var(--text-muted);
-    }
-
-    .time-filter-buttons {
-      display: flex;
-      background: #0b101e;
-      border: 1px solid #1e293b;
-      border-radius: 8px;
-      padding: 3px;
-      gap: 2px;
-    }
-
-    .time-btn {
-      padding: 5px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .time-btn.active {
-      background: #1e293b;
-      color: #38bdf8;
-    }
-
-    /* 5 KPI METRIC CARDS ROW */
-    .kpi-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
-
-    .kpi-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-card);
-      border-radius: 14px;
-      padding: 18px;
+    /* SIDEBAR */
+    .ns-sidebar {
+      width: 260px;
+      height: 100%;
+      background-color: var(--ns-bg-card);
+      border-right: 1px solid var(--ns-border);
       display: flex;
       flex-direction: column;
-      position: relative;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .ns-sidebar-brand {
+      padding: 16px;
+      border-bottom: 1px solid var(--ns-border);
+    }
+
+    .ns-brand-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      transition: background 0.2s;
+      text-align: left;
+    }
+    .ns-brand-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .ns-brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      object-fit: contain;
+      border: 1px solid #404040;
+      background: #171717;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+
+    .ns-brand-meta {
+      flex: 1;
       overflow: hidden;
     }
 
-    .kpi-card::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #38bdf8, #818cf8);
-    }
-
-    .kpi-card.emerald::after { background: linear-gradient(90deg, #10b981, #34d399); }
-    .kpi-card.amber::after { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-    .kpi-card.purple::after { background: linear-gradient(90deg, #a855f7, #c084fc); }
-
-    .kpi-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
+    .ns-brand-tag {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ns-text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+
+    .ns-brand-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ns-text-title);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+
+    .ns-brand-chevron {
+      width: 16px;
+      height: 16px;
+      color: var(--ns-text-muted);
+      flex-shrink: 0;
+    }
+
+    /* SIDEBAR NAVIGATION */
+    .ns-sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 12px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .kpi-val {
-      font-size: 26px;
-      font-weight: 800;
-      color: #f8fafc;
-      margin: 8px 0 4px;
-      letter-spacing: -0.5px;
-    }
-
-    .kpi-sub {
-      font-size: 12px;
-      color: #34d399;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-weight: 600;
-    }
-
-    /* DASHBOARD 2 COLUMNS */
-    .dashboard-grid-2col {
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
+      flex-direction: column;
       gap: 20px;
     }
 
-    @media (max-width: 1024px) {
-      .dashboard-grid-2col {
+    .ns-nav-group-title {
+      padding: 0 12px;
+      margin-bottom: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ns-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .ns-nav-items {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .ns-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--ns-text-muted);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .ns-nav-item:hover {
+      color: var(--ns-text-title);
+      background: #1e1e1e;
+    }
+
+    .ns-nav-item.active {
+      background: #262626;
+      color: var(--ns-brand);
+      border-color: #333333;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    }
+
+    .ns-nav-item svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+      stroke-width: 2;
+    }
+
+    .ns-nav-item.active svg {
+      color: var(--ns-brand);
+    }
+
+    .ns-sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid var(--ns-border);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .ns-footer-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #a3a3a3;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .ns-footer-btn:hover {
+      color: var(--ns-text-title);
+      background: #1e1e1e;
+    }
+
+    .ns-footer-btn.logout {
+      color: #ef4444;
+    }
+    .ns-footer-btn.logout:hover {
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* MAIN VIEWPORT */
+    .ns-main-viewport {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-width: 0;
+      background: var(--ns-bg-light);
+      overflow: hidden;
+    }
+
+    .ns-top-header {
+      height: 64px;
+      background: var(--ns-bg-card);
+      border-bottom: 1px solid var(--ns-border);
+      padding: 0 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ns-breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+    }
+
+    .ns-bc-root {
+      font-weight: 500;
+      color: var(--ns-text-muted);
+    }
+
+    .ns-bc-sep {
+      color: #525252;
+    }
+
+    .ns-bc-active {
+      font-weight: 600;
+      color: var(--ns-brand);
+    }
+
+    .ns-online-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #d4d4d4;
+      border: 1px solid var(--ns-border);
+      border-radius: 8px;
+      background: transparent;
+    }
+
+    .ns-pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      position: relative;
+    }
+    .ns-pulse-dot::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    /* DASHBOARD CONTENT BODY */
+    .ns-body-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px;
+    }
+
+    .ns-body-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .ns-view-heading {
+      margin-bottom: 4px;
+    }
+
+    .ns-view-heading h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--ns-text-title);
+      letter-spacing: -0.025em;
+    }
+
+    .ns-view-heading p {
+      font-size: 14px;
+      color: var(--ns-text-muted);
+      margin-top: 4px;
+    }
+
+    .ns-panel-card {
+      background: var(--ns-bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--ns-border);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* 5 TOPCARDS GRID */
+    .ns-topcards-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 1280px) {
+      .ns-topcards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 900px) {
+      .ns-topcards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 600px) {
+      .ns-topcards-grid {
         grid-template-columns: 1fr;
       }
     }
 
-    /* FUNNEL SECTION */
-    .funnel-step {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 14px;
+    .ns-topcard {
+      background: var(--ns-bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--ns-border);
+      padding: 20px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      cursor: default;
     }
 
-    .funnel-info {
+    .ns-topcard:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .ns-topcard-inner {
       display: flex;
       justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .ns-topcard-title {
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
+      color: var(--ns-text-muted);
+      margin-bottom: 6px;
     }
 
-    .funnel-bar-bg {
-      height: 10px;
-      background: #1e293b;
-      border-radius: 5px;
-      overflow: hidden;
+    .ns-topcard-val {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--ns-text-title);
+      line-height: 1.1;
     }
 
-    .funnel-bar-fill {
-      height: 100%;
-      border-radius: 5px;
-      background: linear-gradient(90deg, #38bdf8, #818cf8);
-      transition: width 0.8s ease-in-out;
-    }
-
-    /* RECENT LEADS TABLE */
-    .leads-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12.5px;
-      margin-top: 8px;
-    }
-
-    .leads-table th {
-      text-align: left;
-      padding: 10px 12px;
-      color: var(--text-muted);
-      border-bottom: 1px solid #1e293b;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .leads-table td {
-      padding: 12px;
-      border-bottom: 1px solid rgba(30, 41, 59, 0.6);
-      color: #e2e8f0;
-    }
-
-    .lead-table-user {
+    .ns-topcard-trend {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      margin-top: 10px;
     }
 
-    .table-avatar {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: #1e293b;
+    .ns-trend-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: rgba(34, 197, 94, 0.1);
+      color: #4ade80;
+    }
+
+    .ns-trend-label {
+      font-size: 11px;
+      color: var(--ns-text-muted);
+    }
+
+    .ns-topcard-icon {
+      padding: 10px;
+      background: rgba(38, 38, 38, 0.5);
+      border-radius: 8px;
+      color: var(--ns-text-muted);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+    }
+    .ns-topcard-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* CHART CARD */
+    .ns-chart-box {
+      background: var(--ns-bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--ns-border);
+      padding: 24px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .ns-chart-title {
+      font-size: 17px;
       font-weight: 700;
-      color: #38bdf8;
+      color: var(--ns-text-title);
+      margin-bottom: 24px;
     }
 
-    .stage-pill {
+    .ns-chart-viewport {
+      height: 288px;
+      width: 100%;
+      position: relative;
+    }
+
+    .ns-chart-tooltip {
+      position: absolute;
+      background: #262626;
+      border: 1px solid rgba(115, 115, 115, 0.3);
+      padding: 10px 14px;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 20;
+      opacity: 0;
+      transform: translate(-50%, -110%);
+    }
+
+    .ns-chart-tooltip.visible {
+      opacity: 1;
+    }
+
+    .ns-tt-day {
+      font-size: 12px;
+      color: #a3a3a3;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .ns-tt-sales {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ns-brand);
+      margin: 0;
+    }
+
+    /* KANBAN SECTION */
+    .ns-kanban-box {
+      background: var(--ns-bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--ns-border);
+      padding: 24px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .ns-kanban-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ns-text-title);
+      margin-bottom: 24px;
+    }
+
+    .ns-kanban-columns {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 1100px) {
+      .ns-kanban-columns {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 650px) {
+      .ns-kanban-columns {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ns-kanban-col {
+      background: #0f0f0f;
+      border: 1px solid rgba(38, 38, 38, 0.6);
+      border-radius: 12px;
+      padding: 16px;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .ns-kanban-col.drag-over {
+      background: #171717;
+      border-color: var(--ns-brand);
+    }
+
+    .ns-kanban-col-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .ns-col-label {
       font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 6px;
       font-weight: 600;
-      display: inline-block;
+      color: #d4d4d4;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
-    .stage-pill.green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-    .stage-pill.amber { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
-    .stage-pill.purple { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
-    .stage-pill.blue { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+    .ns-col-badge {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: #262626;
+      color: #a3a3a3;
+    }
+
+    .ns-col-tasks {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 120px;
+    }
+
+    .ns-task-card {
+      background: #171717;
+      border: 1px solid var(--ns-border);
+      padding: 16px;
+      border-radius: 12px;
+      cursor: grab;
+      user-select: none;
+      transition: all 0.2s;
+    }
+
+    .ns-task-card:hover {
+      background: #262626;
+    }
+
+    .ns-task-card.is-dragging {
+      border-color: var(--ns-brand);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+      opacity: 0.85;
+      cursor: grabbing;
+    }
+
+    .ns-task-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .ns-task-user {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ns-text-title);
+    }
+
+    .ns-task-desc {
+      font-size: 12.5px;
+      color: var(--ns-text-muted);
+      line-height: 1.45;
+    }
+
+    /* BADGE COMPONENT */
+    .ns-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .ns-badge.success {
+      background: rgba(34, 197, 94, 0.1);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+
+    .ns-badge.neutral {
+      background: rgba(115, 115, 115, 0.1);
+      color: #a3a3a3;
+      border: 1px solid rgba(115, 115, 115, 0.2);
+    }
+
+    .ns-badge-dot-box {
+      position: relative;
+      display: flex;
+      height: 6px;
+      width: 6px;
+      margin-right: 6px;
+    }
+
+    .ns-badge-ping {
+      animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+      position: absolute;
+      display: inline-flex;
+      height: 100%;
+      width: 100%;
+      border-radius: 9999px;
+      opacity: 0.75;
+      background: #4ade80;
+    }
+    .ns-badge.neutral .ns-badge-ping {
+      background: #a3a3a3;
+    }
+
+    .ns-badge-dot {
+      position: relative;
+      display: inline-flex;
+      border-radius: 9999px;
+      height: 6px;
+      width: 6px;
+      background: #22c55e;
+    }
+    .ns-badge.neutral .ns-badge-dot {
+      background: #737373;
+    }
+
+    @keyframes ping {
+      75%, 100% {
+        transform: scale(2.2);
+        opacity: 0;
+      }
+    }
+
+    /* Toast for mock interactions */
+    .ns-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #262626;
+      border: 1px solid #404040;
+      color: #fafafa;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+      z-index: 100;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    .ns-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
     /* FOOTER */
     footer {
@@ -1310,7 +1777,7 @@
         <span>🧠</span> Arquitectura LangGraph <span class="badge-pill">Doble Modo</span>
       </button>
       <button class="tab-btn" id="btnTabDashboard">
-        <span>📊</span> Dashboard de Negocio <span class="badge-pill">En Vivo</span>
+        <span>📊</span> Dashboard NeuralSetter <span class="badge-pill">Producción</span>
       </button>
     </div>
 
@@ -1730,302 +2197,500 @@
     </div>
 
     <!-- ===================================================================== -->
-    <!-- TAB 3: EXECUTIVE BUSINESS DASHBOARD (FULL SAMPLE DATA FOR CLIENTS)    -->
+    <!-- TAB 3: EXACT NEURALSETTER PRODUCTION DASHBOARD                        -->
     <!-- ===================================================================== -->
     <div class="view-content" id="viewDashboard">
-      <div class="dashboard-top-bar">
-        <div class="dash-titles">
-          <h2>Panel Ejecutivo de Rendimiento y Negocio</h2>
-          <p>Métricas consolidadas de captación en Instagram DM, cualificación y retorno de inversión</p>
-        </div>
-
-        <div class="time-filter-buttons">
-          <button class="time-btn">Hoy</button>
-          <button class="time-btn">Últimos 7 días</button>
-          <button class="time-btn active">Últimos 30 días</button>
-        </div>
-      </div>
-
-      <!-- 5 KPI CARDS -->
-      <div class="kpi-row">
-        <div class="kpi-card emerald">
-          <div class="kpi-label">
-            <span>Facturación Influenciada</span>
-            <span>💶</span>
-          </div>
-          <div class="kpi-val">€98,400</div>
-          <div class="kpi-sub">▲ +24.8% vs mes anterior</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-label">
-            <span>Citas Agendadas</span>
-            <span>📅</span>
-          </div>
-          <div class="kpi-val">342</div>
-          <div class="kpi-sub">▲ 24.8% de tasa de conversión</div>
-        </div>
-
-        <div class="kpi-card purple">
-          <div class="kpi-label">
-            <span>Leads Atendidos 24/7</span>
-            <span>💬</span>
-          </div>
-          <div class="kpi-val">1,380</div>
-          <div class="kpi-sub">▲ 100% respondidos en &lt;5s</div>
-        </div>
-
-        <div class="kpi-card emerald">
-          <div class="kpi-label">
-            <span>Ahorro en IA (Caching)</span>
-            <span>⚡</span>
-          </div>
-          <div class="kpi-val">€1,438.20</div>
-          <div class="kpi-sub">▲ 91.2% descuento en tokens</div>
-        </div>
-
-        <div class="kpi-card amber">
-          <div class="kpi-label">
-            <span>Tiempo Medio de Respuesta</span>
-            <span>⏱️</span>
-          </div>
-          <div class="kpi-val">4.1s</div>
-          <div class="kpi-sub" style="color:#60a5fa;">vs 4.2 horas de un setter humano</div>
-        </div>
-      </div>
-
-      <!-- 2 COLUMNS: FUNNEL + OBJECTIONS & LIVE FEED -->
-      <div class="dashboard-grid-2col">
-        <!-- LEFT: CONVERSION FUNNEL & OFF-HOURS STATS -->
-        <div class="card-box">
-          <div class="panel-title">
-            <span>📈 Embudo de Cualificación y Cierre en Instagram</span>
-          </div>
-
-          <div class="funnel-step">
-            <div class="funnel-info">
-              <span>1. DMs Entrantes Totales</span>
-              <span>1,380 leads (100%)</span>
-            </div>
-            <div class="funnel-bar-bg">
-              <div class="funnel-bar-fill" style="width: 100%;"></div>
-            </div>
-          </div>
-
-          <div class="funnel-step">
-            <div class="funnel-info">
-              <span>2. Perfilados y Cualificados (Sin Descarte)</span>
-              <span>966 leads (70.0%)</span>
-            </div>
-            <div class="funnel-bar-bg">
-              <div class="funnel-bar-fill" style="width: 70%;"></div>
-            </div>
-          </div>
-
-          <div class="funnel-step">
-            <div class="funnel-info">
-              <span>3. Objeciones Resueltas con Éxito</span>
-              <span>552 leads (40.0%)</span>
-            </div>
-            <div class="funnel-bar-bg">
-              <div class="funnel-bar-fill" style="width: 40%; background: linear-gradient(90deg, #a855f7, #ec4899);"></div>
-            </div>
-          </div>
-
-          <div class="funnel-step">
-            <div class="funnel-info">
-              <span>4. Enlace Calendly Solicitado / Entregado</span>
-              <span>414 leads (30.0%)</span>
-            </div>
-            <div class="funnel-bar-bg">
-              <div class="funnel-bar-fill" style="width: 30%; background: linear-gradient(90deg, #38bdf8, #10b981);"></div>
-            </div>
-          </div>
-
-          <div class="funnel-step">
-            <div class="funnel-info">
-              <span>5. Citas Confirmadas en Agenda de Ventas</span>
-              <span style="color: #34d399; font-weight: 800;">342 videollamadas (24.8%)</span>
-            </div>
-            <div class="funnel-bar-bg">
-              <div class="funnel-bar-fill" style="width: 24.8%; background: linear-gradient(90deg, #10b981, #059669);"></div>
-            </div>
-          </div>
-
-          <!-- OFF-HOURS ROI CALLOUT -->
-          <div style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 12px; padding: 14px; margin-top: 18px;">
-            <div style="font-size: 13px; font-weight: 700; color: #c084fc; margin-bottom: 4px;">
-              🌙 54.2% de las citas se cerraron fuera de horario comercial
-            </div>
-            <div style="font-size: 12px; color: #cbd5e1; line-height: 1.4;">
-              185 de las 342 llamadas fueron agendadas entre las 20:00 y las 08:00 o durante fines de semana, cuando un equipo humano no está operativo.
-            </div>
-          </div>
-        </div>
-
-        <!-- RIGHT: OBJECTIONS & TECHNICAL HEALTH -->
-        <div class="card-box">
-          <div class="panel-title">
-            <span>🛡️ Desglose de Objeciones Manejadas por la IA</span>
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
-            <div>
-              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
-                <span>Precio / "Es caro / ¿cuánto cuesta?"</span>
-                <span style="color: #38bdf8; font-weight: 700;">42% (Anclaje de valor y diagnóstico previo)</span>
+      <div class="ns-app-shell">
+        
+        <!-- SIDEBAR -->
+        <aside class="ns-sidebar">
+          <!-- Brand Header -->
+          <div class="ns-sidebar-brand">
+            <div class="ns-brand-btn">
+              <img src="logo_alone.jpeg" alt="NeuralSetter" class="ns-brand-logo" />
+              <div class="ns-brand-meta">
+                <p class="ns-brand-tag">Agency</p>
+                <p class="ns-brand-name">NeuralSetter</p>
               </div>
-              <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width: 42%;"></div></div>
-            </div>
-
-            <div>
-              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
-                <span>Falta de tiempo / "No tengo horas para entrenar"</span>
-                <span style="color: #a855f7; font-weight: 700;">28% (Flexibilidad de micro-sesiones)</span>
-              </div>
-              <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width: 28%; background:#a855f7;"></div></div>
-            </div>
-
-            <div>
-              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
-                <span>Falta de constancia / "Ya he fallado antes"</span>
-                <span style="color: #10b981; font-weight: 700;">18% (Validación y empatía psicológica)</span>
-              </div>
-              <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width: 18%; background:#10b981;"></div></div>
-            </div>
-
-            <div>
-              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
-                <span>Otras dudas operativas</span>
-                <span style="color: #94a3b8; font-weight: 700;">12% (Resolución directa)</span>
-              </div>
-              <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width: 12%; background:#64748b;"></div></div>
+              <svg class="ns-brand-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
             </div>
           </div>
 
-          <!-- SYSTEM HEALTH STATS -->
-          <div class="panel-title" style="font-size: 13.5px; border-top: 1px solid rgba(51, 65, 85, 0.5); padding-top: 14px; margin-bottom: 10px;">
-            <span>⚙️ Monitor de Estabilidad del Motor</span>
-          </div>
+          <!-- Navigation -->
+          <nav class="ns-sidebar-nav">
+            <!-- Group: MAIN MENU -->
+            <div>
+              <h3 class="ns-nav-group-title">MAIN MENU</h3>
+              <div class="ns-nav-items">
+                <button class="ns-nav-item active" id="nsNavDashboard" title="Dashboard">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
+                  </svg>
+                  <span>Dashboard</span>
+                </button>
 
-          <div style="grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12px; display: grid;">
-            <div style="background: rgba(15,23,42,0.6); padding: 10px; border-radius: 8px;">
-              <div style="color: var(--text-muted);">Saldo Prepago Restante</div>
-              <div style="font-size: 15px; font-weight: 800; color: #34d399;">€184.50</div>
-              <div style="font-size: 10.5px; color: #64748b;">~46,000 turnos disponibles</div>
+                <button class="ns-nav-item" onclick="showNsToast('Leads CRM: sincronizado con base de datos MongoDB')" title="Leads CRM">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                  </svg>
+                  <span>Leads CRM</span>
+                </button>
+
+                <button class="ns-nav-item" onclick="switchTab(viewChat, btnTabChat)" title="Simulador Instagram">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+                  </svg>
+                  <span>Simulador</span>
+                </button>
+
+                <button class="ns-nav-item" onclick="showNsToast('Persona IA: Configuración de voz de marca y tono')" title="Persona IA">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/>
+                  </svg>
+                  <span>Persona IA</span>
+                </button>
+
+                <button class="ns-nav-item" onclick="showNsToast('Enlaces: Gestión de Calendly y Acuity booking')" title="Enlaces">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><line x1="8" x2="16" y1="12" y2="12"/>
+                  </svg>
+                  <span>Enlaces</span>
+                </button>
+
+                <button class="ns-nav-item" onclick="showNsToast('Contenidos: Lead magnets, PDFs y material de alto valor')" title="Contenidos">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 12v6"/><path d="m15 15-3-3-3 3"/>
+                  </svg>
+                  <span>Contenidos</span>
+                </button>
+
+                <button class="ns-nav-item" onclick="showNsToast('Entrenamiento: Inyección de FAQs y conocimiento del coach')" title="Entrenamiento">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <span>Entrenamiento</span>
+                </button>
+              </div>
             </div>
-            <div style="background: rgba(15,23,42,0.6); padding: 10px; border-radius: 8px;">
-              <div style="color: var(--text-muted);">Tasa Auto-Reparación JSON</div>
-              <div style="font-size: 15px; font-weight: 800; color: #38bdf8;">0.18%</div>
-              <div style="font-size: 10.5px; color: #64748b;">100% de éxito en retry</div>
+
+            <!-- Group: MANAGEMENT -->
+            <div>
+              <h3 class="ns-nav-group-title">MANAGEMENT</h3>
+              <div class="ns-nav-items">
+                <button class="ns-nav-item" onclick="showNsToast('Horarios: Ventanas de respuesta humanizadas')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span>Horarios</span>
+                </button>
+                <button class="ns-nav-item" onclick="showNsToast('Eventos: Webhooks de Instagram Messenger')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M4 2C2.8 3.7 2 5.7 2 8"/><path d="M22 8c0-2.3-.8-4.3-2-6"/></svg>
+                  <span>Eventos</span>
+                </button>
+                <button class="ns-nav-item" onclick="showNsToast('Follow-Ups: Re-engagement automático inteligente')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+                  <span>Follow-Ups</span>
+                </button>
+                <button class="ns-nav-item" onclick="showNsToast('Exclusiones: Palabras vetadas y cuentas en lista negra')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                  <span>Exclusiones</span>
+                </button>
+                <button class="ns-nav-item" onclick="showNsToast('Telegram: Notificaciones instantáneas de leads calientes')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                  <span>Telegram</span>
+                </button>
+                <button class="ns-nav-item" onclick="showNsToast('Contraseña: Panel de seguridad de cliente')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <span>Contraseña</span>
+                </button>
+              </div>
+            </div>
+          </nav>
+
+          <!-- Sidebar Footer -->
+          <div class="ns-sidebar-footer">
+            <button class="ns-footer-btn" onclick="showNsToast('Modo Noche activo (interfaz optimizada para operaciones 24/7)')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+              <span>Modo Noche</span>
+            </button>
+            <button class="ns-footer-btn logout" onclick="showNsToast('Sesión de usuario activa: Marcos Coaching')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+              <span>Cerrar Sesión</span>
+            </button>
+          </div>
+        </aside>
+
+        <!-- MAIN VIEWPORT -->
+        <main class="ns-main-viewport">
+          <!-- Top Desktop Header -->
+          <header class="ns-top-header">
+            <div class="ns-breadcrumbs">
+              <span class="ns-bc-root">Dashboard</span>
+              <span class="ns-bc-sep">›</span>
+              <span class="ns-bc-active">Dashboard</span>
+            </div>
+            <button class="ns-online-pill" onclick="showNsToast('Sistema en línea: agente procesando mensajes en tiempo real')">
+              <span class="ns-pulse-dot"></span>
+              <span>Online</span>
+            </button>
+          </header>
+
+          <!-- Scrollable Body -->
+          <div class="ns-body-container">
+            <div class="ns-body-inner">
+              
+              <!-- Heading -->
+              <div class="ns-view-heading">
+                <h1>Dashboard</h1>
+                <p>Gestión del sistema y operaciones</p>
+              </div>
+
+              <!-- Main Dashboard Panel Card -->
+              <div class="ns-panel-card">
+                
+                <!-- 1. TOP CARDS (5 KPIs) -->
+                <div class="ns-topcards-grid">
+                  <!-- Total Leads -->
+                  <div class="ns-topcard">
+                    <div class="ns-topcard-inner">
+                      <div>
+                        <p class="ns-topcard-title">Total Leads</p>
+                        <h3 class="ns-topcard-val">148</h3>
+                        <div class="ns-topcard-trend">
+                          <span class="ns-trend-badge">+12%</span>
+                          <span class="ns-trend-label">vs last month</span>
+                        </div>
+                      </div>
+                      <div class="ns-topcard-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Leads Calientes -->
+                  <div class="ns-topcard">
+                    <div class="ns-topcard-inner">
+                      <div>
+                        <p class="ns-topcard-title">Leads Calientes</p>
+                        <h3 class="ns-topcard-val">42</h3>
+                        <div class="ns-topcard-trend">
+                          <span class="ns-trend-badge">+18%</span>
+                          <span class="ns-trend-label">vs last month</span>
+                        </div>
+                      </div>
+                      <div class="ns-topcard-icon" style="color: #f97316;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Enlaces Enviados -->
+                  <div class="ns-topcard">
+                    <div class="ns-topcard-inner">
+                      <div>
+                        <p class="ns-topcard-title">Enlaces Enviados</p>
+                        <h3 class="ns-topcard-val">29</h3>
+                        <div class="ns-topcard-trend">
+                          <span class="ns-trend-badge">+24%</span>
+                          <span class="ns-trend-label">vs last month</span>
+                        </div>
+                      </div>
+                      <div class="ns-topcard-icon" style="color: #60a5fa;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tiempo Ahorrado (h) -->
+                  <div class="ns-topcard">
+                    <div class="ns-topcard-inner">
+                      <div>
+                        <p class="ns-topcard-title">Tiempo Ahorrado (h)</p>
+                        <h3 class="ns-topcard-val">12.3</h3>
+                        <div class="ns-topcard-trend">
+                          <span class="ns-trend-badge">+15%</span>
+                          <span class="ns-trend-label">vs last month</span>
+                        </div>
+                      </div>
+                      <div class="ns-topcard-icon" style="color: #4ade80;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Mensajes -->
+                  <div class="ns-topcard">
+                    <div class="ns-topcard-inner">
+                      <div>
+                        <p class="ns-topcard-title">Mensajes</p>
+                        <h3 class="ns-topcard-val">340.5/1000</h3>
+                        <div class="ns-topcard-trend">
+                          <span class="ns-trend-badge">+8%</span>
+                          <span class="ns-trend-label">vs last month</span>
+                        </div>
+                      </div>
+                      <div class="ns-topcard-icon" style="color: #22d3ee;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 2. DASHBOARD CHARTS (Últimos 7 días) -->
+                <div class="ns-chart-box">
+                  <h3 class="ns-chart-title">Tendencia de Interacciones (Últimos 7 días)</h3>
+                  <div class="ns-chart-viewport" id="nsChartViewport">
+                    <div class="ns-chart-tooltip" id="nsChartTooltip">
+                      <p class="ns-tt-day" id="nsTtDay">Vie</p>
+                      <p class="ns-tt-sales" id="nsTtSales">118 interacciones</p>
+                    </div>
+                    <svg viewBox="0 0 900 288" preserveAspectRatio="none" style="width: 100%; height: 100%; overflow: visible;" id="nsChartSvg">
+                      <!-- Grid lines -->
+                      <line x1="45" y1="20" x2="880" y2="20" stroke="#262626" stroke-dasharray="3 3" />
+                      <line x1="45" y1="75" x2="880" y2="75" stroke="#262626" stroke-dasharray="3 3" />
+                      <line x1="45" y1="130" x2="880" y2="130" stroke="#262626" stroke-dasharray="3 3" />
+                      <line x1="45" y1="185" x2="880" y2="185" stroke="#262626" stroke-dasharray="3 3" />
+                      <line x1="45" y1="240" x2="880" y2="240" stroke="#262626" stroke-dasharray="3 3" />
+
+                      <!-- Y Axis Labels -->
+                      <text x="35" y="24" text-anchor="end" fill="#737373" font-size="12" font-family="Inter">120</text>
+                      <text x="35" y="79" text-anchor="end" fill="#737373" font-size="12" font-family="Inter">90</text>
+                      <text x="35" y="134" text-anchor="end" fill="#737373" font-size="12" font-family="Inter">60</text>
+                      <text x="35" y="189" text-anchor="end" fill="#737373" font-size="12" font-family="Inter">30</text>
+                      <text x="35" y="244" text-anchor="end" fill="#737373" font-size="12" font-family="Inter">0</text>
+
+                      <!-- Bars & X Axis Labels -->
+                      <!-- Lun (42) -->
+                      <rect class="ns-bar" data-day="Lun" data-val="42" x="90" y="163" width="56" height="77" rx="4" ry="4" fill="#00b3b3" style="cursor: pointer; transition: fill 0.3s, filter 0.3s;" />
+                      <text x="118" y="262" text-anchor="middle" fill="#737373" font-size="12" font-family="Inter">Lun</text>
+
+                      <!-- Mar (58) -->
+                      <rect class="ns-bar" data-day="Mar" data-val="58" x="210" y="134" width="56" height="106" rx="4" ry="4" fill="#00b3b3" style="cursor: pointer; transition: fill 0.3s, filter 0.3s;" />
+                      <text x="238" y="262" text-anchor="middle" fill="#737373" font-size="12" font-family="Inter">Mar</text>
+
+                      <!-- Mié (85) -->
+                      <rect class="ns-bar" data-day="Mié" data-val="85" x="330" y="84" width="56" height="156" rx="4" ry="4" fill="#00b3b3" style="cursor: pointer; transition: fill 0.3s, filter 0.3s;" />
+                      <text x="358" y="262" text-anchor="middle" fill="#737373" font-size="12" font-family="Inter">Mié</text>
+
+                      <!-- Jue (72) -->
+                      <rect class="ns-bar" data-day="Jue" data-val="72" x="450" y="108" width="56" height="132" rx="4" ry="4" fill="#00b3b3" style="cursor: pointer; transition: fill 0.3s, filter 0.3s;" />
+                      <text x="478" y="262" text-anchor="middle" fill="#737373" font-size="12" font-family="Inter">Jue</text>
+
+                      <!-- Vie (118) -->
+                      <rect class="ns-bar" data-day="Vie" data-val="118" x="570" y="24" width="56" height="216" rx="4" ry="4" fill="#00b3b3" style="cursor: pointer; transition: fill 0.3s, filter 0.3s;" />
+                      <text x="598" y="262" text-anchor="middle" fill="#737373" font-size="12" font-family="Inter">Vie</text>
+
+                      <!-- Sáb (94) -->
+                      <rect class="ns-bar" data-day="Sáb" data-val="94" x="690" y="68" width="56" height="172" rx="4" ry="4" fill="#00b3b3" style="cursor: pointer; transition: fill 0.3s, filter 0.3s;" />
+                      <text x="718" y="262" text-anchor="middle" fill="#737373" font-size="12" font-family="Inter">Sáb</text>
+
+                      <!-- Dom (65) -->
+                      <rect class="ns-bar" data-day="Dom" data-val="65" x="810" y="121" width="56" height="119" rx="4" ry="4" fill="#00b3b3" style="cursor: pointer; transition: fill 0.3s, filter 0.3s;" />
+                      <text x="838" y="262" text-anchor="middle" fill="#737373" font-size="12" font-family="Inter">Dom</text>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- 3. ORDER KANBAN (Estado de Leads) -->
+                <div class="ns-kanban-box">
+                  <h3 class="ns-kanban-title">Estado de Leads</h3>
+                  
+                  <div class="ns-kanban-columns">
+                    <!-- Column 1: Leads Generales -->
+                    <div class="ns-kanban-col" data-column="col-generales">
+                      <div class="ns-kanban-col-header">
+                        <h4 class="ns-col-label">Leads Generales</h4>
+                        <span class="ns-col-badge" id="badge-generales">4</span>
+                      </div>
+                      <div class="ns-col-tasks" id="tasks-generales">
+                        <div class="ns-task-card" draggable="true" id="card-1">
+                          <div class="ns-task-head">
+                            <span class="ns-task-user">@marcos_fit92</span>
+                          </div>
+                          <p class="ns-task-desc">Preguntó por la rutina de 4 días y suplementación recomendada.</p>
+                        </div>
+
+                        <div class="ns-task-card" draggable="true" id="card-2">
+                          <div class="ns-task-head">
+                            <span class="ns-task-user">@laura_wellness</span>
+                            <span class="ns-badge success">
+                              <span class="ns-badge-dot-box">
+                                <span class="ns-badge-ping"></span>
+                                <span class="ns-badge-dot"></span>
+                              </span>
+                              $1,200
+                            </span>
+                          </div>
+                          <p class="ns-task-desc">Pide info sobre el plan trimestral y seguimiento por app.</p>
+                        </div>
+
+                        <div class="ns-task-card" draggable="true" id="card-3">
+                          <div class="ns-task-head">
+                            <span class="ns-task-user">@david_lift</span>
+                          </div>
+                          <p class="ns-task-desc">Tiene molestia lumbar al hacer peso muerto, busca asesoría 1-a-1.</p>
+                        </div>
+
+                        <div class="ns-task-card" draggable="true" id="card-4">
+                          <div class="ns-task-head">
+                            <span class="ns-task-user">@sonia_yoga</span>
+                            <span class="ns-badge neutral">
+                              <span class="ns-badge-dot-box">
+                                <span class="ns-badge-ping"></span>
+                                <span class="ns-badge-dot"></span>
+                              </span>
+                              $850
+                            </span>
+                          </div>
+                          <p class="ns-task-desc">Interesada en combinar yoga con entrenamiento de fuerza.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Column 2: Leads Calientes -->
+                    <div class="ns-kanban-col" data-column="col-calientes">
+                      <div class="ns-kanban-col-header">
+                        <h4 class="ns-col-label">Leads Calientes</h4>
+                        <span class="ns-col-badge" id="badge-calientes">3</span>
+                      </div>
+                      <div class="ns-col-tasks" id="tasks-calientes">
+                        <div class="ns-task-card" draggable="true" id="card-5">
+                          <div class="ns-task-head">
+                            <span class="ns-task-user">@carlos_runner</span>
+                            <span class="ns-badge success">
+                              <span class="ns-badge-dot-box">
+                                <span class="ns-badge-ping"></span>
+                                <span class="ns-badge-dot"></span>
+                              </span>
+                              $1,800
+                            </span>
+                          </div>
+                          <p class="ns-task-desc">Muy interesado en maratón de Valencia. Preguntó por plazas disponibles.</p>
+                        </div>
+
+                        <div class="ns-task-card" draggable="true" id="card-6">
+                          <div class="ns-task-head">
+                            <span class="ns-task-user">@elena_cross</span>
+                            <span class="ns-badge success">
+                              <span class="ns-badge-dot-box">
+                                <span class="ns-badge-ping"></span>
+                                <span class="ns-badge-dot"></span>
+                              </span>
+                              $2,400
+                            </span>
+                          </div>
+                          <p class="ns-task-desc">Quiere empezar el lunes próximo, lista para el pago con tarjeta.</p>
+                        </div>
+
+                        <div class="ns-task-card" draggable="true" id="card-7">
+                          <div class="ns-task-head">
+                            <span class="ns-task-user">@pablo_triatlon</span>
+                            <span class="ns-badge success">
+                              <span class="ns-badge-dot-box">
+                                <span class="ns-badge-ping"></span>
+                                <span class="ns-badge-dot"></span>
+                              </span>
+                              $1,500
+                            </span>
+                          </div>
+                          <p class="ns-task-desc">Confirmó que el horario le encaja perfecto. Esperando enlace de pago.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Column 3: Leads Pausados -->
+                    <div class="ns-kanban-col" data-column="col-pausados">
+                      <div class="ns-kanban-col-header">
+                        <h4 class="ns-col-label">Leads Pausados</h4>
+                        <span class="ns-col-badge" id="badge-pausados">2</span>
+                      </div>
+                      <div class="ns-col-tasks" id="tasks-pausados">
+                        <div class="ns-task-card" draggable="true" id="card-8">
+                          <div class="ns-task-head">
+                            <span class="ns-task-user">@sergio_gym</span>
+                          </div>
+                          <p class="ns-task-desc">Intervención humana requerida: consulta sobre lesión previa de rodilla.</p>
+                        </div>
+
+                        <div class="ns-task-card" draggable="true" id="card-9">
+                          <div class="ns-task-head">
+                            <span class="ns-task-user">@andrea_fitness</span>
+                          </div>
+                          <p class="ns-task-desc">Pausado temporalmente por petición del usuario (de viaje hasta el día 15).</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Column 4: Finalizados por IA -->
+                    <div class="ns-kanban-col" data-column="col-finalizados">
+                      <div class="ns-kanban-col-header">
+                        <h4 class="ns-col-label">Finalizados por IA</h4>
+                        <span class="ns-col-badge" id="badge-finalizados">3</span>
+                      </div>
+                      <div class="ns-col-tasks" id="tasks-finalizados">
+                        <div class="ns-task-card" draggable="true" id="card-10">
+                          <div class="ns-task-head">
+                            <span class="ns-task-user">@marta_salud</span>
+                            <span class="ns-badge success">
+                              <span class="ns-badge-dot-box">
+                                <span class="ns-badge-ping"></span>
+                                <span class="ns-badge-dot"></span>
+                              </span>
+                              $2,100
+                            </span>
+                          </div>
+                          <p class="ns-task-desc">Enlace de Calendly enviado. Cita confirmada para el martes 11:30h.</p>
+                        </div>
+
+                        <div class="ns-task-card" draggable="true" id="card-11">
+                          <div class="ns-task-head">
+                            <span class="ns-task-user">@javi_ironman</span>
+                            <span class="ns-badge success">
+                              <span class="ns-badge-dot-box">
+                                <span class="ns-badge-ping"></span>
+                                <span class="ns-badge-dot"></span>
+                              </span>
+                              $3,200
+                            </span>
+                          </div>
+                          <p class="ns-task-desc">Resumen enviado a Telegram. Cita agendada para el miércoles 18:00h.</p>
+                        </div>
+
+                        <div class="ns-task-card" draggable="true" id="card-12">
+                          <div class="ns-task-head">
+                            <span class="ns-task-user">@lucia_recomp</span>
+                            <span class="ns-badge success">
+                              <span class="ns-badge-dot-box">
+                                <span class="ns-badge-ping"></span>
+                                <span class="ns-badge-dot"></span>
+                              </span>
+                              $1,600
+                            </span>
+                          </div>
+                          <p class="ns-task-desc">Onboarding completado con éxito, pago procesado en Stripe.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
             </div>
           </div>
-        </div>
+        </main>
+
       </div>
-
-      <!-- RECENT LEADS LIVE FEED TABLE -->
-      <div class="card-box">
-        <div class="panel-title">
-          <span>👥 Actividad Reciente de Leads en Vivo (Instagram Direct)</span>
-        </div>
-
-        <div style="overflow-x: auto;">
-          <table class="leads-table">
-            <thead>
-              <tr>
-                <th>Usuario Instagram</th>
-                <th>Estado del Embudo</th>
-                <th>Interacción Reciente</th>
-                <th>Valor Estimado</th>
-                <th>Última Actividad</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div class="lead-table-user">
-                    <div class="table-avatar">CR</div>
-                    <div>
-                      <strong>@carlos_runner</strong>
-                      <div style="font-size: 11px; color:#94a3b8;">Carlos Martínez</div>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="stage-pill green">Cita Agendada (Jueves 18:00)</span></td>
-                <td>"¡Cita confirmada para el jueves!"</td>
-                <td><strong style="color:#34d399;">€1,500</strong></td>
-                <td>Hace 3 min</td>
-                <td><span style="color:#38bdf8; cursor:pointer;">Ver Chat ↗</span></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="lead-table-user">
-                    <div class="table-avatar">LN</div>
-                    <div>
-                      <strong>@laura_nutri</strong>
-                      <div style="font-size: 11px; color:#94a3b8;">Laura Navarro</div>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="stage-pill amber">Manejando Objeción Precio</span></td>
-                <td>"¿Cuánto suele costar el programa mensual?"</td>
-                <td><strong style="color:#34d399;">€2,400</strong></td>
-                <td>Hace 14 min</td>
-                <td><span style="color:#38bdf8; cursor:pointer;">Ver Chat ↗</span></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="lead-table-user">
-                    <div class="table-avatar">DC</div>
-                    <div>
-                      <strong>@david_crossfit</strong>
-                      <div style="font-size: 11px; color:#94a3b8;">David Castro</div>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="stage-pill blue">Audio Transcrito (Whisper)</span></td>
-                <td>Nota de voz de 28s analizada por Claude</td>
-                <td><strong style="color:#34d399;">€1,800</strong></td>
-                <td>Hace 32 min</td>
-                <td><span style="color:#38bdf8; cursor:pointer;">Ver Chat ↗</span></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="lead-table-user">
-                    <div class="table-avatar">MF</div>
-                    <div>
-                      <strong>@marta_fitness</strong>
-                      <div style="font-size: 11px; color:#94a3b8;">Marta Fernández</div>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="stage-pill purple">Seguimiento Automático (Día 2)</span></td>
-                <td>Mensaje de reactivación humanizado enviado</td>
-                <td><strong style="color:#34d399;">€1,200</strong></td>
-                <td>Hace 1 hora</td>
-                <td><span style="color:#38bdf8; cursor:pointer;">Ver Chat ↗</span></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="lead-table-user">
-                    <div class="table-avatar">SS</div>
-                    <div>
-                      <strong>@sergio_salud</strong>
-                      <div style="font-size: 11px; color:#94a3b8;">Sergio Serrano</div>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="stage-pill green">Cita Agendada (Viernes 11:30)</span></td>
-                <td>Calendly confirmado automáticamente</td>
-                <td><strong style="color:#34d399;">€3,000</strong></td>
-                <td>Hace 2 horas</td>
-                <td><span style="color:#38bdf8; cursor:pointer;">Ver Chat ↗</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <div class="ns-toast" id="nsToast"></div>
     </div>
   </main>
 
@@ -2057,6 +2722,8 @@
 
       if (targetView === viewChat) {
         targetView.style.display = 'grid';
+      } else if (targetView === viewDashboard) {
+        targetView.style.display = 'block';
       } else {
         targetView.style.display = 'flex';
       }
@@ -2882,11 +3549,133 @@
       setBtnActive(btnScen1);
     });
 
-    // Dashboard time filter buttons
-    document.querySelectorAll('.time-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+    // =========================================================================
+    // NEURALSETTER PRODUCTION DASHBOARD INTERACTION SCRIPTS
+    // =========================================================================
+
+    // Toast notification for mockup sidebar clicks
+    let toastTimeout = null;
+    function showNsToast(msg) {
+      const toast = document.getElementById('nsToast');
+      if (!toast) return;
+      toast.innerText = msg;
+      toast.classList.add('show');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Interactive Bar Chart (matches DashboardCharts.tsx)
+    const nsChartViewport = document.getElementById('nsChartViewport');
+    const nsChartTooltip = document.getElementById('nsChartTooltip');
+    const nsTtDay = document.getElementById('nsTtDay');
+    const nsTtSales = document.getElementById('nsTtSales');
+    const nsBars = document.querySelectorAll('.ns-bar');
+
+    nsBars.forEach(bar => {
+      bar.addEventListener('mouseenter', () => {
+        const day = bar.getAttribute('data-day');
+        const val = bar.getAttribute('data-val');
+        
+        nsBars.forEach(b => {
+          if (b === bar) {
+            b.setAttribute('fill', '#00FFFF');
+            b.style.filter = 'drop-shadow(0 0 10px rgba(0, 255, 255, 0.5))';
+          } else {
+            b.setAttribute('fill', '#003333');
+            b.style.filter = 'none';
+          }
+        });
+
+        if (nsTtDay && nsTtSales && nsChartTooltip && nsChartViewport) {
+          nsTtDay.innerText = day;
+          nsTtSales.innerText = Number(val).toLocaleString() + ' interacciones';
+          
+          const rect = bar.getBoundingClientRect();
+          const parentRect = nsChartViewport.getBoundingClientRect();
+          const left = rect.left - parentRect.left + rect.width / 2;
+          const top = rect.top - parentRect.top;
+          
+          nsChartTooltip.style.left = left + 'px';
+          nsChartTooltip.style.top = top + 'px';
+          nsChartTooltip.classList.add('visible');
+        }
+      });
+
+      bar.addEventListener('mouseleave', () => {
+        nsBars.forEach(b => {
+          b.setAttribute('fill', '#00b3b3');
+          b.style.filter = 'none';
+        });
+        if (nsChartTooltip) {
+          nsChartTooltip.classList.remove('visible');
+        }
+      });
+    });
+
+    // OrderKanban Drag & Drop (matches OrderKanban.tsx)
+    const kanbanCards = document.querySelectorAll('.ns-task-card');
+    const kanbanCols = document.querySelectorAll('.ns-kanban-col');
+
+    function updateKanbanCounts() {
+      const colGenerales = document.getElementById('tasks-generales');
+      const colCalientes = document.getElementById('tasks-calientes');
+      const colPausados = document.getElementById('tasks-pausados');
+      const colFinalizados = document.getElementById('tasks-finalizados');
+
+      if (colGenerales && document.getElementById('badge-generales')) 
+        document.getElementById('badge-generales').innerText = colGenerales.querySelectorAll('.ns-task-card').length;
+      if (colCalientes && document.getElementById('badge-calientes')) 
+        document.getElementById('badge-calientes').innerText = colCalientes.querySelectorAll('.ns-task-card').length;
+      if (colPausados && document.getElementById('badge-pausados')) 
+        document.getElementById('badge-pausados').innerText = colPausados.querySelectorAll('.ns-task-card').length;
+      if (colFinalizados && document.getElementById('badge-finalizados')) 
+        document.getElementById('badge-finalizados').innerText = colFinalizados.querySelectorAll('.ns-task-card').length;
+    }
+
+    let draggedCard = null;
+
+    kanbanCards.forEach(card => {
+      card.addEventListener('dragstart', (e) => {
+        draggedCard = card;
+        card.classList.add('is-dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', card.id);
+      });
+
+      card.addEventListener('dragend', () => {
+        card.classList.remove('is-dragging');
+        kanbanCols.forEach(col => col.classList.remove('drag-over'));
+        draggedCard = null;
+        updateKanbanCounts();
+      });
+    });
+
+    kanbanCols.forEach(col => {
+      const tasksBox = col.querySelector('.ns-col-tasks');
+
+      col.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        col.classList.add('drag-over');
+      });
+
+      col.addEventListener('dragleave', (e) => {
+        if (!col.contains(e.relatedTarget)) {
+          col.classList.remove('drag-over');
+        }
+      });
+
+      col.addEventListener('drop', (e) => {
+        e.preventDefault();
+        col.classList.remove('drag-over');
+        if (draggedCard && tasksBox) {
+          tasksBox.appendChild(draggedCard);
+          updateKanbanCounts();
+          const colLabel = col.querySelector('.ns-col-label');
+          showNsToast('Lead reasignado a ' + (colLabel ? colLabel.innerText : 'columna'));
+        }
       });
     });
 
