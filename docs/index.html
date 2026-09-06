@@ -183,28 +183,36 @@
     }
 
     .view-content {
-      display: none;
+      display: none !important;
       width: 100%;
     }
 
-    .view-content.active {
-      display: grid;
-    }
-
-    /* ========================================================================= */
-    /* VISTA 1: CHAT SIMULATOR (IPHONE + INSTAGRAM DM + LEAD INSIGHTS)           */
-    /* ========================================================================= */
-    #viewChat {
+    #viewChat.active {
+      display: grid !important;
       grid-template-columns: 420px 1fr;
       gap: 32px;
       align-items: start;
     }
 
     @media (max-width: 1060px) {
-      #viewChat {
+      #viewChat.active {
         grid-template-columns: 1fr;
         justify-items: center;
       }
+    }
+
+    #viewDiagram.active {
+      display: flex !important;
+      flex-direction: column;
+      gap: 22px;
+      width: 100%;
+    }
+
+    #viewDashboard.active {
+      display: flex !important;
+      flex-direction: column;
+      gap: 22px;
+      width: 100%;
     }
 
     .phone-wrapper {
@@ -490,41 +498,67 @@
 
     /* CALENDLY RICH LINK CARD */
     .ig-link-card {
-      background: #1c1c1e;
-      border: 1px solid #38383a;
+      align-self: flex-end;
+      background: #1c1c1e !important;
+      border: 1px solid #38383a !important;
       border-radius: 14px;
       overflow: hidden;
       margin-top: 6px;
-      max-width: 240px;
+      width: 250px;
+      max-width: 84%;
       text-decoration: none;
       display: block;
       color: inherit;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      animation: igFadeIn 0.22s ease-out forwards;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+
+    .ig-link-card:hover {
+      border-color: #38bdf8 !important;
+      transform: translateY(-2px);
     }
 
     .ig-link-card-thumb {
-      height: 60px;
+      height: 64px;
       background: linear-gradient(135deg, #006bff, #00c6ff);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 800;
       color: white;
+      letter-spacing: 0.5px;
     }
 
     .ig-link-card-body {
-      padding: 8px 10px;
+      padding: 10px 12px;
+      background: #1c1c1e;
     }
 
     .ig-link-card-title {
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 700;
       color: #fff;
       margin-bottom: 2px;
+      line-height: 1.3;
     }
 
     .ig-link-card-sub {
-      font-size: 10.5px;
+      font-size: 11px;
       color: #8e8e93;
+      margin-bottom: 6px;
+    }
+
+    .ig-link-card-cta {
+      font-size: 11px;
+      font-weight: 700;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     /* READ RECEIPT */
@@ -813,12 +847,7 @@
     /* ========================================================================= */
     /* VISTA 2: DIAGRAMA INTERACTIVO (CON SELECTOR TÉCNICO VS CLIENTE)          */
     /* ========================================================================= */
-    #viewDiagram {
-      display: none;
-      flex-direction: column;
-      gap: 22px;
-      width: 100%;
-    }
+
 
     .diagram-toolbar-card {
       background: var(--bg-card);
@@ -1037,12 +1066,7 @@
     /* ========================================================================= */
     /* VISTA 3: DASHBOARD COMPLETO CON DATOS DE EJEMPLO                         */
     /* ========================================================================= */
-    #viewDashboard {
-      display: none;
-      flex-direction: column;
-      gap: 22px;
-      width: 100%;
-    }
+
 
     .dashboard-top-bar {
       display: flex;
@@ -2022,10 +2046,24 @@
     const viewDashboard = document.getElementById('viewDashboard');
 
     function switchTab(targetView, activeBtn) {
-      [viewChat, viewDiagram, viewDashboard].forEach(v => v.classList.remove('active'));
+      [viewChat, viewDiagram, viewDashboard].forEach(v => {
+        v.classList.remove('active');
+        v.style.display = 'none';
+      });
       [btnTabChat, btnTabDiagram, btnTabDashboard].forEach(b => b.classList.remove('active'));
+      
       targetView.classList.add('active');
       activeBtn.classList.add('active');
+
+      if (targetView === viewChat) {
+        targetView.style.display = 'grid';
+      } else {
+        targetView.style.display = 'flex';
+      }
+
+      if (targetView === viewDiagram && typeof selectSvgNode === 'function') {
+        selectSvgNode(currentSelectedNodeId || 'svg-node-preconditions');
+      }
     }
 
     btnTabChat.addEventListener('click', () => switchTab(viewChat, btnTabChat));
@@ -2090,8 +2128,9 @@
         agentReplies: [
           { type: 'text', text: 'Genial! Elige el hueco que mejor te venga en mi agenda.' },
           { 
-            type: 'link_card', 
-            text: 'https://calendly.com/marcos-coaching/15min',
+            type: 'booking_link', 
+            text: 'Aquí tienes el enlace directo para agendar tu llamada:\nhttps://calendly.com/marcos-coaching/15min',
+            url: 'https://calendly.com/marcos-coaching/15min',
             title: 'Sesión de Diagnóstico 1 a 1 (15 min)',
             sub: 'calendly.com/marcos-coaching'
           }
@@ -2162,25 +2201,49 @@
     }
 
     function appendAgentReply(reply) {
-      if (reply.type === 'link_card') {
+      if (reply.type === 'booking_link') {
+        // 1. Mensaje de texto con enlace directo visible y clicable
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'ig-msg outgoing';
+        msgDiv.innerHTML = `Aquí tienes el enlace para agendar tu llamada:<br><a href="${reply.url}" target="_blank" style="color:#ffffff; text-decoration:underline; font-weight:700; word-break:break-all;">${reply.url}</a>`;
+        chatBody.appendChild(msgDiv);
+
+        // 2. Tarjeta visual interactiva estilo Instagram Link Attachment
         const linkCard = document.createElement('a');
-        linkCard.className = 'ig-link-card ig-msg outgoing';
-        linkCard.style.padding = '0';
-        linkCard.href = reply.text;
+        linkCard.className = 'ig-link-card';
+        linkCard.href = reply.url;
         linkCard.target = '_blank';
         linkCard.innerHTML = `
-          <div class="ig-link-card-thumb">📅</div>
+          <div class="ig-link-card-thumb">📅 CALENDLY</div>
           <div class="ig-link-card-body">
             <div class="ig-link-card-title">${reply.title}</div>
             <div class="ig-link-card-sub">${reply.sub}</div>
-            <div style="font-size:11px; color:#38bdf8; font-weight:700; margin-top:4px;">Abrir Calendario ↗</div>
+            <div class="ig-link-card-cta">Reservar cita ahora ↗</div>
+          </div>
+        `;
+        chatBody.appendChild(linkCard);
+      } else if (reply.type === 'link_card') {
+        const linkCard = document.createElement('a');
+        linkCard.className = 'ig-link-card';
+        linkCard.href = reply.text;
+        linkCard.target = '_blank';
+        linkCard.innerHTML = `
+          <div class="ig-link-card-thumb">📅 CALENDLY</div>
+          <div class="ig-link-card-body">
+            <div class="ig-link-card-title">${reply.title}</div>
+            <div class="ig-link-card-sub">${reply.sub}</div>
+            <div class="ig-link-card-cta">Reservar cita ahora ↗</div>
           </div>
         `;
         chatBody.appendChild(linkCard);
       } else {
         const msgDiv = document.createElement('div');
         msgDiv.className = 'ig-msg outgoing';
-        msgDiv.innerText = reply.text;
+        const formatted = reply.text.replace(
+          /(https?:\/\/[^\s]+)/g,
+          '<a href="$1" target="_blank" style="color:#ffffff; text-decoration:underline; font-weight:700;">$1</a>'
+        );
+        msgDiv.innerHTML = formatted;
         chatBody.appendChild(msgDiv);
       }
       chatBody.scrollTop = chatBody.scrollHeight;
@@ -2817,6 +2880,14 @@
       });
       selectSvgNode('svg-node-preconditions');
       setBtnActive(btnScen1);
+    });
+
+    // Dashboard time filter buttons
+    document.querySelectorAll('.time-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
     });
 
     // Default select Node 1
