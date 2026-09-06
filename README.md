@@ -6,11 +6,11 @@
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![LangGraph](https://img.shields.io/badge/orchestration-LangGraph_v0.2%2B-6366f1.svg?style=flat-square)](https://github.com/langchain-ai/langgraph)
 [![Tests](https://img.shields.io/badge/tests-15%2F15%20passing-10b981.svg?style=flat-square&logo=pytest&logoColor=white)](tests/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
+[![License: Reference Only](https://img.shields.io/badge/License-All_Rights_Reserved-red.svg?style=flat-square)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/demo-Live_Interactive_Simulator-0284c7.svg?style=flat-square&logo=safari&logoColor=white)](https://davidzarandieta.github.io/conversational-ai-agent-langgraph/)
 
 <p align="center">
-  <strong><a href="https://davidzarandieta.github.io/conversational-ai-agent-langgraph/">👉 Probar Demo Interactiva con Modo Ingeniería en Vivo</a></strong>
+  <strong><a href="https://davidzarandieta.github.io/conversational-ai-agent-langgraph/">👉 Probar Demo Interactiva (Simulador Móvil + Diagrama de Arquitectura Interactivo)</a></strong>
 </p>
 
 *Sanitized, production-proven reference implementation extracted from high-throughput conversational setter pipelines handling real Instagram and WhatsApp lead qualifications.*
@@ -56,12 +56,12 @@ El siguiente grafo vectorial ilustra el ciclo de vida completo de cada mensaje r
 
 ---
 
-## 📱 Demo Interactiva en Vivo
+## 📱 Demo Interactiva en Vivo (Doble Vista)
 
-El repositorio incluye un simulador web interactivo en `docs/index.html` desplegable en **GitHub Pages**:
+El repositorio incluye una aplicación web de demostración interactiva en `docs/index.html` desplegada en **GitHub Pages**:
 
-- 📲 **Marco de Smartphone Realista**: Interfaz visual estilo mensajería directa con burbujas secuenciales.
-- ⚙️ **Modo Ingeniería**: Panel de telemetría lateral que expone en tiempo real el nodo activo de LangGraph, los eventos de guardrails activados, el payload JSON devuelto y las métricas de latencia/caché.
+- 📲 **Pestaña 1: Simulador de Chat & Telemetría**: Interfaz realista de smartphone estilo Instagram/WhatsApp DM con avance paso a paso y panel de telemetría de ingeniería (nodo activo, latencia, prompt caching y payload JSON en vivo).
+- 📊 **Pestaña 2: Diagrama de Arquitectura Interactivo**: Visualizador del grafo de estados en vivo con **nodos clickables**. Permite inspeccionar en tiempo real el código fuente Python de cada nodo, los deltas de memoria de `SetterState` y ejecutar simulaciones de rutas animadas (Happy Path, Inyección de Calendly, Saldo Agotado y Protección de Agente Humano).
 
 Para ejecutar la demo localmente:
 ```bash
@@ -157,11 +157,11 @@ PYTHONPATH=. python tests/test_harness.py
 
 ## 🛡️ Declaración de Sanitización y Propiedad Intelectual
 
-Este repositorio es una **implementación de referencia limpia** derivada de sistemas conversacionales en producción. 
+Este repositorio es una **implementación de referencia de demostración** derivada de sistemas conversacionales en producción. 
 
-- Todos los nombres comerciales, credenciales, números de teléfono, URLs de agenda y comentarios de negocio específicos del cliente han sido completamente sustituidos por fixtures genéricos (*"Alpha Coaching"*, `cliente_test_gym`, `https://calendly.com/alpha-coaching/30min`).
-- La propiedad intelectual sensible y las reglas de negocio privadas permanecen en repositorios privados protegidos.
-- Este código se comparte bajo **Licencia MIT** para servir como patrón arquitectónico reutilizable en la comunidad de LLM Engineering.
+- **Sanitización de Datos**: Todos los nombres comerciales, credenciales, números de teléfono, URLs de agenda y comentarios de negocio específicos del cliente han sido completamente sustituidos por fixtures genéricos (*"Alpha Coaching"*, `cliente_test_gym`, `https://calendly.com/alpha-coaching/30min`).
+- **Propiedad Intelectual y Licencia**: **Copyright © 2026 David Zarandieta Ortiz. All rights reserved.** 
+  Este código se comparte públicamente exclusivamente con fines educativos, de portfolio y de evaluación técnica durante procesos de selección. Queda **expresamente prohibida la copia, reproducción, redistribución o explotación comercial** total o parcial de esta arquitectura, código o patrones sin la autorización previa y por escrito del autor. Consultar [`LICENSE`](LICENSE) para más detalles.
 
 ---
 

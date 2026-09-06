@@ -1,21 +1,14 @@
-MIT License
+Copyright (c) 2026 David Zarandieta Ortiz. All rights reserved.
 
-Copyright (c) 2026 David Zarandieta
+REFERENCE & PORTFOLIO EVALUATION LICENSE
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This repository and its source code are made publicly accessible solely for the purpose of portfolio evaluation, technical recruitment review, and non-commercial educational reference.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. PROHIBITED USES:
+   - No commercial use: You may NOT use, copy, reproduce, modify, merge, publish, distribute, sublicense, and/or sell copies of this software or derivative works for any commercial, production, or business purpose.
+   - No unauthorized incorporation: The architectural designs, patterns, state machines, guardrails, and code remain the exclusive intellectual property of David Zarandieta Ortiz and may not be incorporated into third-party commercial applications or SaaS products without prior explicit written authorization from the author.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. PERMITTED USES:
+   - You are granted permission to view, clone, and execute this repository and its test suite locally solely for the purpose of evaluating the author's technical qualifications, software engineering practices, and system design skills during recruitment, interviews, and academic reviews.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR OR COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
