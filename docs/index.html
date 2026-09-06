@@ -936,22 +936,35 @@
     }
 
     .svg-interactive-node {
-      cursor: pointer;
-      transition: transform 0.2s, opacity 0.2s;
+      cursor: grab;
+      transition: filter 0.15s ease;
+      user-select: none;
+      -webkit-user-select: none;
     }
     .svg-interactive-node:hover {
-      opacity: 0.92;
-      filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.4));
+      opacity: 0.95;
+      filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.45));
     }
     .svg-interactive-node.node-selected rect {
       stroke: #38bdf8 !important;
       stroke-width: 3.5 !important;
-      filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.6));
+      filter: drop-shadow(0 0 18px rgba(56, 189, 248, 0.7));
     }
     .svg-interactive-node.node-anim-active rect {
       stroke: #10b981 !important;
       stroke-width: 3.5 !important;
       animation: pulseNode 0.8s infinite alternate;
+    }
+    .svg-interactive-node.node-dragging {
+      cursor: grabbing !important;
+      filter: drop-shadow(0 0 24px rgba(56, 189, 248, 0.95)) brightness(1.2) !important;
+      opacity: 0.98;
+    }
+    .svg-interactive-node * {
+      pointer-events: none;
+    }
+    .svg-interactive-node rect {
+      pointer-events: all;
     }
 
     @keyframes pulseNode {
@@ -1967,13 +1980,17 @@
           </button>
         </div>
 
-        <!-- SCENARIO BUTTONS -->
+        <!-- SCENARIO BUTTONS & GRAPH ACTIONS -->
         <div class="scenario-buttons">
+          <div style="display: inline-flex; align-items: center; gap: 6px; color: #38bdf8; font-size: 11.5px; font-weight: 700; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); padding: 5px 12px; border-radius: 20px;">
+            <span>🖐️</span>
+            <span>Grafo Dinámico: arrastra los nodos</span>
+          </div>
           <button class="scenario-btn active" id="btnScen1">🟢 Flujo Completo + Cita</button>
           <button class="scenario-btn" id="btnScen2">🟡 Inyección Calendly</button>
           <button class="scenario-btn" id="btnScen3">🔴 Saldo Agotado (0 Tokens)</button>
           <button class="scenario-btn" id="btnScen4">🛑 Intervención Humana</button>
-          <button class="scenario-btn" id="btnResetGraph">↺ Reset</button>
+          <button class="scenario-btn" id="btnResetGraph" title="Restablecer posiciones originales del grafo">↺ Restablecer Posiciones</button>
         </div>
       </div>
 
@@ -2012,26 +2029,26 @@
           <g transform="translate(45, 42)">
             <circle cx="10" cy="10" r="6" fill="#10b981"/>
             <text x="28" y="16" fill="#f8fafc" font-size="19" font-weight="800" letter-spacing="0.3" id="svgTitleHeader">MÁQUINA DE ESTADOS LANGGRAPH — CICLO DE VIDA</text>
-            <text x="28" y="34" fill="#94a3b8" font-size="13" font-weight="500" id="svgSubHeader">Haz clic en cualquier nodo para inspeccionar su funcionamiento y código real abajo</text>
+            <text x="28" y="34" fill="#94a3b8" font-size="13" font-weight="500" id="svgSubHeader">Haz clic para inspeccionar o arrastra cualquier nodo para reorganizar el grafo libremente</text>
           </g>
 
           <!-- CONNECTIONS (EDGES) -->
-          <path id="edge-inbound" d="M 185 160 L 235 160" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#m-arrow)"/>
-          <path id="edge-p-to-abort" d="M 345 255 L 345 300" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4" marker-end="url(#m-arrow-red)"/>
-          <path id="edge-p-to-media" d="M 460 160 L 495 160" fill="none" stroke="#34d399" stroke-width="2.5" marker-end="url(#m-arrow-green)"/>
-          <path id="edge-media-to-brain" d="M 700 160 L 735 160" fill="none" stroke="#34d399" stroke-width="2.5" marker-end="url(#m-arrow-green)"/>
-          
-          <!-- Downwards: Brain -> Guardrails -->
-          <path id="edge-brain-to-gr" d="M 860 270 L 860 330 L 350 330 L 350 395" fill="none" stroke="#ec4899" stroke-width="2.5" marker-end="url(#m-arrow)"/>
-          <path id="edge-gr-to-booking" d="M 460 475 L 495 475" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#m-arrow)"/>
-          <path id="edge-booking-to-deliver" d="M 720 475 L 755 475" fill="none" stroke="#10b981" stroke-width="2.5" marker-end="url(#m-arrow-green)"/>
-          <path id="edge-deliver-to-abort" d="M 870 555 L 870 595" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4" marker-end="url(#m-arrow-red)"/>
-          <path id="edge-deliver-to-persist" d="M 860 555 L 860 645 L 610 645" fill="none" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#m-arrow)"/>
+          <g id="svgEdgesGroup">
+            <path id="edge-inbound" d="M 185 160 L 235 160" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#m-arrow)"/>
+            <path id="edge-p-to-abort" d="M 345 255 L 345 300" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4" marker-end="url(#m-arrow-red)"/>
+            <path id="edge-p-to-media" d="M 460 160 L 495 160" fill="none" stroke="#34d399" stroke-width="2.5" marker-end="url(#m-arrow-green)"/>
+            <path id="edge-media-to-brain" d="M 700 160 L 735 160" fill="none" stroke="#34d399" stroke-width="2.5" marker-end="url(#m-arrow-green)"/>
+            <path id="edge-brain-to-gr" d="M 860 270 L 860 330 L 350 330 L 350 395" fill="none" stroke="#ec4899" stroke-width="2.5" marker-end="url(#m-arrow)"/>
+            <path id="edge-gr-to-booking" d="M 460 475 L 495 475" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#m-arrow)"/>
+            <path id="edge-booking-to-deliver" d="M 720 475 L 755 475" fill="none" stroke="#10b981" stroke-width="2.5" marker-end="url(#m-arrow-green)"/>
+            <path id="edge-deliver-to-abort" d="M 870 555 L 870 595" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4" marker-end="url(#m-arrow-red)"/>
+            <path id="edge-deliver-to-persist" d="M 860 555 L 860 645 L 610 645" fill="none" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#m-arrow)"/>
+            <path id="edge-repair-loop" d="M 860 90 C 860 40, 950 40, 950 90" fill="none" stroke="#f472b6" stroke-width="2" stroke-dasharray="4" marker-end="url(#m-arrow)"/>
+            <text id="text-repair-loop" x="960" y="60" fill="#f472b6" font-size="11" font-weight="700">Auto-Repair Retry (Max 2)</text>
+          </g>
 
-          <!-- Self-Repair feedback loop -->
-          <path id="edge-repair-loop" d="M 860 90 C 860 40, 950 40, 950 90" fill="none" stroke="#f472b6" stroke-width="2" stroke-dasharray="4" marker-end="url(#m-arrow)"/>
-          <text x="960" y="60" fill="#f472b6" font-size="11" font-weight="700">Auto-Repair Retry (Max 2)</text>
-
+          <!-- INTERACTIVE NODES GROUP -->
+          <g id="svgNodesGroup">
           <!-- INBOUND NODE -->
           <g class="svg-interactive-node" id="svg-node-inbound" transform="translate(45, 110)">
             <rect width="140" height="100" rx="12" fill="#111827" stroke="#374151" stroke-width="2"/>
@@ -2135,6 +2152,7 @@
             <line x1="16" y1="46" x2="349" y2="46" stroke="#1e293b" stroke-width="1.5"/>
             <text x="25" y="68" fill="#cbd5e1" font-size="12" id="n7-l1">• MongoDB State Transition (ACID Document)</text>
             <text x="25" y="86" fill="#cbd5e1" font-size="12" id="n7-l2">• Liberación Lock: is_processing = false</text>
+          </g>
           </g>
         </svg>
       </div>
@@ -2992,13 +3010,228 @@
       inspGotcha.innerHTML = data.gotcha;
     }
 
-    // Attach click events on SVG nodes
-    Object.keys(nodeDataStore).forEach(nodeId => {
-      const el = document.getElementById(nodeId);
-      if (el) {
-        el.addEventListener('click', () => selectSvgNode(nodeId));
-      }
+    // =========================================================================
+    // DYNAMIC INTERACTIVE GRAPH: DRAG & DROP + REAL-TIME EDGE RECALCULATION
+    // =========================================================================
+    const nodeConfigs = {
+      'svg-node-inbound': { defaultX: 45, defaultY: 110, w: 140, h: 100 },
+      'svg-node-preconditions': { defaultX: 240, defaultY: 105, w: 215, h: 145 },
+      'svg-node-abort-preconditions': { defaultX: 295, defaultY: 305, w: 105, h: 40 },
+      'svg-node-media': { defaultX: 500, defaultY: 105, w: 195, h: 145 },
+      'svg-node-brain': { defaultX: 740, defaultY: 90, w: 240, h: 175 },
+      'svg-node-guardrails': { defaultX: 240, defaultY: 400, w: 215, h: 150 },
+      'svg-node-booking': { defaultX: 500, defaultY: 400, w: 215, h: 150 },
+      'svg-node-deliver': { defaultX: 760, defaultY: 400, w: 215, h: 150 },
+      'svg-node-abort-human': { defaultX: 820, defaultY: 600, w: 100, h: 38 },
+      'svg-node-persist': { defaultX: 240, defaultY: 595, w: 365, h: 100 }
+    };
+
+    const nodePositions = {};
+    Object.keys(nodeConfigs).forEach(id => {
+      nodePositions[id] = {
+        x: nodeConfigs[id].defaultX,
+        y: nodeConfigs[id].defaultY,
+        w: nodeConfigs[id].w,
+        h: nodeConfigs[id].h
+      };
     });
+
+    const graphEdges = [
+      { id: 'edge-inbound', from: 'svg-node-inbound', to: 'svg-node-preconditions' },
+      { id: 'edge-p-to-abort', from: 'svg-node-preconditions', to: 'svg-node-abort-preconditions' },
+      { id: 'edge-p-to-media', from: 'svg-node-preconditions', to: 'svg-node-media' },
+      { id: 'edge-media-to-brain', from: 'svg-node-media', to: 'svg-node-brain' },
+      { id: 'edge-brain-to-gr', from: 'svg-node-brain', to: 'svg-node-guardrails' },
+      { id: 'edge-gr-to-booking', from: 'svg-node-guardrails', to: 'svg-node-booking' },
+      { id: 'edge-booking-to-deliver', from: 'svg-node-booking', to: 'svg-node-deliver' },
+      { id: 'edge-deliver-to-abort', from: 'svg-node-deliver', to: 'svg-node-abort-human' },
+      { id: 'edge-deliver-to-persist', from: 'svg-node-deliver', to: 'svg-node-persist' }
+    ];
+
+    function getAnchorPoint(node, direction) {
+      const cx = node.x + node.w / 2;
+      const cy = node.y + node.h / 2;
+      if (direction === 'left') return { x: node.x, y: cy, dir: 'left' };
+      if (direction === 'right') return { x: node.x + node.w, y: cy, dir: 'right' };
+      if (direction === 'top') return { x: cx, y: node.y, dir: 'top' };
+      return { x: cx, y: node.y + node.h, dir: 'bottom' };
+    }
+
+    function calculateAnchorPair(source, target) {
+      const scx = source.x + source.w / 2;
+      const scy = source.y + source.h / 2;
+      const tcx = target.x + target.w / 2;
+      const tcy = target.y + target.h / 2;
+      const dx = tcx - scx;
+      const dy = tcy - scy;
+
+      let sDir, tDir;
+      if (Math.abs(dx) >= Math.abs(dy) * 0.75) {
+        if (dx >= 0) {
+          sDir = 'right';
+          tDir = 'left';
+        } else {
+          sDir = 'left';
+          tDir = 'right';
+        }
+      } else {
+        if (dy >= 0) {
+          sDir = 'bottom';
+          tDir = 'top';
+        } else {
+          sDir = 'top';
+          tDir = 'bottom';
+        }
+      }
+
+      return {
+        p1: getAnchorPoint(source, sDir),
+        p2: getAnchorPoint(target, tDir)
+      };
+    }
+
+    function formatCubicBezier(p1, p2) {
+      const sx = p1.x;
+      const sy = p1.y;
+      const tx = p2.x;
+      const ty = p2.y;
+      const dist = Math.hypot(tx - sx, ty - sy);
+      const curvature = Math.min(Math.max(dist * 0.38, 25), 140);
+
+      let cx1 = sx, cy1 = sy;
+      let cx2 = tx, cy2 = ty;
+
+      if (p1.dir === 'right') cx1 += curvature;
+      else if (p1.dir === 'left') cx1 -= curvature;
+      else if (p1.dir === 'bottom') cy1 += curvature;
+      else if (p1.dir === 'top') cy1 -= curvature;
+
+      if (p2.dir === 'right') cx2 += curvature;
+      else if (p2.dir === 'left') cx2 -= curvature;
+      else if (p2.dir === 'bottom') cy2 += curvature;
+      else if (p2.dir === 'top') cy2 -= curvature;
+
+      return `M ${sx.toFixed(1)} ${sy.toFixed(1)} C ${cx1.toFixed(1)} ${cy1.toFixed(1)}, ${cx2.toFixed(1)} ${cy2.toFixed(1)}, ${tx.toFixed(1)} ${ty.toFixed(1)}`;
+    }
+
+    function updateAllEdges() {
+      graphEdges.forEach(edge => {
+        const pathEl = document.getElementById(edge.id);
+        const s = nodePositions[edge.from];
+        const t = nodePositions[edge.to];
+        if (!pathEl || !s || !t) return;
+        const { p1, p2 } = calculateAnchorPair(s, t);
+        pathEl.setAttribute('d', formatCubicBezier(p1, p2));
+      });
+
+      // Update Self-Repair Loop on Brain node
+      const b = nodePositions['svg-node-brain'];
+      const loopEl = document.getElementById('edge-repair-loop');
+      const loopText = document.getElementById('text-repair-loop');
+      if (b && loopEl) {
+        const sx = b.x + b.w * 0.5;
+        const sy = b.y;
+        const tx = b.x + b.w * 0.85;
+        const ty = b.y;
+        loopEl.setAttribute('d', `M ${sx.toFixed(1)} ${sy.toFixed(1)} C ${sx.toFixed(1)} ${(b.y - 65).toFixed(1)}, ${tx.toFixed(1)} ${(b.y - 65).toFixed(1)}, ${tx.toFixed(1)} ${ty.toFixed(1)}`);
+        if (loopText) {
+          loopText.setAttribute('x', String(Math.round(tx + 10)));
+          loopText.setAttribute('y', String(Math.round(b.y - 25)));
+        }
+      }
+    }
+
+    // Drag & Drop engine
+    const svgCanvas = document.getElementById('interactiveSvg');
+    let activeDragNode = null;
+    let dragStartPointer = { x: 0, y: 0 };
+    let dragStartNodePos = { x: 0, y: 0 };
+    let hasMoved = false;
+
+    function getSvgCoords(e) {
+      const pt = svgCanvas.createSVGPoint();
+      if (e.touches && e.touches.length > 0) {
+        pt.x = e.touches[0].clientX;
+        pt.y = e.touches[0].clientY;
+      } else {
+        pt.x = e.clientX;
+        pt.y = e.clientY;
+      }
+      return pt.matrixTransform(svgCanvas.getScreenCTM().inverse());
+    }
+
+    Object.keys(nodeConfigs).forEach(nodeId => {
+      const el = document.getElementById(nodeId);
+      if (!el) return;
+
+      const onStart = (e) => {
+        if (e.type === 'mousedown' && e.button !== 0) return;
+        activeDragNode = nodeId;
+        const pt = getSvgCoords(e);
+        dragStartPointer = { x: pt.x, y: pt.y };
+        dragStartNodePos = { x: nodePositions[nodeId].x, y: nodePositions[nodeId].y };
+        hasMoved = false;
+
+        // Bring to front in SVG nodes group
+        if (el.parentNode) {
+          el.parentNode.appendChild(el);
+        }
+      };
+
+      el.addEventListener('mousedown', onStart);
+      el.addEventListener('touchstart', onStart, { passive: false });
+    });
+
+    const onMove = (e) => {
+      if (!activeDragNode) return;
+      if (e.type === 'touchmove') e.preventDefault();
+
+      const pt = getSvgCoords(e);
+      const dx = pt.x - dragStartPointer.x;
+      const dy = pt.y - dragStartPointer.y;
+
+      if (!hasMoved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+        hasMoved = true;
+        const nodeEl = document.getElementById(activeDragNode);
+        if (nodeEl) nodeEl.classList.add('node-dragging');
+      }
+
+      if (hasMoved) {
+        const config = nodeConfigs[activeDragNode];
+        const newX = Math.max(10, Math.min(1180 - config.w - 10, dragStartNodePos.x + dx));
+        const newY = Math.max(70, Math.min(730 - config.h - 10, dragStartNodePos.y + dy));
+
+        nodePositions[activeDragNode].x = newX;
+        nodePositions[activeDragNode].y = newY;
+
+        const nodeEl = document.getElementById(activeDragNode);
+        if (nodeEl) {
+          nodeEl.setAttribute('transform', `translate(${newX.toFixed(1)}, ${newY.toFixed(1)})`);
+        }
+
+        updateAllEdges();
+      }
+    };
+
+    const onEnd = () => {
+      if (!activeDragNode) return;
+      const nodeEl = document.getElementById(activeDragNode);
+      if (nodeEl) nodeEl.classList.remove('node-dragging');
+
+      if (!hasMoved) {
+        // Pure click: select node to view in Inspector
+        selectSvgNode(activeDragNode);
+      }
+
+      activeDragNode = null;
+      hasMoved = false;
+    };
+
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onEnd);
+    window.addEventListener('touchmove', onMove, { passive: false });
+    window.addEventListener('touchend', onEnd);
+    window.addEventListener('touchcancel', onEnd);
 
     // SCENARIO SIMULATION ANIMATOR
     const btnScen1 = document.getElementById('btnScen1');
@@ -3073,15 +3306,28 @@
       ]);
     });
 
-    btnResetGraph.addEventListener('click', () => {
+    function resetGraphLayout() {
+      Object.keys(nodeConfigs).forEach(id => {
+        const conf = nodeConfigs[id];
+        nodePositions[id].x = conf.defaultX;
+        nodePositions[id].y = conf.defaultY;
+        const el = document.getElementById(id);
+        if (el) {
+          el.setAttribute('transform', `translate(${conf.defaultX}, ${conf.defaultY})`);
+        }
+      });
+      updateAllEdges();
       document.querySelectorAll('.svg-interactive-node').forEach(el => {
         el.classList.remove('node-anim-active', 'node-selected');
       });
       selectSvgNode('svg-node-preconditions');
       setBtnActive(btnScen1);
-    });
+    }
 
-    // Default select Node 1
+    btnResetGraph.addEventListener('click', resetGraphLayout);
+
+    // Initial edges calculation and default node selection
+    updateAllEdges();
     selectSvgNode('svg-node-preconditions');
   </script>
 </body>
