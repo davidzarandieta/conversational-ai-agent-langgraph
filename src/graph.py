@@ -4,7 +4,7 @@ LangGraph Orchestration Graph for Conversational AI Agent (Reference Implementat
 This graph models the multi-stage decision pipeline for conversational agents:
 1. validate_preconditions: Billing verification, user exclusion check, and bot sleep schedule.
 2. preprocess_media: Audio transcription (Whisper) and image processing (Vision).
-3. run_ai_brain: Claude LLM invocation with ephemeral prompt caching.
+3. run_ai_brain: Claude Sonnet 5 invocation with ephemeral prompt caching.
 4. apply_guardrails: Tone, forbidden characters, and blocked error phrases.
 5. enforce_booking_rules: Deterministic Calendly/booking link verification & injection.
 6. deliver_messages: Human-in-the-loop intervention check & messaging dispatch.
@@ -231,7 +231,7 @@ async def preprocess_media_node(state: SetterState) -> Dict[str, Any]:
 # --- NODO 3: MOTOR DE IA (LLM CON PROMPT CACHING Y RESILIENCIA) ---
 async def run_ai_brain_node(state: SetterState) -> Dict[str, Any]:
     """
-    Invoca el motor cognitivo Claude con caché efímera de Anthropic.
+    Invoca el motor cognitivo Claude Sonnet 5 con caché efímera de Anthropic.
     Si proviene de un fallo previo de JSON, inyecta dinámicamente la directiva de corrección.
     """
     client_id = state.get("client_id", "")

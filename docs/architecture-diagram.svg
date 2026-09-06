@@ -178,7 +178,7 @@
 
     <line x1="14" y1="52" x2="216" y2="52" stroke="#1e293b"/>
     <circle cx="22" cy="68" r="3" fill="#f472b6"/>
-    <text x="32" y="72" fill="#f1f5f9" font-size="11" font-weight="600">Anthropic Claude 3.5 Sonnet</text>
+    <text x="32" y="72" fill="#f1f5f9" font-size="11" font-weight="600">Anthropic Claude Sonnet 5</text>
     
     <circle cx="22" cy="88" r="3" fill="#f472b6"/>
     <text x="32" y="92" fill="#cbd5e1" font-size="10">Ephemeral Prompt Caching</text>

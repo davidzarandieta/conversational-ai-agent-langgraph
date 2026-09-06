@@ -1021,7 +1021,7 @@
             </div>
             <div class="step-card" id="node-brain">
               <div class="step-name">3. run_ai_brain</div>
-              <div class="step-status">Claude 3.5 Sonnet</div>
+              <div class="step-status">Claude Sonnet 5</div>
             </div>
             <div class="step-card" id="node-guardrails">
               <div class="step-name">4. guardrails</div>
@@ -1221,7 +1221,7 @@
               <rect width="240" height="175" rx="12" fill="#111827" stroke="#ec4899" stroke-width="2.5"/>
               <text x="25" y="34" fill="#f472b6" font-size="15" font-weight="800">3. run_ai_brain (Core)</text>
               <line x1="16" y1="48" x2="224" y2="48" stroke="#1e293b" stroke-width="1.5"/>
-              <text x="25" y="72" fill="#f8fafc" font-size="13" font-weight="700">Claude 3.5 Sonnet</text>
+              <text x="25" y="72" fill="#f8fafc" font-size="13" font-weight="700">Claude Sonnet 5</text>
               <text x="25" y="94" fill="#cbd5e1" font-size="12">Ephemeral Prompt Caching</text>
               <text x="25" y="112" fill="#10b981" font-size="11" font-weight="700">⚡ 90% Cost &amp; Latency Discount</text>
               <text x="25" y="134" fill="#cbd5e1" font-size="12">Bucle de Auto-Reparación</text>
@@ -1676,7 +1676,7 @@ async def validate_preconditions_node(state: SetterState) -> Dict[str, Any]:
         title: '2. preprocess_media_node',
         subtitle: 'Ingesta y normalización multimodal',
         type: 'LangGraph Async Node',
-        goal: 'Detecta notas de voz de WhatsApp/Instagram para transcribirlas con OpenAI Whisper y procesa imágenes para Claude 3.5 Vision. Si es texto plano, no añade sobrecoste.',
+        goal: 'Detecta notas de voz de WhatsApp/Instagram para transcribirlas con OpenAI Whisper y procesa imágenes para Claude Vision. Si es texto plano, no añade sobrecoste.',
         inputState: 'combined_input_text, incoming_text, audio_urls, image_urls',
         outputState: 'processed_input: Union[str, List[Dict[str, Any]]]',
         code: `async def preprocess_media_node(state: SetterState) -> Dict[str, Any]:
@@ -1689,7 +1689,7 @@ async def validate_preconditions_node(state: SetterState) -> Dict[str, Any]:
         title: '3. run_ai_brain_node',
         subtitle: 'Motor cognitivo y razonamiento estructurado',
         type: 'LangGraph Core Node',
-        goal: 'Invoca a Claude 3.5 Sonnet con cabeceras de Ephemeral Prompt Caching. Devuelve análisis psicológico del lead, array de mensajes y banderas de agendamiento.',
+        goal: 'Invoca a Claude Sonnet 5 con cabeceras de Ephemeral Prompt Caching. Devuelve análisis psicológico del lead, array de mensajes y banderas de agendamiento.',
         inputState: 'processed_input, history, client_profile, user_doc',
         outputState: 'parsed_ai_output: dict, ai_content_array: list, current_stage: str',
         code: `async def run_ai_brain_node(state: SetterState) -> Dict[str, Any]:
