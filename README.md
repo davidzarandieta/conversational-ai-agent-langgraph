@@ -1,171 +1,95 @@
-<div align="center">
+# Conversational AI agent architecture
 
-# 🤖 Production-Grade Conversational AI Agent Architecture
-### LangGraph Orchestration • Deterministic Guardrails • Concurrency Lock • Resilient Parser
+Reference implementation extracted and sanitized from a production conversational AI system — LangGraph orchestration, deterministic guardrails, and the concurrency handling that a real messaging integration ends up needing.
 
-[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
-[![LangGraph](https://img.shields.io/badge/orchestration-LangGraph_v0.2%2B-6366f1.svg?style=flat-square)](https://github.com/langchain-ai/langgraph)
-[![Tests](https://img.shields.io/badge/tests-15%2F15%20passing-10b981.svg?style=flat-square&logo=pytest&logoColor=white)](tests/)
-[![License: Reference Only](https://img.shields.io/badge/License-All_Rights_Reserved-red.svg?style=flat-square)](LICENSE)
-[![Live Demo](https://img.shields.io/badge/demo-Live_Interactive_Simulator-0284c7.svg?style=flat-square&logo=safari&logoColor=white)](https://davidzarandieta.github.io/conversational-ai-agent-langgraph/)
+**[Try the interactive demo →](https://davidzarandieta.github.io/conversational-ai-agent-langgraph/)**
 
-<p align="center">
-  <strong><a href="https://davidzarandieta.github.io/conversational-ai-agent-langgraph/">👉 Probar Demo Interactiva (Simulador Móvil + Diagrama de Arquitectura Interactivo)</a></strong>
-</p>
+## Why this exists
 
-*Sanitized, production-proven reference implementation extracted from high-throughput conversational setter pipelines handling real Instagram and WhatsApp lead qualifications.*
+Once you put an LLM behind a real messaging channel (WhatsApp, Instagram DMs), a handful of problems show up that a simple prompt-and-response loop doesn't handle:
 
-</div>
+- The model says "here's my link" and then doesn't actually include the URL.
+- A user replies "yes" to something completely unrelated to booking, and a naive system reads that as confirmation and sends a link it shouldn't.
+- Two messages arrive close together (or a webhook retries), and both get processed at the same time for the same user.
+- The model wraps its JSON in markdown, or uses a smart quote instead of a straight one, and `json.loads()` blows up.
 
----
+None of these are exotic edge cases — they're just what happens once real users are typing into the thing. This repo is the part of the system built to handle them: a LangGraph state machine with deterministic checks sitting around the model, instead of trusting the model to get every detail right on its own.
 
-## ⚡ En 10 Segundos: ¿Qué resuelve este repositorio?
+## Architecture
 
-Desplegar un LLM en canales de mensajería asíncrona reales (WhatsApp, Instagram DM) expone inmediatamente a los equipos de ingeniería a cuatro problemas críticos de producción que las cadenas de texto lineales no pueden solucionar:
+![Architecture diagram](docs/architecture-diagram.svg)
 
-1. **Alucinación o Pérdida del Link de Agenda**: Modelos que afirman *"aquí tienes mi enlace"* pero omiten la URL real en el payload final.
-2. **El "Bug del Sí" (Falsos Positivos)**: Un usuario que responde *"sí"* a una pregunta casual sobre sus hábitos de entrenamiento no debe recibir un enlace de Calendly a menos que el turno previo haya propuesto una llamada.
-3. **Condiciones de Carrera por Webhooks Duplicados**: Usuarios que envían ráfagas rápidas de mensajes o reintentos de red de Meta que disparan dos workers simultáneos para el mismo chat.
-4. **Respuestas JSON Rotas en Modelos Pequeños o Medios**: Bloques con markdown fences (````json ... ````), comillas tipográficas (`“ ”`) o trailing commas que provocan caídas silenciosas en `json.loads()`.
+## Design decisions
 
-Este repositorio implementa una **arquitectura de estados finitos determinista con LangGraph** que garantiza **100% de confiabilidad en entregas**, zero gasto de tokens innecesario y coexistencia segura con agentes humanos.
-
----
-
-## 📐 Diagrama de Arquitectura
-
-El siguiente grafo vectorial ilustra el ciclo de vida completo de cada mensaje recibido:
-
-<div align="center">
-  <img src="docs/architecture-diagram.svg" alt="Diagrama de Arquitectura del Agente Conversacional" width="100%"/>
-</div>
-
----
-
-## 💡 Decisiones de Diseño e Ingeniería (Trade-offs)
-
-| Componente | Elección en este Repo | Alternativa Descartada | ¿Por qué? (Justificación Técnica) |
+| Piece | What I did | What I didn't do | Why |
 |---|---|---|---|
-| **Orquestación** | `StateGraph` de **LangGraph** (7 nodos modulares) | Cadenas lineales (LCEL) o script monolítico | Un agente de mensajería no es un pipeline lineal. Necesita bucles de corrección de JSON, ramificaciones condicionales para descanso/facturación y estado tipado inmutable (`SetterState`). |
-| **Guardrails de Booking** | **2 Capas Deterministas** (Regex de intención + chequeo de historial contextual) | LLM-as-a-Judge o clasificación probabilística | Añadir otra llamada a un LLM para evaluar si enviar el link añade 800-1500ms de latencia y duplica el coste. Los patrones de agendamiento y confirmación de historial se resuelven en `<2ms` de forma determinista. |
-| **Inyección de URL** | `ensure_booking_link_message` determinista | Dejar que el LLM escriba la URL de memoria | Garantiza que la URL de Calendly parametrizada para el cliente exacto siempre esté presente si `send_booking_link=True`, impidiendo enlaces rotos o desactualizados. |
-| **Parseo de Salidas** | **Cascada Resiliente de 4 Pasos** con máquina de estados | `json.loads()` nativo estricto | Los LLMs envuelven JSON en bloques markdown o sufren escapes rotos. La máquina de estados extrae subcadenas balanceadas y repara comas sobrantes antes de forzar un reintento. |
-| **Control de Concurrencia** | Lock atómico optimista en MongoDB (`find_one_and_update` con `is_processing`) | Colas pesadas externas (RabbitMQ / Celery) | Aprovecha la base de datos principal sin infraestructura adicional. Evita que webhooks concurrentes de Instagram procesen el mismo lead en paralelo. |
-| **Human-in-the-Loop** | Pre-chequeo en `deliver_messages_node` | Disparo ciego a la API de mensajería | Si el entrenador humano entra al chat y pausa el bot mientras el LLM está infiriendo (2s), el nodo de entrega aborta el envío y no sobrescribe el mensaje del humano. |
-| **Optimización de Coste** | **Anthropic Ephemeral Prompt Caching** | Prompt completo en cada turno | Permite inyectar directivas de tono, objeciones y contexto de negocio extenso con **90% de descuento en tokens de entrada** y una latencia media de ~750ms. |
+| Orchestration | `StateGraph` with 7 nodes | One long linear function | A messaging agent isn't linear — it needs retry loops, conditional branches (billing, sleep hours), and typed state that's explicit instead of implicit |
+| Booking guardrail | Two deterministic layers (explicit confirmation + contextual history check) | Asking the model itself whether to send the link | An extra LLM call for this adds real latency and cost for something a regex and a history check handle in under 2ms |
+| Link injection | A separate function inserts the real URL when `send_booking_link=True` | Letting the model write the URL from memory | Models occasionally get URLs wrong or stale; this way the actual link is always the one on file |
+| JSON parsing | A cascade: strip markdown fences → extract balanced braces → repair trailing commas/smart quotes → retry | Just calling `json.loads()` and hoping | Models don't reliably produce clean JSON, especially under smaller/faster models |
+| Concurrency | Atomic `find_one_and_update` lock in MongoDB | A separate queue (RabbitMQ, Celery) | Didn't want extra infrastructure just to stop two workers from grabbing the same lead at once |
+| Human handoff | A check right before sending | Sending blindly | If a human takes over the chat while the model is still "thinking," the system shouldn't talk over them |
+| Cost | Anthropic's prompt caching on the stable part of the context | Sending the full prompt every turn | The client config and tone rules barely change between turns — caching them cuts token cost significantly |
 
----
+## Demo
 
-## 📱 Demo Interactiva en Vivo (Doble Vista)
+`docs/index.html` is a small interactive demo, deployed via GitHub Pages. One tab is a scripted chat simulator with an "engineering view" toggle that shows which guardrail fired and why at each step; the other is a clickable version of the architecture diagram where you can click into a node and see roughly what it does.
 
-El repositorio incluye una aplicación web de demostración interactiva en `docs/index.html` desplegada en **GitHub Pages**:
+Run it locally:
 
-- 📲 **Pestaña 1: Simulador de Chat & Telemetría**: Interfaz realista de smartphone estilo Instagram/WhatsApp DM con avance paso a paso y panel de telemetría de ingeniería (nodo activo, latencia, prompt caching y payload JSON en vivo).
-- 📊 **Pestaña 2: Diagrama de Arquitectura Interactivo**: Visualizador del grafo de estados en vivo con **nodos clickables**. Permite inspeccionar en tiempo real el código fuente Python de cada nodo, los deltas de memoria de `SetterState` y ejecutar simulaciones de rutas animadas (Happy Path, Inyección de Calendly, Saldo Agotado y Protección de Agente Humano).
-
-Para ejecutar la demo localmente:
-```bash
 open docs/index.html
-```
-O accede al despliegue online: **[Ver Demo en GitHub Pages](https://davidzarandieta.github.io/conversational-ai-agent-langgraph/)**
 
----
 
-## 📂 Estructura del Repositorio
+Or just open the [deployed version](https://davidzarandieta.github.io/conversational-ai-agent-langgraph/).
 
-```text
-├── src/                                # Núcleo de la arquitectura de producción
-│   ├── state.py                        # Definición estricta de SetterState (TypedDict)
-│   ├── graph.py                        # Orquestación de nodos y aristas condicionales
-│   ├── guardrails/
-│   │   ├── booking.py                  # Detección en 2 capas e inyección de Calendly
-│   │   └── safety.py                   # Filtro de estilo y bloqueo de fugas de error
-│   ├── parsers/
-│   │   └── json_cascade.py             # Cascada resiliente de extracción y auto-reparación
-│   ├── concurrency/
-│   │   ├── atomic_lock.py              # Lock find_one_and_update y protección humana
-│   │   └── idempotency.py              # Firma SHA-256 canónica para deduplicación
-│   └── integrations/
-│       └── mock_services.py            # Adaptadores en memoria para testing aislado
+## Structure
+
+├── src/
+│ ├── state.py # SetterState (TypedDict)
+│ ├── graph.py # nodes and conditional edges
+│ ├── guardrails/
+│ │ ├── booking.py # confirmation detection + link injection
+│ │ └── safety.py # style/content filters
+│ ├── parsers/
+│ │ └── json_cascade.py # JSON extraction and repair
+│ ├── concurrency/
+│ │ ├── atomic_lock.py
+│ │ └── idempotency.py
+│ └── integrations/
+│ └── mock_services.py # in-memory adapters for tests
 │
-├── tests/                              # Suite de pruebas automatizadas (15/15 passing)
-│   ├── conftest.py                     # Fixtures base y perfiles de prueba
-│   ├── test_harness.py                 # Los 4 escenarios críticos de negocio
-│   ├── test_guardrails.py              # Pruebas unitarias de detección y filtros
-│   ├── test_json_cascade.py            # Pruebas de resiliencia ante JSON malformado
-│   └── test_concurrency.py             # Pruebas de exclusión mutua e idempotencia
+├── tests/
+│ ├── test_harness.py # the 4 core scenarios
+│ ├── test_guardrails.py
+│ ├── test_json_cascade.py
+│ └── test_concurrency.py
 │
-├── docs/                               # Activos visuales y demo web
-│   ├── architecture-diagram.svg        # Diagrama vectorial SVG de alta resolución
-│   └── index.html                      # Simulador web interactivo para GitHub Pages
+├── docs/
+│ ├── architecture-diagram.svg
+│ └── index.html
 │
-├── pytest.ini                          # Configuración de testing y aislamiento
-├── requirements.txt                    # Dependencias mínimas y probadas
-└── LICENSE                             # Licencia MIT
-```
+├── pytest.ini
+└── requirements.txt
 
----
 
-## 🚀 Inicio Rápido y Ejecución de Tests
+## Running it
 
-Este repositorio está diseñado para ser **100% autónomo y reproducible** sin necesidad de desplegar instancias externas de MongoDB ni contratar API keys para validar su correcto funcionamiento.
+No external MongoDB instance or API keys needed — everything's mocked for testing.
 
-### 1. Clonar el repositorio
-```bash
-git clone https://github.com/tu-usuario/conversational-ai-agent-langgraph.git
+git clone https://github.com/davidzarandieta/conversational-ai-agent-langgraph.git
 cd conversational-ai-agent-langgraph
-```
-
-### 2. Crear entorno virtual e instalar dependencias
-```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-```
-
-### 3. Ejecutar la suite completa de Pytest
-```bash
 PYTHONPATH=. pytest -v
-```
-*Salida esperada:*
-```text
-tests/test_concurrency.py::test_atomic_lock_acquisition_and_race_prevention PASSED
-tests/test_concurrency.py::test_atomic_lock_rejects_paused_or_billing_locked_users PASSED
-tests/test_concurrency.py::test_sha256_idempotency_determinism PASSED
-tests/test_guardrails.py::test_detect_explicit_booking_confirmation PASSED
-tests/test_guardrails.py::test_detect_contextual_booking_confirmation PASSED
-tests/test_guardrails.py::test_ensure_booking_link_message PASSED
-tests/test_guardrails.py::test_apply_style_and_safety_guardrails PASSED
-tests/test_harness.py::test_escenario_1_happy_path PASSED
-tests/test_harness.py::test_escenario_2_booking_link_injection PASSED
-tests/test_harness.py::test_escenario_3_billing_lock PASSED
-tests/test_harness.py::test_escenario_4_human_intervention PASSED
-tests/test_json_cascade.py::test_strip_markdown_json_fence PASSED
-tests/test_json_cascade.py::test_extract_json_object_candidates_with_conversational_filler PASSED
-tests/test_json_cascade.py::test_try_parse_model_json_with_trailing_commas_and_smart_quotes PASSED
-tests/test_json_cascade.py::test_parse_json_from_model_output_full_cascade PASSED
 
-============================== 15 passed in 0.45s ==============================
-```
 
-### 4. Ejecutar el Test Harness interactivo directo
-```bash
-PYTHONPATH=. python tests/test_harness.py
-```
+## About the sanitization
 
----
+This is a cleaned-up version of a real system running in production with a paying customer. Client name, phone numbers, booking URLs, and anything specific to their business have been replaced with generic fixtures ("Alpha Coaching", `cliente_test_gym`, a fake Calendly link). The architecture and the bugs it fixes are real; the business details aren't.
 
-## 🛡️ Declaración de Sanitización y Propiedad Intelectual
+Shared for portfolio and evaluation purposes. See [`LICENSE`](LICENSE) — please don't reuse the code commercially without asking first.
 
-Este repositorio es una **implementación de referencia de demostración** derivada de sistemas conversacionales en producción. 
+## Author
 
-- **Sanitización de Datos**: Todos los nombres comerciales, credenciales, números de teléfono, URLs de agenda y comentarios de negocio específicos del cliente han sido completamente sustituidos por fixtures genéricos (*"Alpha Coaching"*, `cliente_test_gym`, `https://calendly.com/alpha-coaching/30min`).
-- **Propiedad Intelectual y Licencia**: **Copyright © 2026 David Zarandieta Ortiz. All rights reserved.** 
-  Este código se comparte públicamente exclusivamente con fines educativos, de portfolio y de evaluación técnica durante procesos de selección. Queda **expresamente prohibida la copia, reproducción, redistribución o explotación comercial** total o parcial de esta arquitectura, código o patrones sin la autorización previa y por escrito del autor. Consultar [`LICENSE`](LICENSE) para más detalles.
-
----
-
-## 👨‍💻 Autor
-
-Desarrollado y estructurado por **David Zarandieta** — Especialista en Arquitectura de Agentes de IA, LangGraph y LLMOps.
-- [GitHub](https://github.com/davidzarandieta)
+David Zarandieta Ortiz — [GitHub](https://github.com/davidzarandieta)
