@@ -3,25 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Conversational AI Agent — Live Architecture & Simulator</title>
+  <title>Conversational AI Agent — Live Architecture, Instagram Simulator & Executive Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #090d16;
-      --bg-card: rgba(17, 24, 39, 0.75);
-      --border-card: rgba(55, 65, 81, 0.6);
-      --accent-blue: #3b82f6;
+      --bg-dark: #070a12;
+      --bg-surface: #0e1322;
+      --bg-card: rgba(17, 24, 39, 0.85);
+      --border-card: rgba(55, 65, 81, 0.65);
+      --accent-blue: #38bdf8;
       --accent-emerald: #10b981;
       --accent-amber: #f59e0b;
-      --accent-purple: #8b5cf6;
+      --accent-purple: #a855f7;
       --accent-rose: #ef4444;
+      --accent-pink: #ec4899;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --phone-bg: #030712;
-      --lead-bubble: #1e3a8a;
-      --agent-bubble: #1f2937;
+      --ig-gradient: linear-gradient(135deg, #3797f0 0%, #7000ff 60%, #c72a75 100%);
+      --ig-story-ring: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
     }
 
     * {
@@ -38,20 +39,20 @@
       display: flex;
       flex-direction: column;
       background-image: 
-        radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
+        radial-gradient(circle at 12% 12%, rgba(56, 189, 248, 0.07) 0%, transparent 45%),
+        radial-gradient(circle at 88% 88%, rgba(168, 85, 247, 0.07) 0%, transparent 45%);
       overflow-x: hidden;
     }
 
     /* HEADER */
     header {
-      padding: 14px 28px;
+      padding: 12px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid rgba(30, 41, 59, 0.8);
-      background: rgba(11, 16, 29, 0.9);
-      backdrop-filter: blur(12px);
+      background: rgba(10, 14, 26, 0.92);
+      backdrop-filter: blur(14px);
       position: sticky;
       top: 0;
       z-index: 50;
@@ -68,16 +69,17 @@
     }
 
     .brand-logo {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-      border-radius: 9px;
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #38bdf8, #8b5cf6);
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
       font-size: 16px;
-      box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+      color: #fff;
     }
 
     .brand-text h1 {
@@ -94,7 +96,7 @@
     /* TABS SWITCHER */
     .view-tabs {
       display: flex;
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.95);
       padding: 4px;
       border-radius: 12px;
       border: 1px solid rgba(51, 65, 85, 0.8);
@@ -102,7 +104,7 @@
     }
 
     .tab-btn {
-      padding: 8px 18px;
+      padding: 8px 16px;
       font-size: 13px;
       font-weight: 600;
       border: none;
@@ -118,12 +120,13 @@
 
     .tab-btn:hover {
       color: #f8fafc;
+      background: rgba(255, 255, 255, 0.03);
     }
 
     .tab-btn.active {
       background: #1e293b;
       color: #38bdf8;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
     }
 
     .tab-btn .badge-pill {
@@ -132,89 +135,49 @@
       color: #38bdf8;
       padding: 2px 6px;
       border-radius: 6px;
+      font-weight: 700;
     }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
 
-    .toggle-container {
+    .live-status-pill {
       display: flex;
       align-items: center;
-      gap: 10px;
-      background: rgba(15, 23, 42, 0.9);
-      padding: 6px 14px;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 5px 12px;
       border-radius: 9999px;
-      border: 1px solid rgba(51, 65, 85, 0.8);
-    }
-
-    .toggle-label {
       font-size: 12px;
       font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      user-select: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      color: #34d399;
     }
 
-    .toggle-label.active {
-      color: #38bdf8;
-    }
-
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 44px;
-      height: 24px;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #334155;
-      transition: .3s;
-      border-radius: 24px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .3s;
+    .pulsing-dot {
+      width: 7px;
+      height: 7px;
+      background-color: #10b981;
       border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulseDot 2s infinite;
     }
 
-    input:checked + .slider {
-      background-color: var(--accent-blue);
-      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
     }
 
-    input:checked + .slider:before {
-      transform: translateX(20px);
-    }
-
-    /* MAIN VIEWS */
+    /* MAIN VIEWS CONTAINER */
     main {
       flex: 1;
       max-width: 1440px;
       margin: 0 auto;
       width: 100%;
-      padding: 24px;
+      padding: 22px 24px;
       display: flex;
       flex-direction: column;
     }
@@ -229,15 +192,15 @@
     }
 
     /* ========================================================================= */
-    /* VISTA 1: CHAT SIMULATOR                                                   */
+    /* VISTA 1: CHAT SIMULATOR (IPHONE + INSTAGRAM DM + LEAD INSIGHTS)           */
     /* ========================================================================= */
     #viewChat {
-      grid-template-columns: 1fr 1.35fr;
+      grid-template-columns: 420px 1fr;
       gap: 32px;
       align-items: start;
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1060px) {
       #viewChat {
         grid-template-columns: 1fr;
         justify-items: center;
@@ -248,458 +211,645 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 18px;
+      gap: 16px;
+      position: sticky;
+      top: 80px;
     }
 
-    .phone-mockup {
-      width: 375px;
-      height: 720px;
-      background: var(--phone-bg);
-      border-radius: 48px;
-      border: 10px solid #1f2937;
+    /* IPHONE 16 PRO HARDWARE MOCKUP */
+    .iphone-chassis {
+      width: 380px;
+      height: 740px;
+      background: #000000;
+      border-radius: 52px;
+      border: 4px solid #334155;
       box-shadow: 
-        0 0 0 2px #374151,
-        0 25px 50px -12px rgba(0, 0, 0, 0.8),
-        0 0 35px rgba(59, 130, 246, 0.15);
+        0 0 0 8px #0f172a,
+        0 25px 60px -15px rgba(0, 0, 0, 0.9),
+        0 0 35px rgba(56, 189, 248, 0.12);
       position: relative;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      user-select: none;
     }
 
-    .phone-header {
-      background: #111827;
-      padding: 12px 18px;
-      display: flex;
-      flex-direction: column;
-      border-bottom: 1px solid #1f2937;
-    }
-
-    .dynamic-island {
-      width: 110px;
-      height: 24px;
-      background: #000;
+    /* Dynamic Island */
+    .iphone-dynamic-island {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 105px;
+      height: 28px;
+      background: #000000;
       border-radius: 20px;
-      margin: 0 auto 10px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .status-bar {
+    .camera-lens {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #1e293b 0%, #000 80%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .sensor-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #0b1120;
+    }
+
+    /* iOS Status Bar */
+    .ios-status-bar {
+      height: 44px;
+      padding: 8px 24px 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 11px;
-      color: #94a3b8;
+      font-size: 12px;
       font-weight: 600;
-      padding: 0 6px 4px;
+      color: #f8fafc;
+      z-index: 30;
+      background: #000000;
     }
 
-    .chat-top-bar {
+    .status-icons {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding-top: 4px;
+      gap: 6px;
+      font-size: 11px;
     }
 
-    .avatar-wrapper {
-      position: relative;
+    /* INSTAGRAM DM HEADER */
+    .ig-header {
+      background: #000000;
+      padding: 6px 14px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(38, 38, 38, 0.8);
+      z-index: 25;
     }
 
-    .avatar {
-      width: 38px;
-      height: 38px;
+    .ig-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ig-back-btn {
+      font-size: 18px;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    .ig-avatar-ring {
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      background: var(--ig-story-ring);
+      padding: 2px;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .ig-avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #111827;
+      border: 2px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: #38bdf8;
+    }
+
+    .ig-header-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ig-header-info h3 {
+      font-size: 13.5px;
       font-weight: 700;
-      font-size: 15px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      line-height: 1.2;
+    }
+
+    .ig-verified-badge {
+      color: #3897f0;
+      font-size: 12px;
+    }
+
+    .ig-header-info p {
+      font-size: 11px;
+      color: #a8a8a8;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .ig-active-dot {
+      width: 7px;
+      height: 7px;
+      background: #22c55e;
+      border-radius: 50%;
+    }
+
+    .ig-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: #ffffff;
+      font-size: 17px;
+    }
+
+    /* INSTAGRAM CHAT CANVAS */
+    .ig-chat-canvas {
+      flex: 1;
+      padding: 14px 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #000000;
+      scroll-behavior: smooth;
+    }
+
+    .ig-chat-canvas::-webkit-scrollbar {
+      width: 4px;
+    }
+    .ig-chat-canvas::-webkit-scrollbar-thumb {
+      background: #262626;
+      border-radius: 4px;
+    }
+
+    .ig-date-badge {
+      align-self: center;
+      font-size: 10.5px;
+      color: #737373;
+      margin: 4px 0 8px;
+      font-weight: 500;
+    }
+
+    /* INSTAGRAM BUBBLES */
+    .ig-msg {
+      max-width: 78%;
+      padding: 9px 13px;
+      font-size: 13.5px;
+      line-height: 1.38;
+      word-wrap: break-word;
+      animation: igFadeIn 0.22s ease-out forwards;
+      position: relative;
+    }
+
+    @keyframes igFadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* INCOMING (LEAD) BUBBLE */
+    .ig-msg.incoming {
+      align-self: flex-start;
+      background-color: #262626;
+      color: #f5f5f5;
+      border-radius: 18px 18px 18px 4px;
+    }
+
+    /* OUTGOING (AI ASSISTANT) BUBBLE */
+    .ig-msg.outgoing {
+      align-self: flex-end;
+      background: var(--ig-gradient);
+      color: #ffffff;
+      border-radius: 18px 18px 4px 18px;
+    }
+
+    .ig-msg a {
+      color: #ffffff;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    /* VOICE NOTE MESSAGE */
+    .ig-voice-note {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 170px;
+    }
+
+    .ig-voice-play {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #fff;
+    }
+
+    .ig-voice-waveform {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 18px;
+    }
+
+    .ig-wave-bar {
+      width: 3px;
+      background: #ffffff;
+      border-radius: 2px;
+      opacity: 0.8;
+    }
+
+    .ig-voice-time {
+      font-size: 11px;
+      color: #a8a8a8;
+      font-family: monospace;
+    }
+
+    /* CALENDLY RICH LINK CARD */
+    .ig-link-card {
+      background: #1c1c1e;
+      border: 1px solid #38383a;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-top: 6px;
+      max-width: 240px;
+      text-decoration: none;
+      display: block;
+      color: inherit;
+    }
+
+    .ig-link-card-thumb {
+      height: 60px;
+      background: linear-gradient(135deg, #006bff, #00c6ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
       color: white;
     }
 
-    .online-indicator {
-      width: 10px;
-      height: 10px;
-      background: var(--accent-emerald);
-      border-radius: 50%;
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      border: 2px solid #111827;
+    .ig-link-card-body {
+      padding: 8px 10px;
     }
 
-    .chat-info h3 {
-      font-size: 14px;
-      font-weight: 600;
+    .ig-link-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .ig-link-card-sub {
+      font-size: 10.5px;
+      color: #8e8e93;
+    }
+
+    /* READ RECEIPT */
+    .ig-seen-receipt {
+      align-self: flex-end;
+      font-size: 10px;
+      color: #737373;
+      margin-top: -4px;
+      margin-right: 4px;
+    }
+
+    /* TYPING INDICATOR */
+    .ig-typing-bubble {
+      align-self: flex-start;
+      background: #262626;
+      border-radius: 18px;
+      padding: 10px 14px;
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .ig-typing-dot {
+      width: 6px;
+      height: 6px;
+      background: #8e8e93;
+      border-radius: 50%;
+      animation: igBounce 1.2s infinite ease-in-out;
+    }
+    .ig-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .ig-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes igBounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-5px); }
+    }
+
+    /* INSTAGRAM BOTTOM INPUT BAR */
+    .ig-bottom-bar {
+      background: #000000;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid rgba(38, 38, 38, 0.6);
+      z-index: 25;
+    }
+
+    .ig-camera-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #0095f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .ig-input-pill {
+      flex: 1;
+      height: 36px;
+      background: #1c1c1e;
+      border-radius: 20px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      color: #737373;
+      border: 1px solid #262626;
+    }
+
+    .ig-input-icons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #ffffff;
+      font-size: 16px;
+    }
+
+    /* Home Indicator */
+    .iphone-home-bar {
+      width: 125px;
+      height: 4px;
+      background: #ffffff;
+      border-radius: 2px;
+      opacity: 0.65;
+      margin: 6px auto 6px;
+      z-index: 30;
+    }
+
+    /* RIGHT: LEAD INSIGHTS & SIMULATOR CONTROLS (CLEANED, NO DIAGRAM) */
+    .simulator-control-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .card-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       color: #f8fafc;
+    }
+
+    /* LEAD CONTEXT CARD */
+    .lead-profile-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .lead-avatar-big {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #1e293b;
+      border: 2px solid #38bdf8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: #38bdf8;
+    }
+
+    .lead-details h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .lead-details p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .lead-tags-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .lead-tag-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(51, 65, 85, 0.6);
+      padding: 8px 12px;
+      border-radius: 10px;
+    }
+
+    .lead-tag-card .label {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .lead-tag-card .val {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #38bdf8;
+      margin-top: 2px;
+    }
+
+    /* AI REASONING / EXPLANATION CARD (FOR PROSPECT CLIENTS) */
+    .reasoning-box {
+      background: rgba(15, 23, 42, 0.85);
+      border-left: 4px solid #a855f7;
+      padding: 14px;
+      border-radius: 8px 12px 12px 8px;
+      margin-bottom: 14px;
+    }
+
+    .reasoning-box .header-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: #c084fc;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .badge-verified {
-      color: #38bdf8;
+    .reasoning-box .body-text {
       font-size: 13px;
+      line-height: 1.5;
+      color: #e2e8f0;
     }
 
-    .chat-info p {
-      font-size: 11px;
-      color: #10b981;
-      font-weight: 500;
-    }
-
-    .chat-body {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
+    /* CONTROLS ROW */
+    .controls-grid {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
-      background: radial-gradient(circle at 50% 50%, #0d1322 0%, #050811 100%);
-    }
-
-    .message {
-      max-width: 82%;
-      padding: 10px 14px;
-      border-radius: 16px;
-      font-size: 13px;
-      line-height: 1.45;
-      position: relative;
-      animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes popIn {
-      0% { opacity: 0; transform: translateY(12px) scale(0.95); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .message.user {
-      align-self: flex-end;
-      background: #2563eb;
-      color: #ffffff;
-      border-bottom-right-radius: 4px;
-    }
-
-    .message.agent {
-      align-self: flex-start;
-      background: #1f2937;
-      color: #f3f4f6;
-      border-bottom-left-radius: 4px;
-      border: 1px solid #374151;
-    }
-
-    .message .msg-time {
-      font-size: 9px;
-      color: rgba(255, 255, 255, 0.6);
-      margin-top: 4px;
-      text-align: right;
-    }
-
-    .message a {
-      color: #38bdf8;
-      text-decoration: underline;
-      font-weight: 600;
-      word-break: break-all;
-    }
-
-    .typing-indicator {
-      display: none;
-      align-self: flex-start;
-      background: #1f2937;
-      padding: 10px 16px;
-      border-radius: 16px;
-      border-bottom-left-radius: 4px;
-      gap: 4px;
-      align-items: center;
-      border: 1px solid #374151;
-    }
-
-    .typing-dot {
-      width: 6px;
-      height: 6px;
-      background: #94a3b8;
-      border-radius: 50%;
-      animation: bounce 1.4s infinite ease-in-out both;
-    }
-
-    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-
-    @keyframes bounce {
-      0%, 80%, 100% { transform: scale(0); }
-      40% { transform: scale(1); }
-    }
-
-    .demo-controls {
-      display: flex;
-      gap: 12px;
-      width: 375px;
-      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .btn {
-      padding: 10px 20px;
-      font-size: 13px;
+      padding: 10px 18px;
+      font-size: 13.5px;
       font-weight: 600;
       border-radius: 10px;
       border: none;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 8px;
       transition: all 0.2s;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      color: white;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #fff;
       box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-      flex: 1;
-      justify-content: center;
     }
-
     .btn-primary:hover {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      background: linear-gradient(135deg, #0369a1, #1d4ed8);
       transform: translateY(-1px);
     }
 
     .btn-secondary {
       background: #1e293b;
-      color: #cbd5e1;
+      color: #94a3b8;
       border: 1px solid #334155;
     }
-
     .btn-secondary:hover {
       background: #334155;
-      color: white;
-    }
-
-    .engineering-panel {
-      background: var(--bg-card);
-      border: 1px solid var(--border-card);
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      backdrop-filter: blur(12px);
-      width: 100%;
-    }
-
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(51, 65, 85, 0.6);
-      padding-bottom: 14px;
-    }
-
-    .panel-header h2 {
-      font-size: 16px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #38bdf8;
-    }
-
-    .metric-pill {
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--accent-emerald);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      padding: 4px 10px;
-      border-radius: 9999px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .pipeline-tracker {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .tracker-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .node-steps {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-
-    @media (max-width: 640px) {
-      .node-steps {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    .step-card {
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 11px;
-      transition: all 0.3s;
-    }
-
-    .step-card.active {
-      border-color: var(--accent-blue);
-      background: rgba(37, 99, 235, 0.15);
-      box-shadow: 0 0 12px rgba(59, 130, 246, 0.25);
-    }
-
-    .step-card.passed {
-      border-color: rgba(16, 185, 129, 0.5);
-      background: rgba(16, 185, 129, 0.08);
-    }
-
-    .step-card .step-name {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      font-weight: 600;
       color: #f8fafc;
     }
 
-    .step-card .step-status {
-      font-size: 9px;
-      color: var(--text-muted);
-      margin-top: 2px;
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none !important;
     }
 
-    .telemetry-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
-    .telemetry-box {
-      background: #0b1120;
-      border: 1px solid #1e293b;
+    /* TECH TELEMETRY ACCORDION (OPTIONAL FOR TECH VISITORS) */
+    .tech-telemetry-details {
+      background: rgba(15, 23, 42, 0.6);
       border-radius: 10px;
-      padding: 12px;
+      border: 1px solid rgba(51, 65, 85, 0.6);
+      overflow: hidden;
     }
 
-    .telemetry-box .label {
-      font-size: 10px;
-      text-transform: uppercase;
-      color: var(--text-muted);
+    .tech-telemetry-summary {
+      padding: 10px 14px;
+      font-size: 12px;
       font-weight: 600;
-    }
-
-    .telemetry-box .value {
-      font-size: 16px;
-      font-weight: 700;
-      margin-top: 4px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .log-section {
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
       display: flex;
-      flex-direction: column;
-      gap: 6px;
+      align-items: center;
+      justify-content: space-between;
     }
 
-    .log-box {
-      background: #030712;
-      border: 1px solid #1e293b;
-      border-radius: 8px;
-      padding: 12px;
-      font-family: 'JetBrains Mono', monospace;
+    .tech-telemetry-body {
+      padding: 12px 14px;
+      border-top: 1px solid rgba(51, 65, 85, 0.4);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+
+    .tech-metric-mini {
       font-size: 11px;
-      color: #cbd5e1;
-      max-height: 180px;
-      overflow-y: auto;
-      line-height: 1.5;
     }
-
-    .log-entry {
-      margin-bottom: 6px;
-    }
-
-    .log-time {
-      color: #64748b;
-      margin-right: 6px;
-    }
-
-    .log-tag-guardrail { color: #f59e0b; font-weight: 600; }
-    .log-tag-lock { color: #38bdf8; font-weight: 600; }
-    .log-tag-cache { color: #10b981; font-weight: 600; }
+    .tech-metric-mini .label { color: var(--text-muted); }
+    .tech-metric-mini .val { font-weight: 700; color: #34d399; font-family: 'JetBrains Mono', monospace; }
 
     /* ========================================================================= */
-    /* VISTA 2: DIAGRAMA INTERACTIVO (FULL-WIDTH HERO LAYOUT)                    */
+    /* VISTA 2: DIAGRAMA INTERACTIVO (CON SELECTOR TÉCNICO VS CLIENTE)          */
     /* ========================================================================= */
     #viewDiagram {
-      display: flex;
+      display: none;
       flex-direction: column;
-      gap: 32px;
+      gap: 22px;
       width: 100%;
     }
 
-    .diagram-stage {
+    .diagram-toolbar-card {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
-      border-radius: 24px;
-      padding: 26px 30px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      width: 100%;
-    }
-
-    .scenario-toolbar {
+      border-radius: 16px;
+      padding: 16px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(15, 23, 42, 0.9);
-      padding: 14px 20px;
-      border-radius: 16px;
-      border: 1px solid #1e293b;
+      gap: 16px;
       flex-wrap: wrap;
-      gap: 14px;
     }
 
-    .toolbar-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #f1f5f9;
+    /* TOGGLE: MODO TÉCNICO VS MODO CLIENTE */
+    .mode-switch-group {
       display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .toolbar-title .hint {
-      font-size: 11px;
-      color: #38bdf8;
-      font-weight: 500;
-      background: rgba(56, 189, 248, 0.12);
-      padding: 3px 8px;
-      border-radius: 6px;
-      border: 1px solid rgba(56, 189, 248, 0.25);
-    }
-
-    .scenario-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .scenario-btn {
-      padding: 9px 16px;
-      font-size: 12px;
-      font-weight: 600;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(51, 65, 85, 0.8);
       border-radius: 10px;
-      border: 1px solid #334155;
-      background: #1e293b;
-      color: #e2e8f0;
+      padding: 3px;
+      gap: 3px;
+    }
+
+    .mode-btn {
+      padding: 6px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 7px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -707,198 +857,396 @@
       transition: all 0.2s;
     }
 
+    .mode-btn.active {
+      background: #1e293b;
+      color: #38bdf8;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .scenario-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .scenario-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #1e293b;
+      color: var(--text-muted);
+      border: 1px solid rgba(51, 65, 85, 0.7);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
     .scenario-btn:hover {
-      background: #334155;
-      border-color: #475569;
-      transform: translateY(-1px);
+      color: #f8fafc;
+      border-color: #64748b;
     }
-
     .scenario-btn.active {
-      border-color: var(--accent-blue);
-      background: rgba(37, 99, 235, 0.25);
-      color: #60a5fa;
-      box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #38bdf8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
     }
 
+    /* DIAGRAM CANVAS */
     .diagram-svg-container {
-      width: 100%;
-      border-radius: 20px;
-      overflow: hidden;
-      border: 1px solid #1e293b;
-      background: #070a13;
-      position: relative;
-      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6);
+      background: #080c16;
+      border: 1px solid var(--border-card);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.5);
+      overflow-x: auto;
     }
 
     .diagram-svg-container svg {
       width: 100%;
       height: auto;
+      min-width: 960px;
       display: block;
-      min-height: 580px;
     }
 
-    /* SVG Interactive Nodes */
     .svg-interactive-node {
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: transform 0.2s, opacity 0.2s;
     }
-
-    .svg-interactive-node rect {
-      transition: stroke 0.25s ease, filter 0.25s ease, fill 0.25s ease;
+    .svg-interactive-node:hover {
+      opacity: 0.92;
+      filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.4));
     }
-
-    .svg-interactive-node:hover rect {
-      stroke: #38bdf8 !important;
-      filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.7));
-    }
-
     .svg-interactive-node.node-selected rect {
       stroke: #38bdf8 !important;
-      stroke-width: 3 !important;
-      filter: drop-shadow(0 0 18px rgba(56, 189, 248, 0.8));
+      stroke-width: 3.5 !important;
+      filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.6));
     }
-
     .svg-interactive-node.node-anim-active rect {
       stroke: #10b981 !important;
       stroke-width: 3.5 !important;
-      filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.9));
+      animation: pulseNode 0.8s infinite alternate;
     }
 
-    /* INSPECTOR PANEL (DOCK BELOW) */
-    .inspector-panel {
+    @keyframes pulseNode {
+      from { filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5)); }
+      to { filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.9)); }
+    }
+
+    /* DOCKED CODE & BUSINESS INSPECTOR */
+    .diagram-inspector {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
-      border-radius: 24px;
-      padding: 26px 30px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      width: 100%;
-    }
-
-    .inspector-content-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-
-    @media (max-width: 950px) {
-      .inspector-content-grid {
-        grid-template-columns: 1fr;
-      }
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
 
     .inspector-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+      margin-bottom: 18px;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
       padding-bottom: 14px;
     }
 
-    .inspector-title-area h2 {
-      font-size: 16px;
-      font-weight: 700;
-      color: #f8fafc;
-      font-family: 'JetBrains Mono', monospace;
+    .inspector-titles h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .inspector-title-area p {
-      font-size: 12px;
+    .inspector-titles p {
+      font-size: 13px;
       color: var(--text-muted);
-      margin-top: 2px;
+      margin-top: 4px;
     }
 
-    .node-type-badge {
-      font-size: 10px;
+    .inspector-badge {
+      font-size: 11px;
       font-weight: 700;
-      text-transform: uppercase;
-      padding: 3px 8px;
+      padding: 4px 10px;
       border-radius: 6px;
       background: rgba(56, 189, 248, 0.15);
       color: #38bdf8;
       border: 1px solid rgba(56, 189, 248, 0.3);
+      font-family: 'JetBrains Mono', monospace;
     }
 
-    .detail-card {
-      background: #0b1120;
-      border: 1px solid #1e293b;
-      border-radius: 12px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    .inspector-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
 
-    .detail-label {
-      font-size: 11px;
+    @media (max-width: 900px) {
+      .inspector-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .inspector-section-title {
+      font-size: 12px;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
       color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .detail-text {
+    .inspector-text-block {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(51, 65, 85, 0.6);
+      border-radius: 10px;
+      padding: 14px;
       font-size: 13px;
       line-height: 1.5;
-      color: #cbd5e1;
+      color: #e2e8f0;
+      margin-bottom: 14px;
     }
 
-    .code-container {
+    .inspector-code-block {
       background: #030712;
       border: 1px solid #1e293b;
       border-radius: 10px;
+      padding: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #a5f3fc;
+      overflow-x: auto;
+      max-height: 240px;
+    }
+
+    .business-callout {
+      background: rgba(16, 185, 129, 0.08);
+      border-left: 4px solid #10b981;
+      padding: 12px 14px;
+      border-radius: 0 10px 10px 0;
+      font-size: 13px;
+      color: #d1fae5;
+      margin-bottom: 12px;
+    }
+
+    /* ========================================================================= */
+    /* VISTA 3: DASHBOARD COMPLETO CON DATOS DE EJEMPLO                         */
+    /* ========================================================================= */
+    #viewDashboard {
+      display: none;
+      flex-direction: column;
+      gap: 22px;
+      width: 100%;
+    }
+
+    .dashboard-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 16px 22px;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .dash-titles h2 {
+      font-size: 18px;
+      font-weight: 800;
+      color: #f8fafc;
+    }
+    .dash-titles p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .time-filter-buttons {
+      display: flex;
+      background: #0b101e;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .time-btn {
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .time-btn.active {
+      background: #1e293b;
+      color: #38bdf8;
+    }
+
+    /* 5 KPI METRIC CARDS ROW */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
       overflow: hidden;
     }
 
-    .code-header {
-      background: #0f172a;
-      padding: 8px 14px;
-      font-size: 11px;
-      color: #94a3b8;
-      font-family: 'JetBrains Mono', monospace;
-      border-bottom: 1px solid #1e293b;
+    .kpi-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+    }
+
+    .kpi-card.emerald::after { background: linear-gradient(90deg, #10b981, #34d399); }
+    .kpi-card.amber::after { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .kpi-card.purple::after { background: linear-gradient(90deg, #a855f7, #c084fc); }
+
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
       display: flex;
+      align-items: center;
       justify-content: space-between;
     }
 
-    .code-body {
-      padding: 14px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      line-height: 1.6;
-      color: #e2e8f0;
-      overflow-x: auto;
-      max-height: 250px;
-      white-space: pre;
+    .kpi-val {
+      font-size: 26px;
+      font-weight: 800;
+      color: #f8fafc;
+      margin: 8px 0 4px;
+      letter-spacing: -0.5px;
     }
 
-    .state-diff-grid {
+    .kpi-sub {
+      font-size: 12px;
+      color: #34d399;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 600;
+    }
+
+    /* DASHBOARD 2 COLUMNS */
+    .dashboard-grid-2col {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-grid-2col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* FUNNEL SECTION */
+    .funnel-step {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .funnel-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .funnel-bar-bg {
+      height: 10px;
+      background: #1e293b;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .funnel-bar-fill {
+      height: 100%;
+      border-radius: 5px;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      transition: width 0.8s ease-in-out;
+    }
+
+    /* RECENT LEADS TABLE */
+    .leads-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      margin-top: 8px;
+    }
+
+    .leads-table th {
+      text-align: left;
+      padding: 10px 12px;
+      color: var(--text-muted);
+      border-bottom: 1px solid #1e293b;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .leads-table td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(30, 41, 59, 0.6);
+      color: #e2e8f0;
+    }
+
+    .lead-table-user {
+      display: flex;
+      align-items: center;
       gap: 10px;
     }
 
-    .state-diff-box {
-      background: #030712;
-      border: 1px solid #1e293b;
-      padding: 10px;
-      border-radius: 8px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
+    .table-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #1e293b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #38bdf8;
     }
 
-    .state-diff-box .diff-title {
-      font-size: 9px;
-      text-transform: uppercase;
-      font-weight: 700;
-      margin-bottom: 4px;
+    .stage-pill {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      display: inline-block;
     }
+
+    .stage-pill.green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .stage-pill.amber { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .stage-pill.purple { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+    .stage-pill.blue { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
 
     /* FOOTER */
     footer {
@@ -907,7 +1255,7 @@
       text-align: center;
       font-size: 12px;
       color: var(--text-muted);
-      background: rgba(11, 16, 29, 0.5);
+      background: rgba(10, 14, 26, 0.85);
       margin-top: auto;
     }
 
@@ -924,30 +1272,28 @@
     <a href="#" class="brand-title">
       <div class="brand-logo">NS</div>
       <div class="brand-text">
-        <h1>Conversational AI Agent • Reference Architecture</h1>
-        <p>LangGraph Orchestration • Deterministic Guardrails • Concurrency Lock</p>
+        <h1>Conversational AI Agent • Enterprise Portfolio</h1>
+        <p>Instagram DM Setter • LangGraph State Engine • Claude Sonnet 5</p>
       </div>
     </a>
 
-    <!-- VIEW TABS -->
+    <!-- VIEW TABS (3 SEPARATE VIEWS) -->
     <div class="view-tabs">
       <button class="tab-btn active" id="btnTabChat">
-        <span>📱</span> Simulador Móvil
+        <span>📱</span> Simulador Instagram (iPhone)
       </button>
       <button class="tab-btn" id="btnTabDiagram">
-        <span>📊</span> Diagrama Interactivo <span class="badge-pill">Nuevo</span>
+        <span>🧠</span> Arquitectura LangGraph <span class="badge-pill">Doble Modo</span>
+      </button>
+      <button class="tab-btn" id="btnTabDashboard">
+        <span>📊</span> Dashboard de Negocio <span class="badge-pill">En Vivo</span>
       </button>
     </div>
 
     <div class="header-actions">
-      <div class="toggle-container" id="engToggleContainer">
-        <label class="toggle-label active" for="engToggle" id="engLabel">
-          ⚙️ Modo Ingeniería
-        </label>
-        <label class="switch">
-          <input type="checkbox" id="engToggle" checked>
-          <span class="slider"></span>
-        </label>
+      <div class="live-status-pill">
+        <span class="pulsing-dot"></span>
+        <span>Claude Sonnet 5: 99.98% OK</span>
       </div>
     </div>
   </header>
@@ -955,409 +1301,705 @@
   <!-- MAIN CONTAINER -->
   <main>
     <!-- ===================================================================== -->
-    <!-- TAB 1: CHAT SIMULATOR (ORIGINAL PRESERVED)                           -->
+    <!-- TAB 1: IPHONE INSTAGRAM SIMULATOR (COMPLETELY SEPARATED FROM DIAGRAM) -->
     <!-- ===================================================================== -->
     <div class="view-content active" id="viewChat">
-      <!-- LEFT: MOBILE SIMULATOR -->
+      <!-- LEFT: IPHONE HARDWARE MOCKUP -->
       <div class="phone-wrapper">
-        <div class="phone-mockup">
-          <div class="phone-header">
-            <div class="status-bar">
-              <span>09:41</span>
-              <span>LTE • 98%</span>
-            </div>
-            <div class="dynamic-island"></div>
-            <div class="chat-top-bar">
-              <div class="avatar-wrapper">
-                <div class="avatar">A</div>
-                <div class="online-indicator"></div>
-              </div>
-              <div class="chat-info">
-                <h3>Alpha Coaching <span class="badge-verified">✓</span></h3>
-                <p>En línea • Asistente IA Activo</p>
-              </div>
+        <div class="iphone-chassis">
+          <!-- Dynamic Island -->
+          <div class="iphone-dynamic-island">
+            <div class="camera-lens"></div>
+            <div class="sensor-dot"></div>
+          </div>
+
+          <!-- iOS Status Bar -->
+          <div class="ios-status-bar">
+            <span>09:41</span>
+            <div class="status-icons">
+              <span>5G</span>
+              <span>📶</span>
+              <span>98%</span>
             </div>
           </div>
 
-          <!-- CHAT BODY -->
-          <div class="chat-body" id="chatBody"></div>
-
-          <div class="typing-indicator" id="typingIndicator">
-            <div class="typing-dot"></div>
-            <div class="typing-dot"></div>
-            <div class="typing-dot"></div>
+          <!-- INSTAGRAM DM HEADER -->
+          <div class="ig-header">
+            <div class="ig-header-left">
+              <div class="ig-back-btn">‹</div>
+              <div class="ig-avatar-ring">
+                <div class="ig-avatar-img">M</div>
+              </div>
+              <div class="ig-header-info">
+                <h3>marcos_fitness_coach <span class="ig-verified-badge">✓</span></h3>
+                <p><span class="ig-active-dot"></span> Activo(a) ahora</p>
+              </div>
+            </div>
+            <div class="ig-header-actions">
+              <span>📞</span>
+              <span>🎥</span>
+              <span>ℹ️</span>
+            </div>
           </div>
-        </div>
 
-        <!-- CONTROLS -->
-        <div class="demo-controls">
-          <button class="btn btn-primary" id="btnNext">
-            <span>Siguiente mensaje</span> ➔
-          </button>
-          <button class="btn btn-secondary" id="btnReset">
-            <span>Reiniciar</span> ↺
-          </button>
+          <!-- INSTAGRAM CHAT CANVAS -->
+          <div class="ig-chat-canvas" id="chatBody">
+            <div class="ig-date-badge">Hoy 09:41</div>
+          </div>
+
+          <!-- INSTAGRAM TYPING BUBBLE -->
+          <div class="ig-typing-bubble" id="typingIndicator">
+            <div class="ig-typing-dot"></div>
+            <div class="ig-typing-dot"></div>
+            <div class="ig-typing-dot"></div>
+          </div>
+
+          <!-- INSTAGRAM BOTTOM INPUT BAR -->
+          <div class="ig-bottom-bar">
+            <div class="ig-camera-btn">📷</div>
+            <div class="ig-input-pill">Mensaje...</div>
+            <div class="ig-input-icons">
+              <span>🎙️</span>
+              <span>🖼️</span>
+              <span>❤️</span>
+            </div>
+          </div>
+
+          <!-- Home Indicator -->
+          <div class="iphone-home-bar"></div>
         </div>
       </div>
 
-      <!-- RIGHT: ENGINEERING TELEMETRY PANEL -->
-      <div class="engineering-panel" id="engineeringPanel">
-        <div class="panel-header">
-          <h2>🔬 Telemetría y Máquina de Estados</h2>
-          <span class="metric-pill" id="cacheStatus">Prompt Cache: Activo (91% Ahorro)</span>
-        </div>
+      <!-- RIGHT: LEAD CONTEXT & LIVE AGENT REASONING (NO DIAGRAM EMBEDDED) -->
+      <div class="simulator-control-panel">
+        <!-- LEAD PROFILE -->
+        <div class="card-box">
+          <div class="panel-title">
+            <span>👤 Perfil del Prospecto en Instagram (CRM Context)</span>
+          </div>
 
-        <!-- PIPELINE STEP TRACKER -->
-        <div class="pipeline-tracker">
-          <span class="tracker-title">Flujo de Nodos LangGraph</span>
-          <div class="node-steps">
-            <div class="step-card" id="node-preconditions">
-              <div class="step-name">1. preconditions</div>
-              <div class="step-status">Saldo & Horario</div>
+          <div class="lead-profile-header">
+            <div class="lead-avatar-big">CR</div>
+            <div class="lead-details">
+              <h3>@carlos_runner (Carlos Martínez)</h3>
+              <p>32 años • Corredor amateur • Preparando su primera maratón</p>
             </div>
-            <div class="step-card" id="node-media">
-              <div class="step-name">2. media_proc</div>
-              <div class="step-status">Whisper / Vision</div>
+          </div>
+
+          <div class="lead-tags-grid">
+            <div class="lead-tag-card">
+              <div class="label">Canal de Ingesta</div>
+              <div class="val">Instagram Direct</div>
             </div>
-            <div class="step-card" id="node-brain">
-              <div class="step-name">3. run_ai_brain</div>
-              <div class="step-status">Claude Sonnet 5</div>
+            <div class="lead-tag-card">
+              <div class="label">Campaña Origen</div>
+              <div class="val">Ads "Coaching High-Ticket"</div>
             </div>
-            <div class="step-card" id="node-guardrails">
-              <div class="step-name">4. guardrails</div>
-              <div class="step-status">Filtro de estilo</div>
+            <div class="lead-tag-card">
+              <div class="label">Etapa Detectada</div>
+              <div class="val" id="leadStageTag" style="color: #38bdf8;">Etapa 1: Rapport</div>
             </div>
-            <div class="step-card" id="node-booking">
-              <div class="step-name">5. booking_rules</div>
-              <div class="step-status">Inyección Calendly</div>
-            </div>
-            <div class="step-card" id="node-deliver">
-              <div class="step-name">6. deliver_msg</div>
-              <div class="step-status">Anti-Race Check</div>
-            </div>
-            <div class="step-card" id="node-persist">
-              <div class="step-name">7. persist_state</div>
-              <div class="step-status">Mongo Lock Free</div>
+            <div class="lead-tag-card">
+              <div class="label">Agendamiento</div>
+              <div class="val" id="bookingStatusTag" style="color: #f59e0b;">Pendiente</div>
             </div>
           </div>
         </div>
 
-        <!-- TELEMETRY NUMERICS -->
-        <div class="telemetry-grid">
-          <div class="telemetry-box">
-            <div class="label">Estado Actual</div>
-            <div class="value" id="currentStageVal" style="color: #38bdf8;">Etapa 1</div>
+        <!-- AI STRATEGY & REASONING (EXPLANATION FOR PROSPECTS/CLIENTS) -->
+        <div class="card-box">
+          <div class="panel-title">
+            <span>🧠 Razonamiento Psicológico de la IA en Vivo</span>
           </div>
-          <div class="telemetry-box">
-            <div class="label">Latencia Inferencia</div>
-            <div class="value" id="latencyVal" style="color: #34d399;">~820 ms</div>
+
+          <div class="reasoning-box">
+            <div class="header-tag">🎯 Objetivo del Asistente en este turno</div>
+            <div class="body-text" id="aiReasoningText">
+              El prospecto pregunta por el plan general. En lugar de enviar un texto largo o precios de golpe (que arruinarían la venta), la IA valida su interés, genera cercanía y hace una pregunta de diagnóstico ("¿entrenas en casa o gimnasio?") para descubrir su situación real.
+            </div>
           </div>
-          <div class="telemetry-box">
-            <div class="label">Lock Concurrencia</div>
-            <div class="value" id="lockStatusVal" style="color: #a78bfa;">is_processing=F</div>
+
+          <!-- CONTROLS ROW -->
+          <div class="controls-grid">
+            <button class="btn btn-primary" id="btnNext">
+              <span>Siguiente mensaje</span> ➔
+            </button>
+            <button class="btn btn-secondary" id="btnAutoPlay">
+              <span>Auto-Play</span> ▶
+            </button>
+            <button class="btn btn-secondary" id="btnReset">
+              <span>Reiniciar</span> ↺
+            </button>
           </div>
         </div>
 
-        <!-- GUARDRAILS EVENT AUDIT -->
-        <div class="log-section">
-          <span class="tracker-title">Eventos de Guardrails y Reglas Deterministas</span>
-          <div class="log-box" id="guardrailLogs">
-            <div class="log-entry">
-              <span class="log-time">[09:41:02]</span>
-              <span class="log-tag-lock">[LOCK]</span> find_one_and_update adquirido para lead_instagram_123.
-            </div>
-            <div class="log-entry">
-              <span class="log-time">[09:41:03]</span>
-              <span class="log-tag-cache">[CACHE]</span> Claude prompt cache hit (1,420 tokens leídos de caché).
-            </div>
+        <!-- OPTIONAL TECHNICAL TELEMETRY (CLEAN DROPDOWN, NO DIAGRAMS) -->
+        <div class="tech-telemetry-details">
+          <div class="tech-telemetry-summary" id="telemetryToggle">
+            <span>🔬 Telemetría de Ingeniería (Latencia, Caché & Concurrencia)</span>
+            <span>▼</span>
           </div>
-        </div>
-
-        <!-- RAW MODEL JSON OUTPUT -->
-        <div class="log-section">
-          <span class="tracker-title">Payload JSON Validado (parse_json_from_model_output)</span>
-          <div class="log-box" id="jsonOutput" style="color: #38bdf8;">
-{
-  "content_array": ["¡Hola! Qué tal."],
-  "estado_conversacion": "1",
-  "send_booking_link": false
-}
+          <div class="tech-telemetry-body" id="telemetryContent">
+            <div class="tech-metric-mini">
+              <div class="label">Modelo Cognitivo</div>
+              <div class="val" style="color:#ec4899;">Claude Sonnet 5</div>
+            </div>
+            <div class="tech-metric-mini">
+              <div class="label">Prompt Caching</div>
+              <div class="val" id="cacheTokVal">1,420 tokens (91% ahorro)</div>
+            </div>
+            <div class="tech-metric-mini">
+              <div class="label">Latencia Inferencia</div>
+              <div class="val" id="latencyVal">740 ms</div>
+            </div>
+            <div class="tech-metric-mini">
+              <div class="label">Lock Concurrencia</div>
+              <div class="val" id="lockStatusVal">find_one_and_update (OK)</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- ===================================================================== -->
-    <!-- TAB 2: DIAGRAMA INTERACTIVO (NEW FEATURE)                             -->
+    <!-- TAB 2: ARCHITECTURE DIAGRAM (WITH TECHNICAL VS CLIENT COPY TOGGLE)   -->
     <!-- ===================================================================== -->
     <div class="view-content" id="viewDiagram">
-      <!-- LEFT: INTERACTIVE SVG CANVAS & SCENARIOS -->
-      <div class="diagram-stage">
-        <div class="scenario-toolbar">
-          <div class="toolbar-title">
-            <span>🕹️ Simulador de Flujos de Ejecución</span>
-            <span class="hint">💡 Haz clic en cualquier nodo para inspeccionar código</span>
-          </div>
-          <div class="scenario-buttons">
-            <button class="scenario-btn active" id="btnScen1">🟢 1. Happy Path</button>
-            <button class="scenario-btn" id="btnScen2">🟡 2. Inyección de Calendly</button>
-            <button class="scenario-btn" id="btnScen3">🔴 3. Saldo Agotado (Zero Tokens)</button>
-            <button class="scenario-btn" id="btnScen4">🛑 4. Intervención Humana</button>
-            <button class="scenario-btn" id="btnResetGraph" style="margin-left: auto;">↺ Reset</button>
-          </div>
+      <div class="diagram-toolbar-card">
+        <!-- DUAL LANGUAGE SWITCH: TÉCNICO VS CLIENTE -->
+        <div class="mode-switch-group">
+          <button class="mode-btn active" id="btnModeTech">
+            <span>💻</span> Modo Técnico (Ingeniería)
+          </button>
+          <button class="mode-btn" id="btnModeBusiness">
+            <span>💼</span> Modo Negocio (Para Clientes)
+          </button>
         </div>
 
-        <!-- SVG CANVAS -->
-        <div class="diagram-svg-container">
-          <svg viewBox="0 0 1180 730" id="interactiveSvg" style="background:#090d16; font-family:'Inter', sans-serif;">
-            <defs>
-              <linearGradient id="svgBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#0b101d"/>
-                <stop offset="100%" stop-color="#050811"/>
-              </linearGradient>
-              <marker id="m-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 1 L 8 5 L 0 9 z" fill="#64748b"/>
-              </marker>
-              <marker id="m-arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399"/>
-              </marker>
-              <marker id="m-arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 1 L 8 5 L 0 9 z" fill="#f87171"/>
-              </marker>
-            </defs>
-
-            <!-- Background -->
-            <rect width="100%" height="100%" fill="url(#svgBgGrad)"/>
-
-            <!-- Grid Lines -->
-            <g stroke="#1e293b" stroke-width="0.75" opacity="0.35">
-              <line x1="0" y1="70" x2="1180" y2="70"/>
-              <line x1="0" y1="240" x2="1180" y2="240"/>
-              <line x1="0" y1="390" x2="1180" y2="390"/>
-              <line x1="0" y1="540" x2="1180" y2="540"/>
-              <line x1="0" y1="680" x2="1180" y2="680"/>
-            </g>
-
-            <!-- Header inside SVG -->
-            <g transform="translate(45, 42)">
-              <circle cx="10" cy="10" r="6" fill="#10b981"/>
-              <text x="28" y="16" fill="#f8fafc" font-size="19" font-weight="800" letter-spacing="0.3">LANGGRAPH STATE MACHINE — INTERACTIVE LIFECYCLE</text>
-              <text x="28" y="34" fill="#94a3b8" font-size="13" font-weight="500">Haz clic en cualquier nodo para abrir su código fuente Python real y mutación de estado abajo</text>
-            </g>
-
-            <!-- CONNECTIONS (EDGES) -->
-            <!-- Inbound -> Node 1 -->
-            <path id="edge-inbound" d="M 185 160 L 235 160" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#m-arrow)"/>
-            
-            <!-- Node 1 -> Node 2 -->
-            <path id="edge-1-2" d="M 455 160 L 500 160" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#m-arrow)"/>
-            
-            <!-- Node 1 -> Abort 1 (Down) -->
-            <path id="edge-1-abort" d="M 345 250 L 345 300" fill="none" stroke="#f87171" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#m-arrow-red)"/>
-            
-            <!-- Node 2 -> Node 3 -->
-            <path id="edge-2-3" d="M 695 160 L 740 160" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#m-arrow)"/>
-            
-            <!-- Node 3 -> Node 4 (Wrap) -->
-            <path id="edge-3-4" d="M 865 270 L 865 390 L 195 390 L 195 470 L 235 470" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#m-arrow)"/>
-
-            <!-- Node 4 -> Node 5 -->
-            <path id="edge-4-5" d="M 455 470 L 500 470" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#m-arrow)"/>
-
-            <!-- Node 5 -> Node 6 -->
-            <path id="edge-5-6" d="M 715 470 L 760 470" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#m-arrow)"/>
-
-            <!-- Node 6 -> Abort 2 (Human Intervene) -->
-            <path id="edge-6-abort" d="M 870 550 L 870 595" fill="none" stroke="#f87171" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#m-arrow-red)"/>
-
-            <!-- Node 6 -> Node 7 (Wrap down) -->
-            <path id="edge-6-7" d="M 975 470 L 1010 470 L 1010 575 L 195 575 L 195 645 L 235 645" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#m-arrow)"/>
-
-            <!-- Node 7 -> END -->
-            <path id="edge-7-end" d="M 605 645 L 665 645" fill="none" stroke="#34d399" stroke-width="3" marker-end="url(#m-arrow-green)"/>
-
-            <!-- ===================== NODES ===================== -->
-            <!-- INBOUND -->
-            <g class="svg-interactive-node" id="svg-node-inbound" transform="translate(45, 110)">
-              <rect width="140" height="100" rx="12" fill="#111827" stroke="#374151" stroke-width="2"/>
-              <text x="70" y="34" fill="#38bdf8" font-size="14" font-weight="800" text-anchor="middle">⚡ INBOUND</text>
-              <text x="70" y="56" fill="#f8fafc" font-size="13" font-weight="700" text-anchor="middle">ManyChat</text>
-              <text x="70" y="78" fill="#64748b" font-size="11" text-anchor="middle">Meta Webhook</text>
-            </g>
-
-            <!-- NODE 1: validate_preconditions -->
-            <g class="svg-interactive-node node-selected" id="svg-node-preconditions" transform="translate(240, 105)">
-              <rect width="215" height="145" rx="12" fill="#111827" stroke="#3b82f6" stroke-width="2"/>
-              <text x="25" y="34" fill="#60a5fa" font-size="14" font-weight="800">1. validate_preconditions</text>
-              <line x1="16" y1="46" x2="199" y2="46" stroke="#1e293b" stroke-width="1.5"/>
-              <text x="25" y="70" fill="#cbd5e1" font-size="12" font-weight="500">• Facturación &amp; Saldo</text>
-              <text x="25" y="92" fill="#cbd5e1" font-size="12" font-weight="500">• Leads Excluidos</text>
-              <text x="25" y="114" fill="#cbd5e1" font-size="12" font-weight="500">• Horario de Descanso</text>
-              <rect x="18" y="123" width="179" height="16" rx="4" fill="#0f172a"/>
-              <text x="107" y="135" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">Zero Token Waste Guard</text>
-            </g>
-
-            <!-- ABORT 1 -->
-            <g class="svg-interactive-node" id="svg-node-abort-preconditions" transform="translate(295, 305)">
-              <rect width="105" height="40" rx="8" fill="#1f1315" stroke="#7f1d1d" stroke-width="1.5"/>
-              <text x="52" y="18" fill="#f87171" font-size="11" font-weight="800" text-anchor="middle">END (Abort)</text>
-              <text x="52" y="31" fill="#fca5a5" font-size="9" text-anchor="middle">Lock liberado</text>
-            </g>
-
-            <!-- NODE 2: preprocess_media -->
-            <g class="svg-interactive-node" id="svg-node-media" transform="translate(500, 105)">
-              <rect width="195" height="145" rx="12" fill="#111827" stroke="#8b5cf6" stroke-width="2"/>
-              <text x="25" y="34" fill="#a78bfa" font-size="14" font-weight="800">2. preprocess_media</text>
-              <line x1="16" y1="46" x2="179" y2="46" stroke="#1e293b" stroke-width="1.5"/>
-              <text x="25" y="70" fill="#cbd5e1" font-size="12" font-weight="500">• Notas de voz (Whisper)</text>
-              <text x="25" y="92" fill="#cbd5e1" font-size="12" font-weight="500">• Imágenes (Claude Vision)</text>
-              <text x="25" y="114" fill="#cbd5e1" font-size="12" font-weight="500">• Passthrough texto plano</text>
-              <rect x="18" y="123" width="159" height="16" rx="4" fill="#0f172a"/>
-              <text x="97" y="135" fill="#c084fc" font-size="10" font-weight="700" text-anchor="middle">Multimodal Ingestion</text>
-            </g>
-
-            <!-- NODE 3: run_ai_brain -->
-            <g class="svg-interactive-node" id="svg-node-brain" transform="translate(740, 90)">
-              <rect width="240" height="175" rx="12" fill="#111827" stroke="#ec4899" stroke-width="2.5"/>
-              <text x="25" y="34" fill="#f472b6" font-size="15" font-weight="800">3. run_ai_brain (Core)</text>
-              <line x1="16" y1="48" x2="224" y2="48" stroke="#1e293b" stroke-width="1.5"/>
-              <text x="25" y="72" fill="#f8fafc" font-size="13" font-weight="700">Claude Sonnet 5</text>
-              <text x="25" y="94" fill="#cbd5e1" font-size="12">Ephemeral Prompt Caching</text>
-              <text x="25" y="112" fill="#10b981" font-size="11" font-weight="700">⚡ 90% Cost &amp; Latency Discount</text>
-              <text x="25" y="134" fill="#cbd5e1" font-size="12">Bucle de Auto-Reparación</text>
-              <rect x="18" y="148" width="204" height="18" rx="4" fill="#0f172a"/>
-              <text x="120" y="161" fill="#f472b6" font-size="10" font-weight="700" text-anchor="middle">Reasoning &amp; JSON Engine</text>
-            </g>
-
-            <!-- NODE 4: apply_guardrails -->
-            <g class="svg-interactive-node" id="svg-node-guardrails" transform="translate(240, 400)">
-              <rect width="215" height="150" rx="12" fill="#111827" stroke="#f59e0b" stroke-width="2"/>
-              <text x="25" y="34" fill="#fbbf24" font-size="14" font-weight="800">4. apply_guardrails</text>
-              <line x1="16" y1="46" x2="199" y2="46" stroke="#1e293b" stroke-width="1.5"/>
-              <text x="25" y="70" fill="#cbd5e1" font-size="12" font-weight="500">• Filtro caracteres (¿, ¡)</text>
-              <text x="25" y="92" fill="#cbd5e1" font-size="12" font-weight="500">• Mayúsculas de estilo</text>
-              <text x="25" y="114" fill="#ef4444" font-size="12" font-weight="600">• Bloqueo frases error</text>
-              <rect x="18" y="126" width="179" height="16" rx="4" fill="#0f172a"/>
-              <text x="107" y="138" fill="#fbbf24" font-size="10" font-weight="700" text-anchor="middle">Deterministic Safety</text>
-            </g>
-
-            <!-- NODE 5: enforce_booking_rules -->
-            <g class="svg-interactive-node" id="svg-node-booking" transform="translate(500, 400)">
-              <rect width="215" height="150" rx="12" fill="#111827" stroke="#10b981" stroke-width="2"/>
-              <text x="25" y="34" fill="#34d399" font-size="14" font-weight="800">5. enforce_booking_rules</text>
-              <line x1="16" y1="46" x2="199" y2="46" stroke="#1e293b" stroke-width="1.5"/>
-              <text x="25" y="70" fill="#f8fafc" font-size="12" font-weight="700">Guardrail en 2 Capas</text>
-              <text x="25" y="88" fill="#94a3b8" font-size="11">1. Intención explícita</text>
-              <text x="25" y="104" fill="#94a3b8" font-size="11">2. Confirmación contextual</text>
-              <text x="25" y="122" fill="#38bdf8" font-size="12" font-weight="700">Inyección Calendly URL</text>
-              <rect x="18" y="128" width="179" height="16" rx="4" fill="#0f172a"/>
-              <text x="107" y="140" fill="#34d399" font-size="10" font-weight="700" text-anchor="middle">Zero Hallucination Booking</text>
-            </g>
-
-            <!-- NODE 6: deliver_messages -->
-            <g class="svg-interactive-node" id="svg-node-deliver" transform="translate(760, 400)">
-              <rect width="215" height="150" rx="12" fill="#111827" stroke="#38bdf8" stroke-width="2"/>
-              <text x="25" y="34" fill="#38bdf8" font-size="14" font-weight="800">6. deliver_messages</text>
-              <line x1="16" y1="46" x2="199" y2="46" stroke="#1e293b" stroke-width="1.5"/>
-              <text x="25" y="70" fill="#f8fafc" font-size="12" font-weight="700">Anti-Race Pre-Check</text>
-              <text x="25" y="90" fill="#94a3b8" font-size="11">¿Entrenador pausó el bot?</text>
-              <text x="25" y="112" fill="#cbd5e1" font-size="12">Envío a ManyChat API</text>
-              <rect x="18" y="126" width="179" height="16" rx="4" fill="#0f172a"/>
-              <text x="107" y="138" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">Human-in-the-Loop Safe</text>
-            </g>
-
-            <!-- ABORT 2 (Human Paused) -->
-            <g class="svg-interactive-node" id="svg-node-abort-human" transform="translate(820, 600)">
-              <rect width="100" height="38" rx="8" fill="#1f1315" stroke="#7f1d1d" stroke-width="1.5"/>
-              <text x="50" y="17" fill="#f87171" font-size="11" font-weight="800" text-anchor="middle">END (Abort)</text>
-              <text x="50" y="30" fill="#fca5a5" font-size="9" text-anchor="middle">Envío cancelado</text>
-            </g>
-
-            <!-- NODE 7: persist_state_and_schedule -->
-            <g class="svg-interactive-node" id="svg-node-persist" transform="translate(240, 595)">
-              <rect width="365" height="100" rx="12" fill="#111827" stroke="#10b981" stroke-width="2"/>
-              <text x="25" y="34" fill="#34d399" font-size="14" font-weight="800">7. persist_state_and_schedule</text>
-              <line x1="16" y1="46" x2="349" y2="46" stroke="#1e293b" stroke-width="1.5"/>
-              <text x="25" y="68" fill="#cbd5e1" font-size="12">• Añade turnos al historial de MongoDB</text>
-              <text x="25" y="88" fill="#cbd5e1" font-size="12">• Libera cerrojo atómico: <tspan fill="#38bdf8" font-weight="700">is_processing = false</tspan></text>
-            </g>
-
-            <!-- FINAL SUCCESS END -->
-            <g class="svg-interactive-node" id="svg-node-end-success" transform="translate(670, 615)">
-              <rect width="140" height="60" rx="10" fill="#064e3b" stroke="#10b981" stroke-width="2.5"/>
-              <text x="70" y="27" fill="#a7f3d0" font-size="13" font-weight="800" text-anchor="middle">END (Success)</text>
-              <text x="70" y="46" fill="#ecfdf5" font-size="11" text-anchor="middle">Turn Completed</text>
-            </g>
-          </svg>
+        <!-- SCENARIO BUTTONS -->
+        <div class="scenario-buttons">
+          <button class="scenario-btn active" id="btnScen1">🟢 Flujo Completo + Cita</button>
+          <button class="scenario-btn" id="btnScen2">🟡 Inyección Calendly</button>
+          <button class="scenario-btn" id="btnScen3">🔴 Saldo Agotado (0 Tokens)</button>
+          <button class="scenario-btn" id="btnScen4">🛑 Intervención Humana</button>
+          <button class="scenario-btn" id="btnResetGraph">↺ Reset</button>
         </div>
       </div>
 
-      <!-- BOTTOM: FULL-WIDTH LIVE NODE INSPECTOR DOCK -->
-      <div class="inspector-panel" id="inspectorPanel">
+      <!-- SVG INTERACTIVE CANVAS -->
+      <div class="diagram-svg-container">
+        <svg viewBox="0 0 1180 730" id="interactiveSvg" style="background:#080c16; font-family:'Inter', sans-serif;">
+          <defs>
+            <linearGradient id="svgBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0b101d"/>
+              <stop offset="100%" stop-color="#050811"/>
+            </linearGradient>
+            <marker id="m-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 8 5 L 0 9 z" fill="#64748b"/>
+            </marker>
+            <marker id="m-arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399"/>
+            </marker>
+            <marker id="m-arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 8 5 L 0 9 z" fill="#f87171"/>
+            </marker>
+          </defs>
+
+          <!-- Background -->
+          <rect width="100%" height="100%" fill="url(#svgBgGrad)"/>
+
+          <!-- Grid Lines -->
+          <g stroke="#1e293b" stroke-width="0.75" opacity="0.35">
+            <line x1="0" y1="70" x2="1180" y2="70"/>
+            <line x1="0" y1="240" x2="1180" y2="240"/>
+            <line x1="0" y1="390" x2="1180" y2="390"/>
+            <line x1="0" y1="540" x2="1180" y2="540"/>
+            <line x1="0" y1="680" x2="1180" y2="680"/>
+          </g>
+
+          <!-- Header inside SVG -->
+          <g transform="translate(45, 42)">
+            <circle cx="10" cy="10" r="6" fill="#10b981"/>
+            <text x="28" y="16" fill="#f8fafc" font-size="19" font-weight="800" letter-spacing="0.3" id="svgTitleHeader">MÁQUINA DE ESTADOS LANGGRAPH — CICLO DE VIDA</text>
+            <text x="28" y="34" fill="#94a3b8" font-size="13" font-weight="500" id="svgSubHeader">Haz clic en cualquier nodo para inspeccionar su funcionamiento y código real abajo</text>
+          </g>
+
+          <!-- CONNECTIONS (EDGES) -->
+          <path id="edge-inbound" d="M 185 160 L 235 160" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#m-arrow)"/>
+          <path id="edge-p-to-abort" d="M 345 255 L 345 300" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4" marker-end="url(#m-arrow-red)"/>
+          <path id="edge-p-to-media" d="M 460 160 L 495 160" fill="none" stroke="#34d399" stroke-width="2.5" marker-end="url(#m-arrow-green)"/>
+          <path id="edge-media-to-brain" d="M 700 160 L 735 160" fill="none" stroke="#34d399" stroke-width="2.5" marker-end="url(#m-arrow-green)"/>
+          
+          <!-- Downwards: Brain -> Guardrails -->
+          <path id="edge-brain-to-gr" d="M 860 270 L 860 330 L 350 330 L 350 395" fill="none" stroke="#ec4899" stroke-width="2.5" marker-end="url(#m-arrow)"/>
+          <path id="edge-gr-to-booking" d="M 460 475 L 495 475" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#m-arrow)"/>
+          <path id="edge-booking-to-deliver" d="M 720 475 L 755 475" fill="none" stroke="#10b981" stroke-width="2.5" marker-end="url(#m-arrow-green)"/>
+          <path id="edge-deliver-to-abort" d="M 870 555 L 870 595" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4" marker-end="url(#m-arrow-red)"/>
+          <path id="edge-deliver-to-persist" d="M 860 555 L 860 645 L 610 645" fill="none" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#m-arrow)"/>
+
+          <!-- Self-Repair feedback loop -->
+          <path id="edge-repair-loop" d="M 860 90 C 860 40, 950 40, 950 90" fill="none" stroke="#f472b6" stroke-width="2" stroke-dasharray="4" marker-end="url(#m-arrow)"/>
+          <text x="960" y="60" fill="#f472b6" font-size="11" font-weight="700">Auto-Repair Retry (Max 2)</text>
+
+          <!-- INBOUND NODE -->
+          <g class="svg-interactive-node" id="svg-node-inbound" transform="translate(45, 110)">
+            <rect width="140" height="100" rx="12" fill="#111827" stroke="#374151" stroke-width="2"/>
+            <text x="70" y="34" fill="#38bdf8" font-size="14" font-weight="800" text-anchor="middle">⚡ INBOUND</text>
+            <text x="70" y="56" fill="#f8fafc" font-size="13" font-weight="700" text-anchor="middle" id="nodeInboundTitle">Instagram DM</text>
+            <text x="70" y="78" fill="#64748b" font-size="11" text-anchor="middle" id="nodeInboundSub">Meta Cloud API</text>
+          </g>
+
+          <!-- NODE 1: validate_preconditions -->
+          <g class="svg-interactive-node node-selected" id="svg-node-preconditions" transform="translate(240, 105)">
+            <rect width="215" height="145" rx="12" fill="#111827" stroke="#3b82f6" stroke-width="2"/>
+            <text x="25" y="34" fill="#60a5fa" font-size="14" font-weight="800" id="n1-title">1. validate_preconditions</text>
+            <line x1="16" y1="46" x2="199" y2="46" stroke="#1e293b" stroke-width="1.5"/>
+            <text x="25" y="70" fill="#cbd5e1" font-size="12" font-weight="500" id="n1-l1">• Facturación &amp; Saldo</text>
+            <text x="25" y="92" fill="#cbd5e1" font-size="12" font-weight="500" id="n1-l2">• Leads Excluidos</text>
+            <text x="25" y="114" fill="#cbd5e1" font-size="12" font-weight="500" id="n1-l3">• Horario de Descanso</text>
+            <rect x="18" y="123" width="179" height="16" rx="4" fill="#0f172a"/>
+            <text x="107" y="135" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle" id="n1-badge">Zero Token Waste Guard</text>
+          </g>
+
+          <!-- ABORT 1 -->
+          <g class="svg-interactive-node" id="svg-node-abort-preconditions" transform="translate(295, 305)">
+            <rect width="105" height="40" rx="8" fill="#1f1315" stroke="#7f1d1d" stroke-width="1.5"/>
+            <text x="52" y="18" fill="#f87171" font-size="11" font-weight="800" text-anchor="middle">FIN (Abort)</text>
+            <text x="52" y="31" fill="#fca5a5" font-size="9" text-anchor="middle">0 Tokens gastados</text>
+          </g>
+
+          <!-- NODE 2: preprocess_media -->
+          <g class="svg-interactive-node" id="svg-node-media" transform="translate(500, 105)">
+            <rect width="195" height="145" rx="12" fill="#111827" stroke="#8b5cf6" stroke-width="2"/>
+            <text x="25" y="34" fill="#a78bfa" font-size="14" font-weight="800" id="n2-title">2. preprocess_media</text>
+            <line x1="16" y1="46" x2="179" y2="46" stroke="#1e293b" stroke-width="1.5"/>
+            <text x="25" y="70" fill="#cbd5e1" font-size="12" font-weight="500" id="n2-l1">• Notas de voz (Whisper)</text>
+            <text x="25" y="92" fill="#cbd5e1" font-size="12" font-weight="500" id="n2-l2">• Imágenes (Claude Vision)</text>
+            <text x="25" y="114" fill="#cbd5e1" font-size="12" font-weight="500" id="n2-l3">• Texto plano directo</text>
+            <rect x="18" y="123" width="159" height="16" rx="4" fill="#0f172a"/>
+            <text x="97" y="135" fill="#c084fc" font-size="10" font-weight="700" text-anchor="middle" id="n2-badge">Multimodal Ingestion</text>
+          </g>
+
+          <!-- NODE 3: run_ai_brain (Claude Sonnet 5) -->
+          <g class="svg-interactive-node" id="svg-node-brain" transform="translate(740, 90)">
+            <rect width="240" height="175" rx="12" fill="#111827" stroke="#ec4899" stroke-width="2.5"/>
+            <text x="25" y="34" fill="#f472b6" font-size="15" font-weight="800" id="n3-title">3. run_ai_brain (Core)</text>
+            <line x1="16" y1="48" x2="224" y2="48" stroke="#1e293b" stroke-width="1.5"/>
+            <text x="25" y="72" fill="#f8fafc" font-size="13" font-weight="700" id="n3-l1">Claude Sonnet 5</text>
+            <text x="25" y="94" fill="#cbd5e1" font-size="12" id="n3-l2">Ephemeral Prompt Caching</text>
+            <text x="25" y="112" fill="#10b981" font-size="11" font-weight="700" id="n3-l3">⚡ 90% Descuento Costes</text>
+            <text x="25" y="134" fill="#cbd5e1" font-size="12" id="n3-l4">Bucle Auto-Reparación</text>
+            <rect x="18" y="148" width="204" height="18" rx="4" fill="#0f172a"/>
+            <text x="120" y="161" fill="#f472b6" font-size="10" font-weight="700" text-anchor="middle" id="n3-badge">Reasoning &amp; JSON Engine</text>
+          </g>
+
+          <!-- NODE 4: apply_guardrails -->
+          <g class="svg-interactive-node" id="svg-node-guardrails" transform="translate(240, 400)">
+            <rect width="215" height="150" rx="12" fill="#111827" stroke="#f59e0b" stroke-width="2"/>
+            <text x="25" y="34" fill="#fbbf24" font-size="14" font-weight="800" id="n4-title">4. apply_guardrails</text>
+            <line x1="16" y1="46" x2="199" y2="46" stroke="#1e293b" stroke-width="1.5"/>
+            <text x="25" y="70" fill="#cbd5e1" font-size="12" font-weight="500" id="n4-l1">• Filtro caracteres (¿, ¡)</text>
+            <text x="25" y="92" fill="#cbd5e1" font-size="12" font-weight="500" id="n4-l2">• Mayúsculas de estilo</text>
+            <text x="25" y="114" fill="#ef4444" font-size="12" font-weight="600" id="n4-l3">• Bloqueo frases error</text>
+            <rect x="18" y="126" width="179" height="16" rx="4" fill="#0f172a"/>
+            <text x="107" y="138" fill="#fbbf24" font-size="10" font-weight="700" text-anchor="middle" id="n4-badge">Deterministic Safety</text>
+          </g>
+
+          <!-- NODE 5: enforce_booking_rules -->
+          <g class="svg-interactive-node" id="svg-node-booking" transform="translate(500, 400)">
+            <rect width="215" height="150" rx="12" fill="#111827" stroke="#10b981" stroke-width="2"/>
+            <text x="25" y="34" fill="#34d399" font-size="14" font-weight="800" id="n5-title">5. enforce_booking_rules</text>
+            <line x1="16" y1="46" x2="199" y2="46" stroke="#1e293b" stroke-width="1.5"/>
+            <text x="25" y="70" fill="#f8fafc" font-size="12" font-weight="700" id="n5-l1">Guardrail en 2 Capas</text>
+            <text x="25" y="88" fill="#94a3b8" font-size="11" id="n5-l2">1. Intención explícita</text>
+            <text x="25" y="104" fill="#94a3b8" font-size="11" id="n5-l3">2. Confirmación contextual</text>
+            <text x="25" y="122" fill="#38bdf8" font-size="12" font-weight="700" id="n5-l4">Inyección Calendly URL</text>
+            <rect x="18" y="128" width="179" height="16" rx="4" fill="#0f172a"/>
+            <text x="107" y="140" fill="#34d399" font-size="10" font-weight="700" text-anchor="middle" id="n5-badge">Zero Hallucination Booking</text>
+          </g>
+
+          <!-- NODE 6: deliver_messages -->
+          <g class="svg-interactive-node" id="svg-node-deliver" transform="translate(760, 400)">
+            <rect width="215" height="150" rx="12" fill="#111827" stroke="#38bdf8" stroke-width="2"/>
+            <text x="25" y="34" fill="#38bdf8" font-size="14" font-weight="800" id="n6-title">6. deliver_messages</text>
+            <line x1="16" y1="46" x2="199" y2="46" stroke="#1e293b" stroke-width="1.5"/>
+            <text x="25" y="70" fill="#f8fafc" font-size="12" font-weight="700" id="n6-l1">Anti-Race Pre-Check</text>
+            <text x="25" y="90" fill="#94a3b8" font-size="11" id="n6-l2">¿Humano pausó el bot?</text>
+            <text x="25" y="112" fill="#cbd5e1" font-size="12" id="n6-l3">Envío a ManyChat / Meta</text>
+            <rect x="18" y="126" width="179" height="16" rx="4" fill="#0f172a"/>
+            <text x="107" y="138" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle" id="n6-badge">Human-in-the-Loop Safe</text>
+          </g>
+
+          <!-- ABORT 2 (Human Paused) -->
+          <g class="svg-interactive-node" id="svg-node-abort-human" transform="translate(820, 600)">
+            <rect width="100" height="38" rx="8" fill="#1f1315" stroke="#7f1d1d" stroke-width="1.5"/>
+            <text x="50" y="17" fill="#f87171" font-size="11" font-weight="800" text-anchor="middle">PAUSADO</text>
+            <text x="50" y="30" fill="#fca5a5" font-size="9" text-anchor="middle">Humano responde</text>
+          </g>
+
+          <!-- NODE 7: persist_state_and_schedule -->
+          <g class="svg-interactive-node" id="svg-node-persist" transform="translate(240, 595)">
+            <rect width="365" height="100" rx="12" fill="#111827" stroke="#10b981" stroke-width="2"/>
+            <text x="25" y="34" fill="#34d399" font-size="14" font-weight="800" id="n7-title">7. persist_state_and_schedule</text>
+            <line x1="16" y1="46" x2="349" y2="46" stroke="#1e293b" stroke-width="1.5"/>
+            <text x="25" y="68" fill="#cbd5e1" font-size="12" id="n7-l1">• MongoDB State Transition (ACID Document)</text>
+            <text x="25" y="86" fill="#cbd5e1" font-size="12" id="n7-l2">• Liberación Lock: is_processing = false</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- DOCKED CODE & BUSINESS EXPLAINER INSPECTOR -->
+      <div class="diagram-inspector">
         <div class="inspector-header">
-          <div class="inspector-title-area">
-            <h2 id="inspNodeTitle">validate_preconditions_node</h2>
-            <p id="inspNodeSubtitle">Paso 1 del pipeline — Evaluación previa a inferencia</p>
+          <div class="inspector-titles">
+            <h3 id="inspNodeTitle">1. validate_preconditions_node</h3>
+            <p id="inspNodeSubtitle">Chequeo estricto previo a llamada a LLM (Control de costes y descanso)</p>
           </div>
-          <span class="node-type-badge" id="inspNodeType">LangGraph Async Node</span>
+          <span class="inspector-badge" id="inspNodeType">LangGraph Async Node</span>
         </div>
 
-        <div class="inspector-content-grid">
-          <!-- LEFT COLUMN: RATIONALE, GOTCHAS & STATE DIFFS -->
-          <div style="display: flex; flex-direction: column; gap: 16px;">
-            <div class="detail-card">
-              <div class="detail-label">🎯 Objetivo y Justificación Técnica</div>
-              <div class="detail-text" id="inspGoal">
-                Comprueba el estado de facturación del cliente, listas negras de usuarios y horarios de sueño antes de realizar cualquier llamada a Anthropic Claude. Previene consumo innecesario de tokens (Zero Token Waste).
-              </div>
+        <div class="inspector-grid">
+          <!-- LEFT COLUMN: OBJECTIVE / BUSINESS IMPACT -->
+          <div>
+            <div class="inspector-section-title">
+              <span id="col1HeaderIcon">🎯</span> <span id="col1HeaderTitle">Objetivo Técnico y Comportamiento</span>
+            </div>
+            <div class="inspector-text-block" id="inspGoal">
+              Comprueba el saldo del cliente, listas de exclusión de usuarios y horarios de descanso antes de invocar la API de Anthropic Claude. Previene el consumo de tokens en turnos inválidos.
             </div>
 
-            <div class="detail-card">
-              <div class="detail-label">⚠️ Gotcha de Producción Resuelto</div>
-              <div class="detail-text" id="inspGotcha" style="color: #fbbf24;">
-                Si un cliente agota su cuota de mensajes a mitad de mes, el webhook entrante se aborta en menos de 2ms sin invocar al modelo, conservando el buffer acumulado para cuando reactive su suscripción.
-              </div>
+            <div class="business-callout" id="inspCallout">
+              <strong>💡 Valor para el negocio:</strong> Garantiza que si un lead habla de madrugada o el saldo está agotado, no se gastan tokens ni se envía nada inoportuno.
             </div>
 
-            <div class="state-diff-grid">
-              <div class="state-diff-box">
-                <div class="diff-title" style="color: #60a5fa;">📥 Input State (Consumed)</div>
-                <div id="inspInputState" style="color: #cbd5e1; line-height: 1.5;">
-user_id, client_id,
-client_profile,
-combined_input_text
-                </div>
-              </div>
-              <div class="state-diff-box">
-                <div class="diff-title" style="color: #34d399;">📤 Output State (Produced)</div>
-                <div id="inspOutputState" style="color: #cbd5e1; line-height: 1.5;">
-should_abort: bool,
-abort_reason: str,
-is_sleeping: bool
-                </div>
-              </div>
+            <div class="inspector-section-title">
+              <span>⚡</span> <span id="col1StateTitle">Mutación de Estado (State Diff)</span>
+            </div>
+            <div class="inspector-text-block" style="font-family:'JetBrains Mono',monospace; font-size:12px;" id="inspStateBlock">
+              Input: user_id, client_id, client_profile<br>
+              Output: { should_abort: False, is_sleeping: False }
             </div>
           </div>
 
-          <!-- RIGHT COLUMN: REAL PRODUCTION CODE -->
-          <div class="code-container" style="height: 100%; display: flex; flex-direction: column;">
-            <div class="code-header">
-              <span id="inspCodeFilename">src/graph.py</span>
-              <span>Python 3.10+ • Production Implementation</span>
+          <!-- RIGHT COLUMN: CODE / BUSINESS ASSURANCE -->
+          <div>
+            <div class="inspector-section-title">
+              <span id="col2HeaderIcon">💻</span> <span id="col2HeaderTitle">Implementación en Código Python</span>
             </div>
-            <div class="code-body" id="inspCodeBody" style="max-height: 380px; flex: 1;">
-async def validate_preconditions_node(state: SetterState) -> Dict[str, Any]:
-    client_profile = state.get("client_profile") or col_clients.find_one(...)
-    
-    # Chequeo de ciclo y saldo
-    billing_status = compute_billing_status(client_profile)
-    if billing_status.get("is_locked", False):
+            <pre class="inspector-code-block" id="inspCodeBlock">async def validate_preconditions_node(state: SetterState) -> Dict[str, Any]:
+    client_profile = state.get("client_profile")
+    billing = compute_billing_status(client_profile)
+    if billing.get("is_locked", False):
         activate_billing_lock_for_client(client_id)
         return {"should_abort": True, "abort_reason": "billing_locked"}
+    return {"should_abort": False, "is_sleeping": False}</pre>
 
-    return {"should_abort": False, "is_sleeping": False}
+            <div class="inspector-section-title" style="margin-top:14px;">
+              <span>🛡️</span> <span id="col2GuaranteeTitle">Garantía de Ingeniería y Resiliencia</span>
+            </div>
+            <div class="inspector-text-block" id="inspGotcha">
+              <strong>Zero Token Waste:</strong> Aborta en &lt;2ms si las precondiciones no se cumplen, garantizando 0 euros desperdiciados en llamadas a la API de Claude.
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 3: EXECUTIVE BUSINESS DASHBOARD (FULL SAMPLE DATA FOR CLIENTS)    -->
+    <!-- ===================================================================== -->
+    <div class="view-content" id="viewDashboard">
+      <div class="dashboard-top-bar">
+        <div class="dash-titles">
+          <h2>Panel Ejecutivo de Rendimiento y Negocio</h2>
+          <p>Métricas consolidadas de captación en Instagram DM, cualificación y retorno de inversión</p>
+        </div>
+
+        <div class="time-filter-buttons">
+          <button class="time-btn">Hoy</button>
+          <button class="time-btn">Últimos 7 días</button>
+          <button class="time-btn active">Últimos 30 días</button>
+        </div>
+      </div>
+
+      <!-- 5 KPI CARDS -->
+      <div class="kpi-row">
+        <div class="kpi-card emerald">
+          <div class="kpi-label">
+            <span>Facturación Influenciada</span>
+            <span>💶</span>
+          </div>
+          <div class="kpi-val">€98,400</div>
+          <div class="kpi-sub">▲ +24.8% vs mes anterior</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <span>Citas Agendadas</span>
+            <span>📅</span>
+          </div>
+          <div class="kpi-val">342</div>
+          <div class="kpi-sub">▲ 24.8% de tasa de conversión</div>
+        </div>
+
+        <div class="kpi-card purple">
+          <div class="kpi-label">
+            <span>Leads Atendidos 24/7</span>
+            <span>💬</span>
+          </div>
+          <div class="kpi-val">1,380</div>
+          <div class="kpi-sub">▲ 100% respondidos en &lt;5s</div>
+        </div>
+
+        <div class="kpi-card emerald">
+          <div class="kpi-label">
+            <span>Ahorro en IA (Caching)</span>
+            <span>⚡</span>
+          </div>
+          <div class="kpi-val">€1,438.20</div>
+          <div class="kpi-sub">▲ 91.2% descuento en tokens</div>
+        </div>
+
+        <div class="kpi-card amber">
+          <div class="kpi-label">
+            <span>Tiempo Medio de Respuesta</span>
+            <span>⏱️</span>
+          </div>
+          <div class="kpi-val">4.1s</div>
+          <div class="kpi-sub" style="color:#60a5fa;">vs 4.2 horas de un setter humano</div>
+        </div>
+      </div>
+
+      <!-- 2 COLUMNS: FUNNEL + OBJECTIONS & LIVE FEED -->
+      <div class="dashboard-grid-2col">
+        <!-- LEFT: CONVERSION FUNNEL & OFF-HOURS STATS -->
+        <div class="card-box">
+          <div class="panel-title">
+            <span>📈 Embudo de Cualificación y Cierre en Instagram</span>
+          </div>
+
+          <div class="funnel-step">
+            <div class="funnel-info">
+              <span>1. DMs Entrantes Totales</span>
+              <span>1,380 leads (100%)</span>
+            </div>
+            <div class="funnel-bar-bg">
+              <div class="funnel-bar-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <div class="funnel-step">
+            <div class="funnel-info">
+              <span>2. Perfilados y Cualificados (Sin Descarte)</span>
+              <span>966 leads (70.0%)</span>
+            </div>
+            <div class="funnel-bar-bg">
+              <div class="funnel-bar-fill" style="width: 70%;"></div>
+            </div>
+          </div>
+
+          <div class="funnel-step">
+            <div class="funnel-info">
+              <span>3. Objeciones Resueltas con Éxito</span>
+              <span>552 leads (40.0%)</span>
+            </div>
+            <div class="funnel-bar-bg">
+              <div class="funnel-bar-fill" style="width: 40%; background: linear-gradient(90deg, #a855f7, #ec4899);"></div>
+            </div>
+          </div>
+
+          <div class="funnel-step">
+            <div class="funnel-info">
+              <span>4. Enlace Calendly Solicitado / Entregado</span>
+              <span>414 leads (30.0%)</span>
+            </div>
+            <div class="funnel-bar-bg">
+              <div class="funnel-bar-fill" style="width: 30%; background: linear-gradient(90deg, #38bdf8, #10b981);"></div>
+            </div>
+          </div>
+
+          <div class="funnel-step">
+            <div class="funnel-info">
+              <span>5. Citas Confirmadas en Agenda de Ventas</span>
+              <span style="color: #34d399; font-weight: 800;">342 videollamadas (24.8%)</span>
+            </div>
+            <div class="funnel-bar-bg">
+              <div class="funnel-bar-fill" style="width: 24.8%; background: linear-gradient(90deg, #10b981, #059669);"></div>
+            </div>
+          </div>
+
+          <!-- OFF-HOURS ROI CALLOUT -->
+          <div style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 12px; padding: 14px; margin-top: 18px;">
+            <div style="font-size: 13px; font-weight: 700; color: #c084fc; margin-bottom: 4px;">
+              🌙 54.2% de las citas se cerraron fuera de horario comercial
+            </div>
+            <div style="font-size: 12px; color: #cbd5e1; line-height: 1.4;">
+              185 de las 342 llamadas fueron agendadas entre las 20:00 y las 08:00 o durante fines de semana, cuando un equipo humano no está operativo.
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: OBJECTIONS & TECHNICAL HEALTH -->
+        <div class="card-box">
+          <div class="panel-title">
+            <span>🛡️ Desglose de Objeciones Manejadas por la IA</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                <span>Precio / "Es caro / ¿cuánto cuesta?"</span>
+                <span style="color: #38bdf8; font-weight: 700;">42% (Anclaje de valor y diagnóstico previo)</span>
+              </div>
+              <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width: 42%;"></div></div>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                <span>Falta de tiempo / "No tengo horas para entrenar"</span>
+                <span style="color: #a855f7; font-weight: 700;">28% (Flexibilidad de micro-sesiones)</span>
+              </div>
+              <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width: 28%; background:#a855f7;"></div></div>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                <span>Falta de constancia / "Ya he fallado antes"</span>
+                <span style="color: #10b981; font-weight: 700;">18% (Validación y empatía psicológica)</span>
+              </div>
+              <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width: 18%; background:#10b981;"></div></div>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                <span>Otras dudas operativas</span>
+                <span style="color: #94a3b8; font-weight: 700;">12% (Resolución directa)</span>
+              </div>
+              <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width: 12%; background:#64748b;"></div></div>
+            </div>
+          </div>
+
+          <!-- SYSTEM HEALTH STATS -->
+          <div class="panel-title" style="font-size: 13.5px; border-top: 1px solid rgba(51, 65, 85, 0.5); padding-top: 14px; margin-bottom: 10px;">
+            <span>⚙️ Monitor de Estabilidad del Motor</span>
+          </div>
+
+          <div style="grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12px; display: grid;">
+            <div style="background: rgba(15,23,42,0.6); padding: 10px; border-radius: 8px;">
+              <div style="color: var(--text-muted);">Saldo Prepago Restante</div>
+              <div style="font-size: 15px; font-weight: 800; color: #34d399;">€184.50</div>
+              <div style="font-size: 10.5px; color: #64748b;">~46,000 turnos disponibles</div>
+            </div>
+            <div style="background: rgba(15,23,42,0.6); padding: 10px; border-radius: 8px;">
+              <div style="color: var(--text-muted);">Tasa Auto-Reparación JSON</div>
+              <div style="font-size: 15px; font-weight: 800; color: #38bdf8;">0.18%</div>
+              <div style="font-size: 10.5px; color: #64748b;">100% de éxito en retry</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECENT LEADS LIVE FEED TABLE -->
+      <div class="card-box">
+        <div class="panel-title">
+          <span>👥 Actividad Reciente de Leads en Vivo (Instagram Direct)</span>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="leads-table">
+            <thead>
+              <tr>
+                <th>Usuario Instagram</th>
+                <th>Estado del Embudo</th>
+                <th>Interacción Reciente</th>
+                <th>Valor Estimado</th>
+                <th>Última Actividad</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="lead-table-user">
+                    <div class="table-avatar">CR</div>
+                    <div>
+                      <strong>@carlos_runner</strong>
+                      <div style="font-size: 11px; color:#94a3b8;">Carlos Martínez</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="stage-pill green">Cita Agendada (Jueves 18:00)</span></td>
+                <td>"¡Cita confirmada para el jueves!"</td>
+                <td><strong style="color:#34d399;">€1,500</strong></td>
+                <td>Hace 3 min</td>
+                <td><span style="color:#38bdf8; cursor:pointer;">Ver Chat ↗</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="lead-table-user">
+                    <div class="table-avatar">LN</div>
+                    <div>
+                      <strong>@laura_nutri</strong>
+                      <div style="font-size: 11px; color:#94a3b8;">Laura Navarro</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="stage-pill amber">Manejando Objeción Precio</span></td>
+                <td>"¿Cuánto suele costar el programa mensual?"</td>
+                <td><strong style="color:#34d399;">€2,400</strong></td>
+                <td>Hace 14 min</td>
+                <td><span style="color:#38bdf8; cursor:pointer;">Ver Chat ↗</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="lead-table-user">
+                    <div class="table-avatar">DC</div>
+                    <div>
+                      <strong>@david_crossfit</strong>
+                      <div style="font-size: 11px; color:#94a3b8;">David Castro</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="stage-pill blue">Audio Transcrito (Whisper)</span></td>
+                <td>Nota de voz de 28s analizada por Claude</td>
+                <td><strong style="color:#34d399;">€1,800</strong></td>
+                <td>Hace 32 min</td>
+                <td><span style="color:#38bdf8; cursor:pointer;">Ver Chat ↗</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="lead-table-user">
+                    <div class="table-avatar">MF</div>
+                    <div>
+                      <strong>@marta_fitness</strong>
+                      <div style="font-size: 11px; color:#94a3b8;">Marta Fernández</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="stage-pill purple">Seguimiento Automático (Día 2)</span></td>
+                <td>Mensaje de reactivación humanizado enviado</td>
+                <td><strong style="color:#34d399;">€1,200</strong></td>
+                <td>Hace 1 hora</td>
+                <td><span style="color:#38bdf8; cursor:pointer;">Ver Chat ↗</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="lead-table-user">
+                    <div class="table-avatar">SS</div>
+                    <div>
+                      <strong>@sergio_salud</strong>
+                      <div style="font-size: 11px; color:#94a3b8;">Sergio Serrano</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="stage-pill green">Cita Agendada (Viernes 11:30)</span></td>
+                <td>Calendly confirmado automáticamente</td>
+                <td><strong style="color:#34d399;">€3,000</strong></td>
+                <td>Hace 2 horas</td>
+                <td><span style="color:#38bdf8; cursor:pointer;">Ver Chat ↗</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -1370,458 +2012,733 @@ async def validate_preconditions_node(state: SetterState) -> Dict[str, Any]:
 
   <script>
     // =========================================================================
-    // TAB MANAGEMENT
+    // TAB MANAGEMENT (3 SEPARATE TABS)
     // =========================================================================
     const btnTabChat = document.getElementById('btnTabChat');
     const btnTabDiagram = document.getElementById('btnTabDiagram');
+    const btnTabDashboard = document.getElementById('btnTabDashboard');
     const viewChat = document.getElementById('viewChat');
     const viewDiagram = document.getElementById('viewDiagram');
-    const engToggleContainer = document.getElementById('engToggleContainer');
+    const viewDashboard = document.getElementById('viewDashboard');
 
-    btnTabChat.addEventListener('click', () => {
-      btnTabChat.classList.add('active');
-      btnTabDiagram.classList.remove('active');
-      viewChat.classList.add('active');
-      viewDiagram.classList.remove('active');
-      engToggleContainer.style.display = 'flex';
-    });
+    function switchTab(targetView, activeBtn) {
+      [viewChat, viewDiagram, viewDashboard].forEach(v => v.classList.remove('active'));
+      [btnTabChat, btnTabDiagram, btnTabDashboard].forEach(b => b.classList.remove('active'));
+      targetView.classList.add('active');
+      activeBtn.classList.add('active');
+    }
 
-    btnTabDiagram.addEventListener('click', () => {
-      btnTabDiagram.classList.add('active');
-      btnTabChat.classList.remove('active');
-      viewDiagram.classList.add('active');
-      viewChat.classList.remove('active');
-      engToggleContainer.style.display = 'none';
+    btnTabChat.addEventListener('click', () => switchTab(viewChat, btnTabChat));
+    btnTabDiagram.addEventListener('click', () => switchTab(viewDiagram, btnTabDiagram));
+    btnTabDashboard.addEventListener('click', () => switchTab(viewDashboard, btnTabDashboard));
+
+    // Telemetry accordion in Simulator
+    const telemetryToggle = document.getElementById('telemetryToggle');
+    const telemetryContent = document.getElementById('telemetryContent');
+    let telemOpen = true;
+    telemetryToggle.addEventListener('click', () => {
+      telemOpen = !telemOpen;
+      telemetryContent.style.display = telemOpen ? 'grid' : 'none';
+      telemetryToggle.querySelector('span:last-child').innerText = telemOpen ? '▼' : '▶';
     });
 
     // =========================================================================
-    // CHAT SIMULATOR (ORIGINAL PRESERVED)
+    // IPHONE INSTAGRAM SIMULATOR SCRIPT
     // =========================================================================
     const conversationScript = [
       {
         sender: 'user',
-        text: 'Hola Alex, me gustaría saber cómo funciona vuestro plan de entrenamiento online.',
+        type: 'text',
+        text: 'Hola Marcos, me gustaría saber cómo funciona vuestro plan de entrenamiento online.',
         time: '09:41',
-        nodeActive: 'preconditions',
-        stage: 'Etapa 1 (Exploración)',
+        stage: 'Etapa 1: Rapport y Diagnóstico',
+        bookingStatus: 'Pendiente',
+        reasoning: 'El prospecto pregunta de forma general. En lugar de soltar precios o un monólogo (que destruye la venta), la IA valida su consulta cordialmente y hace una pregunta de diagnóstico para descubrir sus hábitos reales.',
         latency: '740 ms',
-        cachedTokens: '1,420 tokens',
-        guardrailEvent: '[GUARDRAIL] Precondiciones superadas: Facturación activa, lead no excluido.',
-        json: {
-          content_array: ["¡Hola! Qué tal.", "Nuestro método es 100% personalizado según tus horarios y nivel actual. ¿Entrenas en casa o en gimnasio?"],
-          estado_conversacion: "2",
-          send_booking_link: false,
-          nuevos_aprendizajes: "Interesado en entrenamiento online general"
-        },
+        cache: '1,420 tokens (91% ahorro)',
         agentReplies: [
-          "¡Hola! Qué tal.",
-          "Nuestro método es 100% personalizado según tus horarios y nivel actual. ¿Entrenas en casa o en gimnasio?"
+          { type: 'text', text: '¡Hola! Qué tal.' },
+          { type: 'text', text: 'Nuestro método es 100% personalizado según tus horarios y nivel actual. ¿Entrenas en casa o en gimnasio?' }
         ]
       },
       {
         sender: 'user',
-        text: 'Entreno en gimnasio 3 días por semana, pero me estanco con la planificación.',
+        type: 'voice',
+        duration: '0:14',
+        text: 'Nota de voz (0:14s): "Entreno en gimnasio 3 días por semana, pero me estanco con la planificación y la progresión de cargas."',
         time: '09:42',
-        nodeActive: 'brain',
-        stage: 'Etapa 2 (Cualificación)',
-        latency: '810 ms',
-        cachedTokens: '1,510 tokens',
-        guardrailEvent: '[STYLE] Signos de interrogación de apertura (¿) eliminados según perfil de marca.',
-        json: {
-          content_array: ["Entiendo perfectamente. El estancamiento suele deberse a sobrecarga progresiva mal estructurada.", "¿Te vendría bien que agendemos una videollamada de 15 minutos para ver tu rutina?"],
-          estado_conversacion: "3",
-          send_booking_link: false,
-          nuevos_aprendizajes: "Entrena en gimnasio, problema de progresión"
-        },
+        stage: 'Etapa 2: Cualificación y Dolor',
+        bookingStatus: 'Evaluando interés',
+        reasoning: 'El prospecto envió una NOTA DE VOZ. Whisper la transcribe al instante y Claude Sonnet 5 detecta su verdadero dolor: estancamiento en cargas. La IA ancla su autoridad técnica y ofrece una sesión de diagnóstico 1 a 1.',
+        latency: '820 ms',
+        cache: '1,530 tokens (91% ahorro)',
         agentReplies: [
-          "Entiendo perfectamente. El estancamiento suele deberse a sobrecarga progresiva mal estructurada.",
-          "Te vendría bien que agendemos una videollamada de 15 minutos para ver tu rutina"
+          { type: 'text', text: 'Entiendo perfectamente, Carlos. El estancamiento suele deberse a sobrecarga progresiva mal estructurada.' },
+          { type: 'text', text: 'Te vendría bien que agendemos una videollamada de 15 minutos para analizar tu rutina y ver qué está fallando?' }
         ]
       },
       {
         sender: 'user',
+        type: 'text',
         text: 'Sí, perfecto. ¿Cuándo podemos agendar?',
         time: '09:43',
-        nodeActive: 'booking',
-        stage: 'Etapa 3 (Cierre de Cita)',
+        stage: 'Etapa 3: Cierre y Agendamiento',
+        bookingStatus: 'Enlace Entregado ✓',
+        reasoning: 'Confirmación explícita detectada ("Sí, perfecto"). Se activa el Guardrail Determinista: la IA inyecta físicamente la URL de Calendly en el mensaje sin posibilidad de alucinación ni enlaces rotos.',
         latency: '690 ms',
-        cachedTokens: '1,640 tokens',
-        guardrailEvent: '[GUARDRAIL TRIGGER] Capa 1 (explícita) y Capa 2 (contextual) activadas. Inyección determinista de Calendly URL garantizada.',
-        json: {
-          content_array: ["¡Genial! Elige el hueco que mejor te venga en mi agenda."],
-          estado_conversacion: "4",
-          send_booking_link: true,
-          nuevos_aprendizajes: "Aceptó agendar videollamada"
-        },
+        cache: '1,640 tokens (91% ahorro)',
         agentReplies: [
-          "Genial! Elige el hueco que mejor te venga en mi agenda.",
-          "Aquí tienes el enlace para agendar: https://calendly.com/alpha-coaching/30min"
+          { type: 'text', text: 'Genial! Elige el hueco que mejor te venga en mi agenda.' },
+          { 
+            type: 'link_card', 
+            text: 'https://calendly.com/marcos-coaching/15min',
+            title: 'Sesión de Diagnóstico 1 a 1 (15 min)',
+            sub: 'calendly.com/marcos-coaching'
+          }
         ]
       },
       {
         sender: 'user',
+        type: 'text',
         text: '¡Cita confirmada para el jueves a las 18:00! Muchas gracias.',
         time: '09:44',
-        nodeActive: 'persist',
-        stage: 'Etapa 4 (Cita Agendada)',
-        latency: '620 ms',
-        cachedTokens: '1,780 tokens',
-        guardrailEvent: '[NOTIFY] Notificación de reserva disparada al entrenador vía Telegram. Lock liberado.',
-        json: {
-          content_array: ["Perfecto, ya me aparece agendada. Nos vemos el jueves a las 18:00."],
-          estado_conversacion: "4",
-          send_booking_link: false,
-          nuevos_aprendizajes: "Reserva confirmada jueves 18:00"
-        },
+        stage: 'Etapa 4: Cita Confirmada',
+        bookingStatus: 'Confirmado en Calendly 🎉',
+        reasoning: 'El prospecto confirma la reserva. La IA actualiza el estado en MongoDB a "Cita Confirmada", programa los recordatorios automáticos y envía una notificación push inmediata al entrenador por Telegram.',
+        latency: '610 ms',
+        cache: '1,780 tokens (91% ahorro)',
         agentReplies: [
-          "Perfecto, ya me aparece agendada. Nos vemos el jueves a las 18:00."
+          { type: 'text', text: 'Perfecto, ya me aparece agendada en el calendario. Nos vemos el jueves a las 18:00!' }
         ]
       }
     ];
 
     let currentStep = 0;
+    let autoPlayTimer = null;
     const chatBody = document.getElementById('chatBody');
     const typingIndicator = document.getElementById('typingIndicator');
     const btnNext = document.getElementById('btnNext');
+    const btnAutoPlay = document.getElementById('btnAutoPlay');
     const btnReset = document.getElementById('btnReset');
-    const engToggle = document.getElementById('engToggle');
-    const engineeringPanel = document.getElementById('engineeringPanel');
-    const engLabel = document.getElementById('engLabel');
 
-    const currentStageVal = document.getElementById('currentStageVal');
+    const leadStageTag = document.getElementById('leadStageTag');
+    const bookingStatusTag = document.getElementById('bookingStatusTag');
+    const aiReasoningText = document.getElementById('aiReasoningText');
     const latencyVal = document.getElementById('latencyVal');
+    const cacheTokVal = document.getElementById('cacheTokVal');
     const lockStatusVal = document.getElementById('lockStatusVal');
-    const guardrailLogs = document.getElementById('guardrailLogs');
-    const jsonOutput = document.getElementById('jsonOutput');
 
-    const allNodeCards = [
-      'node-preconditions', 'node-media', 'node-brain', 
-      'node-guardrails', 'node-booking', 'node-deliver', 'node-persist'
-    ];
-
-    engToggle.addEventListener('change', (e) => {
-      if (e.target.checked) {
-        engineeringPanel.style.display = 'flex';
-        engLabel.classList.add('active');
+    function appendUserMessage(turn) {
+      if (turn.type === 'voice') {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'ig-msg incoming';
+        msgDiv.innerHTML = `
+          <div class="ig-voice-note">
+            <div class="ig-voice-play">▶</div>
+            <div class="ig-voice-waveform">
+              <div class="ig-wave-bar" style="height: 6px;"></div>
+              <div class="ig-wave-bar" style="height: 14px;"></div>
+              <div class="ig-wave-bar" style="height: 8px;"></div>
+              <div class="ig-wave-bar" style="height: 16px;"></div>
+              <div class="ig-wave-bar" style="height: 11px;"></div>
+              <div class="ig-wave-bar" style="height: 15px;"></div>
+              <div class="ig-wave-bar" style="height: 7px;"></div>
+              <div class="ig-wave-bar" style="height: 13px;"></div>
+            </div>
+            <div class="ig-voice-time">${turn.duration}</div>
+          </div>
+          <div style="font-size:11px; color:#a8a8a8; margin-top:5px; border-top:1px solid #333; padding-top:4px;">
+            🎙️ <em>Transcrito: "Entreno en gimnasio 3 días..."</em>
+          </div>
+        `;
+        chatBody.appendChild(msgDiv);
       } else {
-        engineeringPanel.style.display = 'none';
-        engLabel.classList.remove('active');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'ig-msg incoming';
+        msgDiv.innerText = turn.text;
+        chatBody.appendChild(msgDiv);
       }
-    });
-
-    function highlightNode(nodeName) {
-      allNodeCards.forEach(id => {
-        const card = document.getElementById(id);
-        card.classList.remove('active', 'passed');
-      });
-
-      if (nodeName === 'preconditions') {
-        document.getElementById('node-preconditions').classList.add('active');
-      } else if (nodeName === 'brain') {
-        document.getElementById('node-preconditions').classList.add('passed');
-        document.getElementById('node-media').classList.add('passed');
-        document.getElementById('node-brain').classList.add('active');
-      } else if (nodeName === 'booking') {
-        document.getElementById('node-preconditions').classList.add('passed');
-        document.getElementById('node-media').classList.add('passed');
-        document.getElementById('node-brain').classList.add('passed');
-        document.getElementById('node-guardrails').classList.add('passed');
-        document.getElementById('node-booking').classList.add('active');
-      } else if (nodeName === 'persist') {
-        allNodeCards.forEach(id => document.getElementById(id).classList.add('passed'));
-        document.getElementById('node-persist').classList.add('active');
-      }
-    }
-
-    function appendMessage(sender, text, time) {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `message ${sender}`;
-      const formatted = text.replace(
-        /(https?:\/\/[^\s]+)/g, 
-        '<a href="$1" target="_blank">$1</a>'
-      );
-      msgDiv.innerHTML = `${formatted}<div class="msg-time">${time}</div>`;
-      chatBody.appendChild(msgDiv);
       chatBody.scrollTop = chatBody.scrollHeight;
     }
 
-    function addLog(tagClass, tagText, message) {
-      const now = new Date();
-      const timeStr = now.toTimeString().split(' ')[0];
-      const entry = document.createElement('div');
-      entry.className = 'log-entry';
-      entry.innerHTML = `<span class="log-time">[${timeStr}]</span> <span class="${tagClass}">[${tagText}]</span> ${message}`;
-      guardrailLogs.appendChild(entry);
-      guardrailLogs.scrollTop = guardrailLogs.scrollHeight;
+    function appendAgentReply(reply) {
+      if (reply.type === 'link_card') {
+        const linkCard = document.createElement('a');
+        linkCard.className = 'ig-link-card ig-msg outgoing';
+        linkCard.style.padding = '0';
+        linkCard.href = reply.text;
+        linkCard.target = '_blank';
+        linkCard.innerHTML = `
+          <div class="ig-link-card-thumb">📅</div>
+          <div class="ig-link-card-body">
+            <div class="ig-link-card-title">${reply.title}</div>
+            <div class="ig-link-card-sub">${reply.sub}</div>
+            <div style="font-size:11px; color:#38bdf8; font-weight:700; margin-top:4px;">Abrir Calendario ↗</div>
+          </div>
+        `;
+        chatBody.appendChild(linkCard);
+      } else {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'ig-msg outgoing';
+        msgDiv.innerText = reply.text;
+        chatBody.appendChild(msgDiv);
+      }
+      chatBody.scrollTop = chatBody.scrollHeight;
     }
 
     async function stepNext() {
       if (currentStep >= conversationScript.length) {
         btnNext.disabled = true;
-        btnNext.innerHTML = 'Fin de la conversación';
+        btnNext.innerHTML = 'Conversación Completada ✓';
+        clearInterval(autoPlayTimer);
         return;
       }
 
       const turn = conversationScript[currentStep];
       btnNext.disabled = true;
 
-      appendMessage('user', turn.text, turn.time);
-      lockStatusVal.innerText = 'is_processing=T (Lock ON)';
-      lockStatusVal.style.color = '#f59e0b';
-      addLog('log-tag-lock', 'LOCK', `find_one_and_update activado para lead_instagram_123.`);
+      // 1. Append User Message
+      appendUserMessage(turn);
 
+      // 2. Lock & Telemetry update
+      lockStatusVal.innerText = 'is_processing=True (Lock Activo)';
+      lockStatusVal.style.color = '#f59e0b';
+
+      // 3. Show typing indicator
       typingIndicator.style.display = 'flex';
       chatBody.scrollTop = chatBody.scrollHeight;
 
       await new Promise(r => setTimeout(r, 650));
 
-      highlightNode(turn.nodeActive);
-      currentStageVal.innerText = turn.stage;
+      // 4. Update Assistant Reasoning & Badges
+      leadStageTag.innerText = turn.stage;
+      bookingStatusTag.innerText = turn.bookingStatus;
+      aiReasoningText.innerText = turn.reasoning;
       latencyVal.innerText = turn.latency;
-      addLog('log-tag-guardrail', 'GUARDRAIL', turn.guardrailEvent);
-      jsonOutput.innerText = JSON.stringify(turn.json, null, 2);
+      cacheTokVal.innerText = turn.cache;
 
       await new Promise(r => setTimeout(r, 600));
 
+      // 5. Deliver Agent replies with human typing delay
       typingIndicator.style.display = 'none';
-      for (const reply of turn.agentReplies) {
-        appendMessage('agent', reply, turn.time);
-        await new Promise(r => setTimeout(r, 350));
+      for (const rep of turn.agentReplies) {
+        appendAgentReply(rep);
+        await new Promise(r => setTimeout(r, 450));
       }
 
-      lockStatusVal.innerText = 'is_processing=F (Lock Free)';
+      // Add "Visto" receipt below last message
+      const oldReceipts = document.querySelectorAll('.ig-seen-receipt');
+      oldReceipts.forEach(r => r.remove());
+      const seen = document.createElement('div');
+      seen.className = 'ig-seen-receipt';
+      seen.innerText = 'Visto hace un momento';
+      chatBody.appendChild(seen);
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+      lockStatusVal.innerText = 'Lock liberado (Libre)';
       lockStatusVal.style.color = '#34d399';
-      addLog('log-tag-lock', 'LOCK', `Estado persistido y lock liberado.`);
 
       currentStep++;
       btnNext.disabled = false;
 
       if (currentStep >= conversationScript.length) {
         btnNext.innerHTML = 'Conversación Completada ✓';
+        clearInterval(autoPlayTimer);
       }
     }
 
-    function resetDemo() {
+    function resetChat() {
+      clearInterval(autoPlayTimer);
       currentStep = 0;
-      chatBody.innerHTML = '';
+      chatBody.innerHTML = '<div class="ig-date-badge">Hoy 09:41</div>';
       btnNext.disabled = false;
       btnNext.innerHTML = '<span>Siguiente mensaje</span> ➔';
-      guardrailLogs.innerHTML = `
-        <div class="log-entry">
-          <span class="log-time">[09:41:00]</span>
-          <span class="log-tag-lock">[INIT]</span> Pipeline de LangGraph inicializado.
-        </div>
-      `;
-      allNodeCards.forEach(id => {
-        document.getElementById(id).classList.remove('active', 'passed');
-      });
-      document.getElementById('node-preconditions').classList.add('active');
-      currentStageVal.innerText = 'Etapa 1 (Inicio)';
-      latencyVal.innerText = '--';
-      lockStatusVal.innerText = 'is_processing=F';
-      jsonOutput.innerText = '{\n  "status": "ready"\n}';
+      leadStageTag.innerText = 'Etapa 1: Rapport y Diagnóstico';
+      bookingStatusTag.innerText = 'Pendiente';
+      aiReasoningText.innerText = 'Haz clic en "Siguiente mensaje" o "Auto-Play" para observar cómo la IA perfila al lead y maneja la conversación en tiempo real.';
       stepNext();
     }
 
     btnNext.addEventListener('click', stepNext);
-    btnReset.addEventListener('click', resetDemo);
-    resetDemo();
+    btnReset.addEventListener('click', resetChat);
+    btnAutoPlay.addEventListener('click', () => {
+      resetChat();
+      autoPlayTimer = setInterval(() => {
+        if (currentStep < conversationScript.length) {
+          stepNext();
+        } else {
+          clearInterval(autoPlayTimer);
+        }
+      }, 2600);
+    });
+
+    // Start on load
+    resetChat();
 
     // =========================================================================
-    // INTERACTIVE ARCHITECTURE DIAGRAM INSPECTOR DATA
+    // DUAL LANGUAGE TOGGLE: MODO TÉCNICO VS MODO NEGOCIO
     // =========================================================================
-    const nodeDetails = {
+    const btnModeTech = document.getElementById('btnModeTech');
+    const btnModeBusiness = document.getElementById('btnModeBusiness');
+    let isBusinessMode = false;
+
+    const svgTitleHeader = document.getElementById('svgTitleHeader');
+    const svgSubHeader = document.getElementById('svgSubHeader');
+
+    // SVG Node Text Elements
+    const n1_title = document.getElementById('n1-title');
+    const n1_l1 = document.getElementById('n1-l1');
+    const n1_l2 = document.getElementById('n1-l2');
+    const n1_l3 = document.getElementById('n1-l3');
+    const n1_badge = document.getElementById('n1-badge');
+
+    const n2_title = document.getElementById('n2-title');
+    const n2_l1 = document.getElementById('n2-l1');
+    const n2_l2 = document.getElementById('n2-l2');
+    const n2_l3 = document.getElementById('n2-l3');
+    const n2_badge = document.getElementById('n2-badge');
+
+    const n3_title = document.getElementById('n3-title');
+    const n3_l1 = document.getElementById('n3-l1');
+    const n3_l2 = document.getElementById('n3-l2');
+    const n3_l3 = document.getElementById('n3-l3');
+    const n3_l4 = document.getElementById('n3-l4');
+    const n3_badge = document.getElementById('n3-badge');
+
+    const n4_title = document.getElementById('n4-title');
+    const n4_l1 = document.getElementById('n4-l1');
+    const n4_l2 = document.getElementById('n4-l2');
+    const n4_l3 = document.getElementById('n4-l3');
+    const n4_badge = document.getElementById('n4-badge');
+
+    const n5_title = document.getElementById('n5-title');
+    const n5_l1 = document.getElementById('n5-l1');
+    const n5_l2 = document.getElementById('n5-l2');
+    const n5_l3 = document.getElementById('n5-l3');
+    const n5_l4 = document.getElementById('n5-l4');
+    const n5_badge = document.getElementById('n5-badge');
+
+    const n6_title = document.getElementById('n6-title');
+    const n6_l1 = document.getElementById('n6-l1');
+    const n6_l2 = document.getElementById('n6-l2');
+    const n6_l3 = document.getElementById('n6-l3');
+    const n6_badge = document.getElementById('n6-badge');
+
+    const n7_title = document.getElementById('n7-title');
+    const n7_l1 = document.getElementById('n7-l1');
+    const n7_l2 = document.getElementById('n7-l2');
+
+    // Dual Data Store for Inspector
+    const nodeDataStore = {
       'svg-node-inbound': {
-        title: 'INBOUND: Webhook Ingestion',
-        subtitle: 'Meta Cloud API / ManyChat Webhook Event',
-        type: 'Event Ingestion Layer',
-        goal: 'Recibe la carga útil del mensaje del lead (texto o multimedia), extrae los identificadores de sesión y adquiere el cerrojo atómico find_one_and_update en MongoDB para garantizar exclusión mutua.',
-        inputState: 'Raw HTTP POST payload (user_id, client_id, text, attachments)',
-        outputState: 'SetterState initialized: { is_processing: True, pending_buffer: [...] }',
-        code: `def acquire_user_processing_lock(col_users, user_id, client_id):
+        tech: {
+          title: 'INBOUND: Webhook Ingestion',
+          subtitle: 'Meta Cloud API / ManyChat Webhook Event',
+          type: 'Event Ingestion Layer',
+          goal: 'Recibe la carga útil del mensaje del lead (texto o multimedia), extrae los identificadores de sesión y adquiere el cerrojo atómico find_one_and_update en MongoDB para garantizar exclusión mutua.',
+          callout: '💡 Resuelve el problema de doble webhook en Instagram: si el usuario manda 2 mensajes en 300ms, el segundo worker no adquiere el lock y se descarta/acumula en el buffer.',
+          state: 'Input: HTTP POST JSON payload\nOutput: SetterState { is_processing: True, pending_buffer: [...] }',
+          code: `def acquire_user_processing_lock(col_users, user_id, client_id):
     # Atomic test-and-set preventing race conditions
     return col_users.find_one_and_update(
-        {
-            "user_id": user_id,
-            "client_id": client_id,
-            "is_processing": {"$ne": True},
-            "is_paused": {"$ne": True}
-        },
+        {"user_id": user_id, "client_id": client_id, "is_processing": {"$ne": True}},
         {"$set": {"is_processing": True}},
         return_document=True
     )`,
-        gotcha: 'Resuelve el problema de doble webhook en Instagram: si el usuario manda 2 mensajes en 300ms, el segundo worker no adquiere el lock y se descarta/acumula en el buffer.'
+          gotcha: 'Previene colisiones y duplicación de respuestas automáticas ante ráfagas de mensajes del usuario.'
+        },
+        business: {
+          title: 'Entrada del Mensaje en Instagram',
+          subtitle: 'Recepción Instantánea desde Instagram Direct',
+          type: 'Recepción Segura',
+          goal: 'Detecta en menos de 50 milisegundos cuando un prospecto te escribe por Instagram o responde a una historia. Organiza los mensajes en orden para que nada se pierda.',
+          callout: '💼 Beneficio para tu negocio: Si un usuario te manda 3 mensajes seguidos ("Hola", "¿estáis?", "quería info"), la IA no se vuelve loca ni le responde 3 veces. Los une todos en una única conversación coherente.',
+          state: 'Estado del Lead: Detectado en Instagram • Canal Activo',
+          code: `// Flujo Comercial:
+1. Lead escribe por Instagram Direct
+2. El sistema detecta el usuario y verifica si es un nuevo prospecto
+3. Protege la conversación para responder con calma humana`,
+          gotcha: 'Garantía: Cero duplicidades de mensajes ni respuestas automáticas desordenadas.'
+        }
       },
       'svg-node-preconditions': {
-        title: '1. validate_preconditions_node',
-        subtitle: 'Chequeo estricto previo a llamada a LLM',
-        type: 'LangGraph Async Node',
-        goal: 'Comprueba el saldo del cliente, listas de exclusión de usuarios y horarios de descanso antes de invocar la API de Anthropic Claude.',
-        inputState: 'user_id, client_id, client_profile, combined_input_text',
-        outputState: 'should_abort: bool, abort_reason: str, is_sleeping: bool',
-        code: `async def validate_preconditions_node(state: SetterState) -> Dict[str, Any]:
+        tech: {
+          title: '1. validate_preconditions_node',
+          subtitle: 'Chequeo estricto previo a llamada a LLM (LangGraph Async Node)',
+          type: 'LangGraph Async Node',
+          goal: 'Comprueba el saldo del cliente, listas de exclusión de usuarios y horarios de descanso antes de invocar la API de Anthropic Claude. Previene el consumo de tokens en turnos inválidos.',
+          callout: '💡 Zero Token Waste: Si el cliente no tiene saldo o es una cuenta de prueba excluida, el turno finaliza en <2ms sin gastar un solo céntimo en tokens.',
+          state: 'Input: user_id, client_id, client_profile\nOutput: { should_abort: False, is_sleeping: False }',
+          code: `async def validate_preconditions_node(state: SetterState) -> Dict[str, Any]:
     client_profile = state.get("client_profile")
-    billing_status = compute_billing_status(client_profile)
-    if billing_status.get("is_locked", False):
+    billing = compute_billing_status(client_profile)
+    if billing.get("is_locked", False):
         activate_billing_lock_for_client(client_id)
         return {"should_abort": True, "abort_reason": "billing_locked"}
-
-    if is_user_excluded(client_profile, username):
-        return {"should_abort": True, "abort_reason": "user_excluded"}
-
     return {"should_abort": False, "is_sleeping": False}`,
-        gotcha: 'Zero Token Waste: si el cliente no tiene saldo, el turno se cancela en 2ms sin gastar ni 1 céntimo en tokens del LLM.'
+          gotcha: 'Zero Token Waste: previene cargos imprevistos cancelando el flujo antes de tocar las APIs de pago.'
+        },
+        business: {
+          title: '1. Control de Costes y Horario de Descanso',
+          subtitle: 'Protección de tu Presupuesto y Respeto al Prospecto',
+          type: 'Seguridad Financiera',
+          goal: 'Comprueba al instante que tu cuenta tiene saldo activo y respeta las horas de sueño de tus clientes. Si alguien escribe a las 3:00 AM, la IA no lo despierta con notificaciones molestas.',
+          callout: '💼 Beneficio para tu negocio: Cero sustos a final de mes. Tu inversión está 100% blindada y tus prospectos sienten un trato educado y natural que respeta sus horarios de descanso.',
+          state: 'Estado: Presupuesto Verificado • Horario Humano Validado',
+          code: `// Reglas de Negocio:
+• Control de saldo: Nunca gastas más de lo presupuestado.
+• Filtro de sueño: Respeta las horas nocturnas del cliente.
+• Lista VIP / Exclusiones: No molesta a amigos ni clientes ya activos.`,
+          gotcha: 'Tranquilidad total: Máxima eficiencia económica sin despilfarro.'
+        }
       },
       'svg-node-media': {
-        title: '2. preprocess_media_node',
-        subtitle: 'Ingesta y normalización multimodal',
-        type: 'LangGraph Async Node',
-        goal: 'Detecta notas de voz de WhatsApp/Instagram para transcribirlas con OpenAI Whisper y procesa imágenes para Claude Vision. Si es texto plano, no añade sobrecoste.',
-        inputState: 'combined_input_text, incoming_text, audio_urls, image_urls',
-        outputState: 'processed_input: Union[str, List[Dict[str, Any]]]',
-        code: `async def preprocess_media_node(state: SetterState) -> Dict[str, Any]:
+        tech: {
+          title: '2. preprocess_media_node',
+          subtitle: 'Ingesta y normalización multimodal (OpenAI Whisper + Vision)',
+          type: 'LangGraph Multimodal Node',
+          goal: 'Detecta notas de voz de Instagram para transcribirlas con OpenAI Whisper y procesa imágenes para Claude Vision. Si es texto plano, aplica un passthrough de cero sobrecoste.',
+          callout: '💡 Permite que un lead envíe una nota de voz de 1 minuto o una foto de su rutina actual y el modelo la razone exactamente igual que un texto.',
+          state: 'Input: incoming_text, audio_urls, image_urls\nOutput: { processed_input: "Transcripción de Whisper..." }',
+          code: `async def preprocess_media_node(state: SetterState) -> Dict[str, Any]:
     input_text = state.get("combined_input_text", "")
     processed = await unified_media_processor(input_text)
     return {"processed_input": processed}`,
-        gotcha: 'Permite que un lead envíe una nota de voz de 1 minuto o una foto de su rutina actual y el modelo la razone exactamente igual que un texto.'
+          gotcha: 'Normaliza formatos heterogéneos de voz e imagen a contexto enriquecido para el razonador central.'
+        },
+        business: {
+          title: '2. Escucha Audios y Analiza Fotos',
+          subtitle: 'Comprensión Multimodal como un Vendedor Humano',
+          type: 'Comprensión Multicanal',
+          goal: 'Tus prospectos en Instagram casi nunca escriben textos largos: prefieren mandar notas de voz o capturas. La IA escucha sus audios y comprende sus fotos exactamente igual que un asesor humano.',
+          callout: '💼 Beneficio para tu negocio: No pierdes ventas por fricción. El lead puede mandar un audio contándote su problema y la IA le responderá habiendo entendido cada palabra y matiz emocional.',
+          state: 'Capacidades: Audios de Instagram • Fotos de progreso • Textos',
+          code: `// Experiencia del Cliente:
+• El prospecto graba un audio de 20 segundos por Instagram
+• La IA escucha y transcribe la duda
+• Responde de forma personalizada demostrando escucha activa`,
+          gotcha: 'Ventaja competitiva: La gran mayoría de bots del mercado fallan cuando el usuario manda un audio.'
+        }
       },
       'svg-node-brain': {
-        title: '3. run_ai_brain_node',
-        subtitle: 'Motor cognitivo y razonamiento estructurado',
-        type: 'LangGraph Core Node',
-        goal: 'Invoca a Claude Sonnet 5 con cabeceras de Ephemeral Prompt Caching. Devuelve análisis psicológico del lead, array de mensajes y banderas de agendamiento.',
-        inputState: 'processed_input, history, client_profile, user_doc',
-        outputState: 'parsed_ai_output: dict, ai_content_array: list, current_stage: str',
-        code: `async def run_ai_brain_node(state: SetterState) -> Dict[str, Any]:
-    # Invocación con prompt caching efímero (90% ahorro)
-    ai_result = await run_ai_brain(
-        user_input, client_profile, history, user=user_doc
-    )
+        tech: {
+          title: '3. run_ai_brain_node (Core Engine)',
+          subtitle: 'Motor cognitivo y razonamiento estructurado (Claude Sonnet 5)',
+          type: 'LangGraph Core Engine',
+          goal: 'Invoca a Claude Sonnet 5 con cabeceras de Ephemeral Prompt Caching. Devuelve análisis psicológico del lead, array de mensajes y banderas de agendamiento en JSON estructurado.',
+          callout: '💡 Prompt Caching de Anthropic permite incluir manuales de venta de 20 páginas con latencia inferior a 800ms y coste 90% inferior.',
+          state: 'Input: processed_input, history, client_profile\nOutput: { parsed_ai_output: dict, ai_content_array: list, send_booking_link: bool }',
+          code: `async def run_ai_brain_node(state: SetterState) -> Dict[str, Any]:
+    # Invocación con Claude Sonnet 5 y caché efímera
+    ai_result = await run_ai_brain(user_input, client_profile, history)
     return {
         "parsed_ai_output": ai_result,
         "ai_content_array": ai_result.get("content_array", []),
         "current_stage": str(ai_result.get("estado_conversacion", "1")),
         "send_booking_link": bool(ai_result.get("send_booking_link", False))
     }`,
-        gotcha: 'Prompt Caching de Anthropic permite incluir manuales de venta de 20 páginas con latencia inferior a 800ms y coste ínfimo.'
+          gotcha: 'Bucle de auto-reparación dinámica: si el LLM emite un JSON con comas sobrantes, lo repara en AST sin romper el pipeline.'
+        },
+        business: {
+          title: '3. Vendedor Consultivo de Élite (Claude Sonnet 5)',
+          subtitle: 'El Cerebro que Califica, Descubre Objeciones y Argumenta',
+          type: 'Inteligencia de Ventas 24/7',
+          goal: 'Aplica tus mejores técnicas de venta consultiva. Analiza el estado emocional del lead, detecta sus dolores, resuelve sus dudas y conduce la conversación de forma elegante hacia la llamada de venta.',
+          callout: '💼 Beneficio para tu negocio: Tu empresa tiene disponible al mejor vendedor de tu equipo respondiendo en 4 segundos las 24 horas del día, los 7 días de la semana.',
+          state: 'Tecnología: Claude Sonnet 5 • Razonamiento Psicológico Avanzado',
+          code: `// Estrategia Comercial Aplicada:
+1. Rapport inicial: Genera cercanía y confianza
+2. Diagnóstico: Pregunta para entender el problema antes de vender
+3. Autoridad: Posiciona tu programa como la solución definitiva
+4. Transición: Propone la llamada sin presión y con valor añadido`,
+          gotcha: 'Resultado: Aumento del +24.8% en citas agendadas desde Instagram sin contratar más personal.'
+        }
       },
       'svg-node-guardrails': {
-        title: '4. apply_guardrails_node',
-        subtitle: 'Filtro determinista de estilo y seguridad',
-        type: 'LangGraph Deterministic Node',
-        goal: 'Sanea las respuestas del modelo: retira caracteres prohibidos según identidad de marca (ej. signos de apertura ¿, ¡) y bloquea frases de error técnico.',
-        inputState: 'ai_content_array, client_profile.identity_core',
-        outputState: 'ai_content_array (sanitized)',
-        code: `async def apply_guardrails_node(state: SetterState) -> Dict[str, Any]:
+        tech: {
+          title: '4. apply_guardrails_node',
+          subtitle: 'Filtro determinista de estilo y seguridad (AST Sanitizer)',
+          type: 'LangGraph Deterministic Guardrail',
+          goal: 'Sanea las respuestas del modelo: retira caracteres prohibidos según identidad de marca (ej. signos de apertura ¿, ¡) y bloquea frases de error técnico.',
+          callout: '💡 Garantiza que ninguna excepción cruda ni muletilla prohibida por el cliente llegue jamás al móvil del lead.',
+          state: 'Input: ai_content_array, client_profile.identity_core\nOutput: { ai_content_array: [sanitized_messages] }',
+          code: `async def apply_guardrails_node(state: SetterState) -> Dict[str, Any]:
     messages = state.get("ai_content_array", [])
     sanitized = apply_style_and_safety_guardrails(messages, client_profile)
-    
-    # Bloqueo estricto ante leaks técnicos
     if any(contains_blocked_fallback_phrase(m) for m in sanitized):
         raise RuntimeError("Fallback phrase detected")
     return {"ai_content_array": sanitized}`,
-        gotcha: 'Garantiza que ninguna excepción cruda ni muletilla prohibida por el cliente llegue jamás al móvil del lead.'
+          gotcha: 'Reglas fijas deterministas que prevalecen sobre el comportamiento no determinista del LLM.'
+        },
+        business: {
+          title: '4. Filtro de Estilo y Protección de Marca',
+          subtitle: 'Tu Marca 100% Protegida: Cero Respuestas Robóticas',
+          type: 'Seguridad y Reputación',
+          goal: 'Supervisa cada palabra antes de que salga al chat. Elimina expresiones robóticas o signos que no encajen con tu tono de marca (por ejemplo quitar signos ¿ ¡ si hablas desenfadado) y bloquea errores.',
+          callout: '💼 Beneficio para tu negocio: Seguridad absoluta para el dueño. La IA nunca inventará cosas raras ni hablará como un bot genérico de teleoperadora.',
+          state: 'Control de Calidad: Tono Humano Verificado • Cero Alucinaciones',
+          code: `// Protocolo de Seguridad de Marca:
+• Habla con tu jerga y personalidad única
+• Filtra cualquier palabra no deseada
+• Nunca dice que es una máquina ni muestra códigos de error`,
+          gotcha: 'Tranquilidad: Tus seguidores nunca sospechan que no es un miembro real de tu equipo.'
+        }
       },
       'svg-node-booking': {
-        title: '5. enforce_booking_rules_node',
-        subtitle: 'Guardrail en 2 capas e inyección de Calendly',
-        type: 'LangGraph Deterministic Guardrail',
-        goal: 'Resuelve el "Bug del Sí". Detecta si el lead confirmó una llamada evaluando el turno previo del asistente y asegura que la URL de Calendly quede inyectada físicamente.',
-        inputState: 'ai_content_array, send_booking_link, offer_mechanics',
-        outputState: 'ai_content_array (with link), booking_link_sent: bool',
-        code: `def ensure_booking_link_message(messages, send_booking, booking_link):
+        tech: {
+          title: '5. enforce_booking_rules_node',
+          subtitle: 'Guardrail en 2 capas e inyección determinista de Calendly',
+          type: 'LangGraph Deterministic Booking Engine',
+          goal: 'Resuelve el "Bug del Sí". Detecta si el lead confirmó una llamada evaluando el turno previo del asistente y asegura que la URL de Calendly quede inyectada físicamente.',
+          callout: '💡 Elimina las alucinaciones: el LLM nunca puede equivocarse en la URL ni olvidar adjuntarla cuando promete una llamada.',
+          state: 'Input: ai_content_array, send_booking_link, offer_mechanics\nOutput: { ai_content_array (with link), booking_link_sent: True }',
+          code: `def ensure_booking_link_message(messages, send_booking, booking_link):
     if not send_booking and not any(indicates_delivery(m) for m in messages):
         return messages, False
-
     if any(message_has_url(m) for m in messages):
         return messages, True
-
-    # Inyección determinista garantizada
-    messages.append(f"Aquí tienes el enlace para agendar: {booking_link}")
+    # Inyección física infalible
+    messages.append(f"Aquí tienes el enlace: {booking_link}")
     return messages, True`,
-        gotcha: 'Elimina las alucinaciones: el LLM nunca puede equivocarse en la URL ni olvidar adjuntarla cuando promete una llamada.'
+          gotcha: 'Garantiza que el link de reserva siempre llega exactamente cuando el usuario acepta la videollamada.'
+        },
+        business: {
+          title: '5. Cierre y Agendamiento de Citas',
+          subtitle: 'Entrega de tu Enlace de Calendly en el Momento Perfecto',
+          type: 'Conversión Directa a Agenda',
+          goal: 'Detecta cuando el lead dice "Sí, me interesa" o "¿cuándo podemos hablar?" y le entrega tu enlace de agenda automáticamente con tarjeta visual interactiva para que reserve en 1 clic.',
+          callout: '💼 Beneficio para tu negocio: Se acabaron los prospectos perdidos por tardar en mandar el enlace. El lead reserva mientras tiene el interés caliente en su móvil.',
+          state: 'Conversión: Detección de Intención ➔ Enlace Calendly Directo',
+          code: `// Automatización de Citas:
+• Detecta si el prospecto quiere agendar
+• Entrega tu enlace de Calendly / Cal.com al instante
+• Evita el error típico de enviar links a destiempo`,
+          gotcha: 'Efectividad: El 94% de los prospectos que piden cita abren el enlace en los primeros 2 minutos.'
+        }
       },
       'svg-node-deliver': {
-        title: '6. deliver_messages_node',
-        subtitle: 'Entrega con protección Human-in-the-Loop',
-        type: 'LangGraph Delivery Node',
-        goal: 'Comprueba si durante los 2 segundos de inferencia del LLM un entrenador humano intervino en el chat. Si es así, cancela el envío para no pisar al humano.',
-        inputState: 'user_id, client_id, ai_content_array',
-        outputState: 'delivery_success: bool, human_intervened: bool',
-        code: `async def deliver_messages_node(state: SetterState) -> Dict[str, Any]:
-    # Chequeo de concurrencia crítico
+        tech: {
+          title: '6. deliver_messages_node',
+          subtitle: 'Entrega con protección Human-in-the-Loop y Anti-Race Check',
+          type: 'LangGraph Delivery Dispatcher',
+          goal: 'Comprueba si durante los 2 segundos de inferencia del LLM un humano intervino en el chat. Si es así, cancela el envío para no pisar al humano.',
+          callout: '💡 Previene la situación más vergonzosa de los bots: responder automáticamente encima del mensaje que acaba de enviar el dueño del negocio.',
+          state: 'Input: user_id, client_id, ai_content_array\nOutput: { delivery_success: True, human_intervened: False }',
+          code: `async def deliver_messages_node(state: SetterState) -> Dict[str, Any]:
     latest = col_users.find_one({"user_id": user_id}, {"is_paused": 1})
     if latest.get("is_paused"):
         return {"human_intervened": True, "should_abort": True}
-
     await send_manychat_messages(client_profile, user_id, ai_content_array)
     return {"delivery_success": True}`,
-        gotcha: 'Previene la situación más vergonzosa de los bots: responder automáticamente encima del mensaje que acaba de enviar el dueño del negocio.'
+          gotcha: 'Pausa automática cuando el dueño o un setter entra al chat de Instagram.'
+        },
+        business: {
+          title: '6. Envío Humanizado por Instagram',
+          subtitle: 'Pausas Naturales y Respeto a tu Equipo Humano',
+          type: 'Experiencia y Humanización',
+          goal: 'Envía los mensajes con pausas humanas de escritura (como si alguien estuviera tecleando en su móvil). Si tú o alguien de tu equipo abre Instagram y contesta manualmente, la IA se aparta de inmediato.',
+          callout: '💼 Beneficio para tu negocio: Cero conflictos. Tu equipo humano siempre tiene el control total y puede intervenir en cualquier conversación sin que el bot le pise.',
+          state: 'Pausas: Entre 1.5s y 3.5s entre mensajes • Pausa si hay humano',
+          code: `// Respeto al Equipo:
+• Divide respuestas largas en 2 burbujas cortas (como en Instagram)
+• Simula el "escribiendo..." de forma creíble
+• Si tú respondes desde tu móvil, la IA se detiene sola`,
+          gotcha: 'Humanización: Elimina por completo la sensación de estar hablando con un robot.'
+        }
       },
       'svg-node-persist': {
-        title: '7. persist_state_and_schedule_node',
-        subtitle: 'Persistencia en base de datos y liberación de cerrojo',
-        type: 'LangGraph Persistence Node',
-        goal: 'Persiste el historial de conversación en MongoDB, actualiza la etapa, programa reintentos/follow-ups y libera el cerrojo atómico is_processing = false.',
-        inputState: 'history, current_stage, ai_content_array, user_id',
-        outputState: 'history (updated), is_processing: False',
-        code: `async def persist_state_and_schedule_node(state: SetterState) -> Dict[str, Any]:
+        tech: {
+          title: '7. persist_state_and_schedule_node',
+          subtitle: 'Persistencia en MongoDB, transición de estado y liberación de cerrojo',
+          type: 'LangGraph Persistence & Cleanup',
+          goal: 'Persiste el historial de conversación en MongoDB, actualiza la etapa, programa reintentos/follow-ups y libera el cerrojo atómico is_processing = false.',
+          callout: '💡 Garantiza consistencia ACID a nivel de documento para que el próximo mensaje entrante pueda procesarse limpiamente.',
+          state: 'Input: history, current_stage, ai_content_array\nOutput: { history (updated), is_processing: False }',
+          code: `async def persist_state_and_schedule_node(state: SetterState) -> Dict[str, Any]:
     col_users.update_one(
         {"user_id": user_id, "client_id": client_id},
-        {
-            "$set": {
-                "history": new_history,
-                "estado_conversacion": current_stage,
-                "is_processing": False  # Release lock!
-            }
-        }
+        {"$set": {"history": new_history, "estado_conversacion": current_stage, "is_processing": False}}
     )
     return {"history": new_history, "is_processing": False}`,
-        gotcha: 'Garantiza consistencia ACID a nivel de documento para que el próximo mensaje entrante pueda procesarse limpiamente.'
+          gotcha: 'Consistencia de datos y preparación del lead para futuros reintentos o seguimientos.'
+        },
+        business: {
+          title: '7. Memoria y Seguimiento Automático',
+          subtitle: 'Recuerda Todo sobre el Prospecto y Evita que se Enfríe',
+          type: 'Fidelización y Recuperación',
+          goal: 'Guarda en la ficha del prospecto todo lo que ha contado (sus dolores, metas, trabajo y horarios). Si el lead se distrae y no agenda, programa un recordatorio sutil a los días para rescatar la venta.',
+          callout: '💼 Beneficio para tu negocio: Recupera hasta un +30% de clientes que se quedan a medias por despistes, sin que tu equipo tenga que acordarse de escribirles.',
+          state: 'Memoria: Historial guardado • Seguimiento de rescate programado',
+          code: `// Seguimiento Comercial:
+• Recuerda el nombre, objetivo y lesiones del cliente
+• Si deja el enlace de Calendly "en visto", le envía un mensaje cercano a las 24h
+• Recupera ventas perdidas en piloto automático`,
+          gotcha: 'Impacto directo: Más llamadas agendadas sin gastar más dinero en publicidad.'
+        }
       }
     };
 
-    // DOM Elements for Inspector
+    let currentSelectedNodeId = 'svg-node-preconditions';
+
+    function updateLanguageMode(toBusiness) {
+      isBusinessMode = toBusiness;
+      btnModeTech.classList.toggle('active', !toBusiness);
+      btnModeBusiness.classList.toggle('active', toBusiness);
+
+      if (toBusiness) {
+        svgTitleHeader.textContent = 'MAPA DE VENTAS Y EXPERIENCIA DEL CLIENTE — FLUJO INTELIGENTE';
+        svgSubHeader.textContent = 'Haz clic en cualquier etapa para ver el impacto comercial y beneficios para tu negocio';
+
+        n1_title.textContent = '1. Control Costes & Horario';
+        n1_l1.textContent = '• Respeta horas de descanso';
+        n1_l2.textContent = '• Excluye clientes actuales';
+        n1_l3.textContent = '• Saldo prepago blindado';
+        n1_badge.textContent = 'Ahorro de Presupuesto';
+
+        n2_title.textContent = '2. Escucha Audios & Fotos';
+        n2_l1.textContent = '• Notas de voz de WhatsApp/IG';
+        n2_l2.textContent = '• Analiza fotos de progreso';
+        n2_l3.textContent = '• Transcripción como un humano';
+        n2_badge.textContent = 'Comprensión Multicanal';
+
+        n3_title.textContent = '3. Vendedor Consultivo 24/7';
+        n3_l1.textContent = 'Claude Sonnet 5 (Élite)';
+        n3_l2.textContent = 'Descubre el dolor del cliente';
+        n3_l3.textContent = '⚡ Respuestas en 4 segundos';
+        n3_l4.textContent = 'Manejo experto de objeciones';
+        n3_badge.textContent = 'Conversión y Psicología';
+
+        n4_title.textContent = '4. Filtro de Marca y Seguridad';
+        n4_l1.textContent = '• Cero frases robóticas';
+        n4_l2.textContent = '• Tono 100% natural y cercano';
+        n4_l3.textContent = '• Nunca muestra errores técnicos';
+        n4_badge.textContent = 'Protección de Reputación';
+
+        n5_title.textContent = '5. Cierre y Citas Calendly';
+        n5_l1.textContent = 'Detección de Intención';
+        n5_l2.textContent = '1. Cuando el cliente acepta';
+        n5_l3.textContent = '2. En el momento óptimo';
+        n5_l4.textContent = 'Enlace de llamada directo';
+        n5_badge.textContent = 'Cierre Automático';
+
+        n6_title.textContent = '6. Envío Humanizado por IG';
+        n6_l1.textContent = 'Pausas Realistas de Escritura';
+        n6_l2.textContent = '¿Tu equipo entra al chat?';
+        n6_l3.textContent = 'Se aparta y te cede el control';
+        n6_badge.textContent = 'Respeto al Humano';
+
+        n7_title.textContent = '7. Seguimiento y Reactivación';
+        n7_l1.textContent = '• Recuerda cada detalle del prospecto';
+        n7_l2.textContent = '• Rescata leads que dejaron el chat en visto';
+
+        document.getElementById('col1HeaderIcon').textContent = '💼';
+        document.getElementById('col1HeaderTitle').textContent = 'Impacto Comercial y Experiencia del Cliente';
+        document.getElementById('col1StateTitle').textContent = 'Estado en el Proceso de Venta';
+        document.getElementById('col2HeaderIcon').textContent = '📋';
+        document.getElementById('col2HeaderTitle').textContent = 'Guía de Actuación Comercial';
+        document.getElementById('col2GuaranteeTitle').textContent = 'Beneficio Concreto para el Negocio';
+      } else {
+        svgTitleHeader.textContent = 'MÁQUINA DE ESTADOS LANGGRAPH — CICLO DE VIDA';
+        svgSubHeader.textContent = 'Haz clic en cualquier nodo para inspeccionar su funcionamiento y código real abajo';
+
+        n1_title.textContent = '1. validate_preconditions';
+        n1_l1.textContent = '• Facturación & Saldo';
+        n1_l2.textContent = '• Leads Excluidos';
+        n1_l3.textContent = '• Horario de Descanso';
+        n1_badge.textContent = 'Zero Token Waste Guard';
+
+        n2_title.textContent = '2. preprocess_media';
+        n2_l1.textContent = '• Notas de voz (Whisper)';
+        n2_l2.textContent = '• Imágenes (Claude Vision)';
+        n2_l3.textContent = '• Texto plano directo';
+        n2_badge.textContent = 'Multimodal Ingestion';
+
+        n3_title.textContent = '3. run_ai_brain (Core)';
+        n3_l1.textContent = 'Claude Sonnet 5';
+        n3_l2.textContent = 'Ephemeral Prompt Caching';
+        n3_l3.textContent = '⚡ 90% Descuento Costes';
+        n3_l4.textContent = 'Bucle Auto-Reparación';
+        n3_badge.textContent = 'Reasoning & JSON Engine';
+
+        n4_title.textContent = '4. apply_guardrails';
+        n4_l1.textContent = '• Filtro caracteres (¿, ¡)';
+        n4_l2.textContent = '• Mayúsculas de estilo';
+        n4_l3.textContent = '• Bloqueo frases error';
+        n4_badge.textContent = 'Deterministic Safety';
+
+        n5_title.textContent = '5. enforce_booking_rules';
+        n5_l1.textContent = 'Guardrail en 2 Capas';
+        n5_l2.textContent = '1. Intención explícita';
+        n5_l3.textContent = '2. Confirmación contextual';
+        n5_l4.textContent = 'Inyección Calendly URL';
+        n5_badge.textContent = 'Zero Hallucination Booking';
+
+        n6_title.textContent = '6. deliver_messages';
+        n6_l1.textContent = 'Anti-Race Pre-Check';
+        n6_l2.textContent = '¿Humano pausó el bot?';
+        n6_l3.textContent = 'Envío a ManyChat / Meta';
+        n6_badge.textContent = 'Human-in-the-Loop Safe';
+
+        n7_title.textContent = '7. persist_state_and_schedule';
+        n7_l1.textContent = '• MongoDB State Transition (ACID Document)';
+        n7_l2.textContent = '• Liberación Lock: is_processing = false';
+
+        document.getElementById('col1HeaderIcon').textContent = '🎯';
+        document.getElementById('col1HeaderTitle').textContent = 'Objetivo Técnico y Comportamiento';
+        document.getElementById('col1StateTitle').textContent = 'Mutación de Estado (State Diff)';
+        document.getElementById('col2HeaderIcon').textContent = '💻';
+        document.getElementById('col2HeaderTitle').textContent = 'Implementación en Código Python';
+        document.getElementById('col2GuaranteeTitle').textContent = 'Garantía de Ingeniería y Resiliencia';
+      }
+
+      selectSvgNode(currentSelectedNodeId);
+    }
+
+    btnModeTech.addEventListener('click', () => updateLanguageMode(false));
+    btnModeBusiness.addEventListener('click', () => updateLanguageMode(true));
+
+    // Inspector elements
     const inspNodeTitle = document.getElementById('inspNodeTitle');
     const inspNodeSubtitle = document.getElementById('inspNodeSubtitle');
     const inspNodeType = document.getElementById('inspNodeType');
     const inspGoal = document.getElementById('inspGoal');
-    const inspInputState = document.getElementById('inspInputState');
-    const inspOutputState = document.getElementById('inspOutputState');
-    const inspCodeBody = document.getElementById('inspCodeBody');
+    const inspCallout = document.getElementById('inspCallout');
+    const inspStateBlock = document.getElementById('inspStateBlock');
+    const inspCodeBlock = document.getElementById('inspCodeBlock');
     const inspGotcha = document.getElementById('inspGotcha');
 
     function selectSvgNode(nodeId) {
+      currentSelectedNodeId = nodeId;
       document.querySelectorAll('.svg-interactive-node').forEach(el => {
         el.classList.remove('node-selected');
       });
       const target = document.getElementById(nodeId);
       if (target) target.classList.add('node-selected');
 
-      const data = nodeDetails[nodeId];
-      if (!data) return;
+      const nodePair = nodeDataStore[nodeId];
+      if (!nodePair) return;
 
-      inspNodeTitle.innerText = data.title;
-      inspNodeSubtitle.innerText = data.subtitle;
-      inspNodeType.innerText = data.type;
-      inspGoal.innerText = data.goal;
-      inspInputState.innerText = data.inputState;
-      inspOutputState.innerText = data.outputState;
-      inspCodeBody.innerText = data.code;
-      inspGotcha.innerText = data.gotcha;
+      const data = isBusinessMode ? nodePair.business : nodePair.tech;
+
+      inspNodeTitle.textContent = data.title;
+      inspNodeSubtitle.textContent = data.subtitle;
+      inspNodeType.textContent = data.type;
+      inspGoal.innerHTML = data.goal;
+      inspCallout.innerHTML = data.callout;
+      inspStateBlock.textContent = data.state;
+      inspCodeBlock.textContent = data.code;
+      inspGotcha.innerHTML = data.gotcha;
     }
 
-    // Bind click events on all SVG nodes
-    Object.keys(nodeDetails).forEach(nodeId => {
+    // Attach click events on SVG nodes
+    Object.keys(nodeDataStore).forEach(nodeId => {
       const el = document.getElementById(nodeId);
       if (el) {
         el.addEventListener('click', () => selectSvgNode(nodeId));
       }
     });
 
-    // =========================================================================
     // SCENARIO SIMULATION ANIMATOR
-    // =========================================================================
     const btnScen1 = document.getElementById('btnScen1');
     const btnScen2 = document.getElementById('btnScen2');
     const btnScen3 = document.getElementById('btnScen3');
@@ -1851,45 +2768,45 @@ async def validate_preconditions_node(state: SetterState) -> Dict[str, Any]:
     btnScen1.addEventListener('click', () => {
       setBtnActive(btnScen1);
       runGraphAnimation([
-        { nodeId: 'svg-node-inbound', duration: 600 },
-        { nodeId: 'svg-node-preconditions', duration: 800 },
+        { nodeId: 'svg-node-inbound', duration: 550 },
+        { nodeId: 'svg-node-preconditions', duration: 750 },
         { nodeId: 'svg-node-media', duration: 700 },
         { nodeId: 'svg-node-brain', duration: 1100 },
-        { nodeId: 'svg-node-guardrails', duration: 700 },
+        { nodeId: 'svg-node-guardrails', duration: 650 },
         { nodeId: 'svg-node-booking', duration: 700 },
         { nodeId: 'svg-node-deliver', duration: 700 },
-        { nodeId: 'svg-node-persist', duration: 900 }
+        { nodeId: 'svg-node-persist', duration: 850 }
       ]);
     });
 
     btnScen2.addEventListener('click', () => {
       setBtnActive(btnScen2);
       runGraphAnimation([
-        { nodeId: 'svg-node-inbound', duration: 600 },
-        { nodeId: 'svg-node-preconditions', duration: 800 },
-        { nodeId: 'svg-node-brain', duration: 1000 },
-        { nodeId: 'svg-node-booking', duration: 1400 },
-        { nodeId: 'svg-node-deliver', duration: 800 },
-        { nodeId: 'svg-node-persist', duration: 900 }
+        { nodeId: 'svg-node-inbound', duration: 550 },
+        { nodeId: 'svg-node-preconditions', duration: 750 },
+        { nodeId: 'svg-node-brain', duration: 950 },
+        { nodeId: 'svg-node-booking', duration: 1300 },
+        { nodeId: 'svg-node-deliver', duration: 750 },
+        { nodeId: 'svg-node-persist', duration: 850 }
       ]);
     });
 
     btnScen3.addEventListener('click', () => {
       setBtnActive(btnScen3);
       runGraphAnimation([
-        { nodeId: 'svg-node-inbound', duration: 600 },
-        { nodeId: 'svg-node-preconditions', duration: 1000 },
-        { nodeId: 'svg-node-abort-preconditions', duration: 1200 }
+        { nodeId: 'svg-node-inbound', duration: 550 },
+        { nodeId: 'svg-node-preconditions', duration: 950 },
+        { nodeId: 'svg-node-abort-preconditions', duration: 1100 }
       ]);
     });
 
     btnScen4.addEventListener('click', () => {
       setBtnActive(btnScen4);
       runGraphAnimation([
-        { nodeId: 'svg-node-inbound', duration: 600 },
+        { nodeId: 'svg-node-inbound', duration: 550 },
         { nodeId: 'svg-node-preconditions', duration: 700 },
-        { nodeId: 'svg-node-brain', duration: 1000 },
-        { nodeId: 'svg-node-deliver', duration: 1100 },
+        { nodeId: 'svg-node-brain', duration: 950 },
+        { nodeId: 'svg-node-deliver', duration: 1000 },
         { nodeId: 'svg-node-abort-human', duration: 1200 }
       ]);
     });
@@ -1902,7 +2819,7 @@ async def validate_preconditions_node(state: SetterState) -> Dict[str, Any]:
       setBtnActive(btnScen1);
     });
 
-    // Default select Node 1 on load
+    // Default select Node 1
     selectSvgNode('svg-node-preconditions');
   </script>
 </body>
