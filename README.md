@@ -37,51 +37,57 @@ None of these are exotic edge cases — they're just what happens once real user
 
 Run it locally:
 
+```bash
 open docs/index.html
-
+```
 
 Or just open the [deployed version](https://davidzarandieta.github.io/conversational-ai-agent-langgraph/).
 
 ## Structure
 
-├── src/
-│ ├── state.py # SetterState (TypedDict)
-│ ├── graph.py # nodes and conditional edges
-│ ├── guardrails/
-│ │ ├── booking.py # confirmation detection + link injection
-│ │ └── safety.py # style/content filters
-│ ├── parsers/
-│ │ └── json_cascade.py # JSON extraction and repair
-│ ├── concurrency/
-│ │ ├── atomic_lock.py
-│ │ └── idempotency.py
-│ └── integrations/
-│ └── mock_services.py # in-memory adapters for tests
+```text
+├── src/                                # Core LangGraph production architecture
+│   ├── state.py                        # SetterState definition (TypedDict)
+│   ├── graph.py                        # StateGraph nodes and conditional edges
+│   ├── guardrails/
+│   │   ├── booking.py                  # 2-layer confirmation detection + Calendly link injection
+│   │   └── safety.py                   # Style guardrails, punctuation filters & error masking
+│   ├── parsers/
+│   │   └── json_cascade.py             # 4-stage resilient JSON extraction and self-repair
+│   ├── concurrency/
+│   │   ├── atomic_lock.py              # Optimistic MongoDB lock & human-in-the-loop protection
+│   │   └── idempotency.py              # Canonical SHA-256 payload hashing for deduplication
+│   └── integrations/
+│       └── mock_services.py            # In-memory service adapters for isolated tests
 │
-├── tests/
-│ ├── test_harness.py # the 4 core scenarios
-│ ├── test_guardrails.py
-│ ├── test_json_cascade.py
-│ └── test_concurrency.py
+├── tests/                              # Automated test suite (15/15 passing)
+│   ├── conftest.py                     # Shared test fixtures and client mock states
+│   ├── test_harness.py                 # End-to-end testing of 4 critical business scenarios
+│   ├── test_guardrails.py              # Unit tests for booking detection and safety rules
+│   ├── test_json_cascade.py            # Unit tests for malformed JSON parsing resilience
+│   └── test_concurrency.py             # Unit tests for atomic locking and deduplication
 │
-├── docs/
-│ ├── architecture-diagram.svg
-│ └── index.html
+├── docs/                               # Interactive visual portfolio & live web demo
+│   ├── architecture-diagram.svg        # High-resolution vector architecture diagram
+│   ├── index.html                      # Interactive mobile simulator & dynamic graph canvas
+│   └── dashboard-app/                  # Embedded production React 19 NeuralSetter dashboard
 │
-├── pytest.ini
-└── requirements.txt
-
+├── pytest.ini                          # Test runner configuration
+└── requirements.txt                    # Project dependencies
+```
 
 ## Running it
 
 No external MongoDB instance or API keys needed — everything's mocked for testing.
 
+```bash
 git clone https://github.com/davidzarandieta/conversational-ai-agent-langgraph.git
 cd conversational-ai-agent-langgraph
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 PYTHONPATH=. pytest -v
+```
 
 
 ## About the sanitization
