@@ -4,16 +4,15 @@ Reference implementation extracted and sanitized from a production conversationa
 
 **[Try the interactive demo →](https://davidzarandieta.github.io/conversational-ai-agent-langgraph/)**
 
-## Why this exists
+## What this is
 
-Once you put an LLM behind a real messaging channel (WhatsApp, Instagram DMs), a handful of problems show up that a simple prompt-and-response loop doesn't handle:
+A conversational AI agent that runs a business's lead qualification over a messaging channel (Instagram DMs / WhatsApp) — it holds a conversation, adapts its tone and goals to whatever the business configures, and decides when it's appropriate to hand over a booking link, without a human in the loop for every message.
 
-- The model says "here's my link" and then doesn't actually include the URL.
-- A user replies "yes" to something completely unrelated to booking, and a naive system reads that as confirmation and sends a link it shouldn't.
-- Two messages arrive close together (or a webhook retries), and both get processed at the same time for the same user.
-- The model wraps its JSON in markdown, or uses a smart quote instead of a straight one, and `json.loads()` blows up.
+Structurally, it's a LangGraph state machine sitting between the messaging webhook and the LLM call. The state (`SetterState`) carries the conversation history, the client's configuration, and the model's output through a fixed set of nodes: check preconditions (billing, sleep hours, human pause) → compose context → call the model → parse and validate the output → apply guardrails → decide on booking → deliver or abort.
 
-None of these are exotic edge cases — they're just what happens once real users are typing into the thing. This repo is the part of the system built to handle them: a LangGraph state machine with deterministic checks sitting around the model, instead of trusting the model to get every detail right on its own.
+The core design principle is that the LLM only ever *proposes*. Anything with a side effect — sending a message, sending a booking link, advancing the conversation stage — goes through a deterministic check outside the model before it happens. The model doesn't have write access to anything on its own.
+
+Context is split into a stable part (the client's configuration, tone, rules) and a dynamic part (the conversation so far), so the expensive, rarely-changing part can be cached instead of resent on every turn.
 
 ## Architecture
 
