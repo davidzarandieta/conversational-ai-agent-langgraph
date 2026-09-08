@@ -1,0 +1,8 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allow mock test variables and test suites"
+paths = [
+    '''tests/.*''',
+]

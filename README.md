@@ -6,7 +6,7 @@ Reference implementation extracted and sanitized from a production conversationa
 
 ## What this is
 
-A conversational AI agent that runs a business's lead qualification over a messaging channel (Instagram DMs / WhatsApp) — it holds a conversation, adapts its tone and goals to whatever the business configures, and decides when it's appropriate to hand over a booking link, without a human in the loop for every message.
+A conversational AI agent that runs a business's lead qualification over a messaging channel (Instagram DMs) — it holds a conversation, adapts its tone and goals to whatever the business configures, and decides when it's appropriate to hand over a booking link, without a human in the loop for every message.
 
 Structurally, it's a LangGraph state machine sitting between the messaging webhook and the LLM call. The state (`SetterState`) carries the conversation history, the client's configuration, and the model's output through a fixed set of nodes: check preconditions (billing, sleep hours, human pause) → compose context → call the model → parse and validate the output → apply guardrails → decide on booking → deliver or abort.
 

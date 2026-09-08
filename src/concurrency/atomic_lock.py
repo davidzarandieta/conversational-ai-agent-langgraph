@@ -12,7 +12,7 @@ def acquire_user_processing_lock(
     operación atómica indivisible en MongoDB.
     
     Evita condiciones de carrera producidas por:
-    - Webhooks duplicados de WhatsApp/Instagram (doble tap o reintentos de red).
+    - Webhooks duplicados de Instagram (doble tap o reintentos de red).
     - Múltiples workers concurrentes procesando el mismo lead en paralelo.
     """
     query = {

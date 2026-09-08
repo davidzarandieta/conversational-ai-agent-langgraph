@@ -2,7 +2,7 @@ import os
 import pytest
 
 # Variables de entorno dummy para garantizar tests herméticos y sin fugas
-os.environ.setdefault("JWT_SECRET", "test-secret-key-32-chars-long-123456")
+os.environ.setdefault("JWT_SECRET", "dummy_jwt_test_secret_for_tests")  # gitleaks:allow
 os.environ.setdefault("ANTHROPIC_API_KEY", "sk-ant-test-dummy-key")
 os.environ.setdefault("MONGO_URI", "mongodb://localhost:27017/")
 os.environ.setdefault("COOKIE_SECURE", "false")
