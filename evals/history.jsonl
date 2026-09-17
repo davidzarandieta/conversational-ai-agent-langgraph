@@ -1,0 +1,5 @@
+{"timestamp": "2026-09-17T12:13:48.532798", "mode": "cached", "total": 12, "passed": 12, "pass_rate": 1.0, "categories": {"guardrail_enlace": {"passed": 6, "total": 6, "rate": 1.0}, "robustez_manipulacion": {"passed": 6, "total": 6, "rate": 1.0}}}
+{"timestamp": "2026-09-17T12:13:53.676963", "mode": "cached", "total": 6, "passed": 6, "pass_rate": 1.0, "categories": {"guardrail_enlace": {"passed": 6, "total": 6, "rate": 1.0}}}
+{"timestamp": "2026-09-17T12:18:06.442532", "mode": "cached", "total": 12, "passed": 12, "pass_rate": 1.0, "categories": {"guardrail_enlace": {"passed": 6, "total": 6, "rate": 1.0}, "robustez_manipulacion": {"passed": 6, "total": 6, "rate": 1.0}}}
+{"timestamp": "2026-09-17T12:36:56.014635", "mode": "cached", "total": 12, "passed": 12, "pass_rate": 1.0, "categories": {"guardrail_enlace": {"passed": 6, "total": 6, "rate": 1.0}, "robustez_manipulacion": {"passed": 6, "total": 6, "rate": 1.0}}}
+{"timestamp": "2026-09-17T12:47:21.278499", "mode": "cached", "total": 12, "passed": 12, "pass_rate": 1.0, "categories": {"guardrail_enlace": {"passed": 6, "total": 6, "rate": 1.0}, "robustez_manipulacion": {"passed": 6, "total": 6, "rate": 1.0}}}

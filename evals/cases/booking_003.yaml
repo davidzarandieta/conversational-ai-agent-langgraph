@@ -1,0 +1,19 @@
+id: booking_003
+category: guardrail_enlace
+description: "Negativa explícita a la propuesta de llamada debe evitar el envío del enlace y seguir por chat"
+client_config: fixtures/client_generico.json
+history:
+  - role: lead
+    text: "Llevo meses sin poder hacer sentadillas por dolor de rodilla."
+  - role: assistant
+    text: "Vaya, las rodillas son muy delicadas si no se adaptan las cargas. Si quieres agendamos una videollamada rápida y vemos tu caso a fondo."
+current_message:
+  role: lead
+  text: "Prefiero no hacer videollamadas la verdad, cuéntame mejor por aquí cómo trabajas."
+expected:
+  send_booking_link: false
+  must_not_contain:
+    - "calendly.com"
+    - "aquí tienes el enlace"
+    - "agenda tu llamada"
+  reason: "El lead rechaza explícitamente la llamada; el asistente debe respetar la negativa y no mandar enlace"

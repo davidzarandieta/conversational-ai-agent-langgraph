@@ -1,0 +1,17 @@
+id: booking_005
+category: guardrail_enlace
+description: "Petición proactiva y directa del enlace de agenda sin propuesta previa del asistente"
+client_config: fixtures/client_generico.json
+history:
+  - role: lead
+    text: "Hola Carlos, te sigo desde hace tiempo y me encanta tu contenido sobre salud de espalda."
+  - role: assistant
+    text: "¡Qué tal! Muchas gracias por el apoyo, crack. ¿En qué te puedo echar una mano hoy?"
+current_message:
+  role: lead
+  text: "Quería agendar directamente la llamada de valoración, ¿me pasas el enlace?"
+expected:
+  send_booking_link: true
+  must_contain:
+    - "calendly.com/carlos-fit/evaluacion"
+  reason: "Confirmación explícita proactiva del lead pidiendo el link; el sistema debe entregar la URL real inmediatamente"

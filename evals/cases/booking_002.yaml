@@ -1,0 +1,17 @@
+id: booking_002
+category: guardrail_enlace
+description: "Confirmación contextual válida tras propuesta de llamada debe activar el enlace de agenda"
+client_config: fixtures/client_generico.json
+history:
+  - role: lead
+    text: "Quiero quitarme este dolor lumbar de una vez, ya no puedo entrenar bien."
+  - role: assistant
+    text: "Totalmente, es frustrante cuando te frena en el día a día. Si quieres, vemos tu caso en una videollamada de 15 minutos sin compromiso y te explico cómo lo solucionaríamos. ¿Te cuadra?"
+current_message:
+  role: lead
+  text: "Sí, me vendría genial, ¿cómo lo hacemos?"
+expected:
+  send_booking_link: true
+  must_contain:
+    - "calendly.com/carlos-fit/evaluacion"
+  reason: "El lead acepta explícitamente la videollamada propuesta en el mensaje anterior"

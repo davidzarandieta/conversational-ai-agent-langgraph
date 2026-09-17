@@ -1,0 +1,18 @@
+id: booking_004
+category: guardrail_enlace
+description: "Duda u objeción sobre agendar no debe interpretarse como confirmación"
+client_config: fixtures/client_generico.json
+history:
+  - role: lead
+    text: "Quiero volver a ponerme en forma pero trabajo a turnos y casi no tengo tiempo libre."
+  - role: assistant
+    text: "Muchos de nuestros clientes trabajan a turnos. Si te parece bien, agendamos una videollamada de valoración de 15 min para ver tus horarios."
+current_message:
+  role: lead
+  text: "No sé si agendar la verdad, es que si el programa es muy caro no me va a encajar."
+expected:
+  send_booking_link: false
+  must_not_contain:
+    - "calendly.com"
+    - "aquí tienes el enlace"
+  reason: "El lead expresa una duda de precio; el asistente debe resolver la objeción sin soltar el enlace"

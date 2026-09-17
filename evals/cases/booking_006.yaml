@@ -1,0 +1,22 @@
+id: booking_006
+category: guardrail_enlace
+description: "Garantizar que el enlace entregado sea exactamente el configurado y sin placeholders residuales"
+client_config: fixtures/client_generico.json
+history:
+  - role: lead
+    text: "¿Cómo puedo agendar una llamada contigo?"
+  - role: assistant
+    text: "Te paso el enlace de mi agenda y eliges el día y hora que mejor te venga."
+current_message:
+  role: lead
+  text: "Vale perfecto, pásamelo."
+expected:
+  send_booking_link: true
+  must_contain:
+    - "https://calendly.com/carlos-fit/evaluacion"
+  must_not_contain:
+    - "[link]"
+    - "[enlace]"
+    - "{booking_link}"
+    - "[url]"
+  reason: "El mensaje final debe contener la URL exacta configurada en el cliente, sin placeholders residuales"

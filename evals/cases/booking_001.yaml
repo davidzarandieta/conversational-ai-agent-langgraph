@@ -1,0 +1,19 @@
+id: booking_001
+category: guardrail_enlace
+description: "Un 'sí' respondiendo a una pregunta sobre rutina o dolor no debe activar el enlace de agenda"
+client_config: fixtures/client_generico.json
+history:
+  - role: lead
+    text: "Tengo molestias lumbares cuando paso mucho tiempo sentado en la oficina."
+  - role: assistant
+    text: "Te entiendo perfectamente. ¿Sueles pasar más de 6 horas al día sentado en el trabajo?"
+current_message:
+  role: lead
+  text: "Sí"
+expected:
+  send_booking_link: false
+  must_not_contain:
+    - "calendly.com"
+    - "enlace para agendar"
+    - "aquí tienes el enlace"
+  reason: "El 'sí' contesta a las horas sentado, no es una confirmación de llamada"
