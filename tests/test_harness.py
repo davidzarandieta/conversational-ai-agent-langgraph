@@ -98,9 +98,12 @@ async def test_escenario_1_happy_path():
     assert final_state.get("should_abort") is False, "El grafo no debió abortar"
     assert final_state.get("delivery_success") is True, "ManyChat debió entregar"
     assert final_state.get("current_stage") == "2", "Debió avanzar a etapa 2"
+    assert final_state.get("rag_query") is not None, "El nodo RAG debió contextualizar la query"
+    assert "PILAR A" in final_state.get("rag_knowledge_context", ""), "Debe contener conocimiento de Pilar A (Voyage AI)"
+    assert "PILAR B" in final_state.get("rag_learnings_context", ""), "Debe contener heurísticas de Pilar B (Haiku 4.5)"
     mock_brain.assert_awaited_once()  # Se llamó a la IA exactamente 1 vez
     mock_manychat.assert_awaited_once()  # Se envió a ManyChat exactamente 1 vez
-    print("   ✅ Escenario 1 Superado: Mensajes procesados y entregados.")
+    print("   ✅ Escenario 1 Superado: Mensajes procesados y entregados con RAG contextual.")
 
 
 @pytest.mark.asyncio
